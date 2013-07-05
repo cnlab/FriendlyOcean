@@ -1,0 +1,87 @@
+@charset "UTF-8";/*!
+ * 
+ * Common styles across all themes.
+ *
+ */
+ 
+.chart {
+    font-size: 18px;
+    text-align: center;
+}
+
+.chart svg {
+    position: relative;
+    top: -25px;
+}
+
+.chart .node {
+    cursor: move;
+}
+
+
+#error {
+    position: absolute;
+    top: 50%;
+    left: 35%;
+    display: none;
+    background-color: #f0f0f0;
+    border: 6px solid #ff0000;
+    font-family: Arial;
+    font-size: 16px;
+    padding: 20px;	
+    z-index: 5;
+}
+
+#next-arrow {
+    position:fixed;
+    cursor: pointer;
+    right: 0;
+    bottom: 10%;
+    width: 8%;
+    height: 9%;
+    background-image: url('../img/arrow.png');
+    background-repeat: no-repeat;
+    background-position: 0 0px;
+    background-size: 100%;
+    margin: 5px;
+    z-index: 5;
+}
+
+.delete {
+    cursor: pointer;
+    background-image: url('../img/delete.png');
+    background-repeat: no-repeat;
+    background-position: 0 0px;
+    background-size: 100%;
+    width: 18px;
+    height: 36px;
+    display: inline-block;
+}
+
+.friend-list {
+    list-style-type: none;
+    line-height: 3 !important;
+    font-size: 24px;
+    margin-bottom: 20px;
+    column-count: 4;
+    -moz-column-count: 4;
+    -webkit-column-count: 4;
+}
+
+#help-img {
+    cursor: pointer;
+    background-image: url('../img/help.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 100%;
+    position: fixed;
+    display: none;
+    width: 4%;
+    height: 8%;
+    z-index: 5;
+    margin: 5px;
+}
+
+.underline {
+    text-decoration: underline;
+}
