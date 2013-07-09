@@ -39,12 +39,6 @@ def postd():
 def post_get(name, default=''):
     return bottle.request.POST.get(name, default).strip()
 
-@route('/jsonp')
-@post('/jsonp')
-def jsonp():
-	value = request.query.value
-	print value, "sent"
-
 @post('/get_interactions')
 def get_interaction():
     access_token = post_get('access_token')
