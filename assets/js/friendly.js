@@ -34,41 +34,56 @@ function FriendlyApp(config){
 	    }
 	}
 	
+	//Island name
+	this.islandName;
+	
 	//Max number of people for each category
 	this.maxFriendsPerCategory = 20;
   
-    //Running lists of friends for internal and external use
+    //Current slide index used for reloading app
+    this.slide = 0;
+    slide = this.slide;
+    
+    //Running lists of friends and links for internal and external use
     this.friends = [];
     friends = this.friends;
     
-    //Application state for localStorage
-    this.state = {
-        appID: this.config.appID,
-        friends: this.friends,
-        created: (new Date()).getTime(),
-        slideIndex: null
-        };
+    this.fbFriends = {};
+    fbFriends = this.fbFriends;
+    
+    this.links = []
+    links = this.links;
     
     //Define Friend object
-    function Friend(name, category){
+    function Friend(name, id){
         this.name = name;
         this.friendNumber = "f{number}".supplant({'number':friends.length + 1});
-        this.category = [category];
+        this.category = [id];
     };
     
     //Add names from friend-list to application object
-    FriendlyApp.prototype.addNames = function(names, category){
-        $(names).each(function(i,obj){
-            var friend = new Friend(obj, "{category}_f{number}".supplant({'category':category, 'number': (i+1)}));
-            friends.push(friend);
+    FriendlyApp.prototype.addNames = function(li){
+        $(li).each(function(i,obj){
+            var name = $(obj).text();
+            var span = $(obj).children();
+            var category = $(span).data('category');
+            var number = i+1;
+            var id = $(span).attr('id') || "{category}_f{number}".supplant({'category':category,'number':number});
+            var friend = new Friend(name, id);
+            this.friends.push(friend);
         });
+    }
+    
+    //Add links to application object
+    FriendlyApp.prototype.addLink = function(source, target){
+        var link = {source:source, target:target};
+        this.links.push(link);
     }
     
     //Save application object to localStorage
     FriendlyApp.prototype.saveApp = function(){
         this.updateIndex();
-        var state = JSON.stringify(this.state);
-        window.localStorage.setItem('FriendlyApp-{appID}'.supplant({'appID': this.config.appID}), state);
+        window.localStorage.setItem('FriendlyApp-{appID}'.supplant({'appID': this.config.appID}), JSON.stringify(this));
     }
     
     //Retrieve application object from localStorage
@@ -78,16 +93,13 @@ function FriendlyApp(config){
     
     //Update application position
     FriendlyApp.prototype.updateIndex = function(){
-        this.state.index = Reveal.getIndices().h;
+        this.slide = Reveal.getIndices().h;
     }
     
 }
 
 //Extended permissions for Facebook
 var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
-
-//Variable for response from server after FB mining
-var fbFriends;
 
 //Helper function for string formatting
 String.prototype.supplant = function (o) {

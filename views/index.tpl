@@ -178,7 +178,7 @@
                 
                 <section id="family" data-category="family" data-show="help" class="category add-names">
                     <div class="page-header">
-                        <h2>Family - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Enter a name"/></h2>
+                        <h2>Family - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -186,7 +186,7 @@
                 
                 <section id="calling" data-category="calling" data-show="help" class="category add-names">
                     <div class="page-header">
-                        <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Enter a name"/></h2>
+                        <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -194,7 +194,7 @@
                 
                 <section id="texting" data-category="texting" data-show="help" class="category add-names">
                     <div class="page-header">
-                        <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Enter a name"/></h2>
+                        <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -210,7 +210,7 @@
                 
                 <section id="face2face" data-category="face2face" data-show="help" class="category add-names">
                     <div class="page-header">
-                        <h2>Face to Face - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Enter a name"/></h2>
+                        <h2>Face to Face - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -218,7 +218,7 @@
                 
                 <section id="other" data-category="other" data-show="help" class="category add-names">
                     <div class="page-header">
-                        <h2>Anyone else? - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Enter a name"/></h2>
+                        <h2>Anyone else? - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -254,6 +254,8 @@
         </div>
         
         <!--/End help modal-->
+        
+        <!--Error div for strength.validate()-->
         <div id="error"></div>
         
         <!--Javascripts-->
@@ -266,7 +268,7 @@
     	<script src="assets/js/d3.v2.js"></script>
 
 		<script type="text/javascript">
-            var fbFriends;
+            
             var Friendly = new FriendlyApp();
             
             $('#help').on('hidden', function(){
@@ -276,7 +278,9 @@
             function friendInputHandler(event){
                 var value = $(this).val().trim();
                 if(event.which == 13 && value.length > 0){
-                    var friendList = $(Reveal.getCurrentSlide()).find('.friend-list');
+                    var slide = Reveal.getCurrentSlide();
+                    var cat = slide.dataset.category;
+                    var friendList = $(slide).find('.friend-list');
                                         
                     if(friendList.children().length == Friendly.maxFriendsPerCategory){
                         alert("Sorry, you've reached the maximum number of friends for this category");
@@ -285,14 +289,14 @@
                     else{
                         var name = $(this).val();
                         var li = $("<li></li>").text(name);
-                        var span = $("<span class='delete'></span>");
+                        var span = $("<span class='delete' data-category='{cat}'></span>".supplant({'cat':cat}));
                         $(span).on("click", function(){
                             $(this).parent().remove();
                         });
                         $(li).prepend(span);
                         $(friendList).append(li);
                         $('.friend-list li').tsort();
-                        $(this).val("");                
+                        $(this).val("");            
                     }
                 }
                 else if(event.which == 13 && value.length < 1) {
@@ -305,7 +309,7 @@
                 //Grab current slide
                 var currentSlide = Reveal.getCurrentSlide();
                 var span = $(currentSlide).find('.span12')[1];
-                $(span).html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
+                $(span).html('<p>Loading...</p><div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
                 
                 //Login to FB using SDK
                 FB.login(
@@ -326,8 +330,9 @@
                                         noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the arrow to continue</h4>');
                                     }
                                     else {
-                                        fbFriends = data.fbFriends;
+                                        Friendly.fbFriends = data.fbFriends;
                                         $(span).html('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
+                                        fillFBList(Friendly.fbFriends.friends);
                                     }
                                 });
                         }
@@ -350,17 +355,52 @@
                 $(span).html(msg);
                 var slide = $('#facebook');
                 $(slide).find('.container').remove();
-                var input = $('<input class="friend-input" name="{category}-friend-input" type="text" placeholder="Enter a name"/>'.supplant({'category': $(slide).data('category')}));
+                var input = $('<input class="friend-input" name="{category}-friend-input" type="text" placeholder="Type a name and press Enter"/>'.supplant({'category': $(slide).data('category')}));
                 $(input).keypress(friendInputHandler);
                 var header = $(slide).find('h2');
                 $(header).append(" - ").append(input);
+            }
+            
+            function fillFBList(friends){
+            
+                var ul = $('#facebook .friend-list');
+
+                $(friends).each(function(i, obj){
+                    var cat = 'facebook';
+                    var id = obj[0];
+                    var name = obj[1].trim();
+                    var li = $("<li></li>").text(name);
+                    var span = $("<span></span>").attr({
+                            'class':'delete',
+                            'data-category':cat,
+                            'id':id
+                        });
+                    $(span).on("click", function(){
+                        $(this).parent().remove();
+                        
+                        Friendly.fbFriends.friends = jQuery.grep(Friendly.fbFriends.friends, function (n) {
+                        return n[0] != id;
+                        });
+
+                        Friendly.fbFriends.fb_fof = jQuery.grep(Friendly.fbFriends.fb_fof, function (n) {
+                        return n[0] != id;
+                        });
+                        
+                        Friendly.fbFriends.fb_fof = jQuery.grep(Friendly.fbFriends.fb_fof, function (n) {
+                        return n[1] != id;
+                        });
+                    });
+                    $(li).prepend(span);
+                    $(ul).append(li);
+                });
+                
+                $(ul).tsort();
             }
             
             $('.friend-input').keypress(friendInputHandler);
             
             $('#next-arrow').click(function( event ){
                 var currentSlide = Reveal.getCurrentSlide();
-                var category = currentSlide.dataset.category;
                 if ($(currentSlide).hasClass('add-names')){
                     var li = $(currentSlide).find('.friend-list li');
                     if(li.length < 1){
@@ -369,16 +409,13 @@
                         }
                     }
                     else{
-                        var names = [];
-                        $(li).each(function(i,obj){
-                            names.push($(obj).text());
-                        });
-                        Friendly.addNames(names, category);
+                        Friendly.addNames(li);
                     }
                 }
-                if (category == 'closeness') {
+                if (currentSlide.dataset.category == 'closeness') {
                     if (!strength.validate()) { 
                         error('STRENGTH');
+                        return;
                         }
                     else {
                         var vals = strength.values();
@@ -390,6 +427,7 @@
                         Friendly.friends = friends;
                     }
                 }
+                
                 Friendly.saveApp();
                 Reveal.next();
             });
@@ -401,7 +439,7 @@
                     var row = $(Reveal.getCurrentSlide()).children('.row')[1];
                     var islandName = $('input[name="island-name"]').val();
                     $(row).html("<h3>Welcome to " + islandName + "!</h3>");                     
-                    Friendly.state.islandName = islandName;
+                    Friendly.islandName = islandName;
                     Friendly.saveApp();                     
                 }
                 else if(event.which == 13 && value.length < 1){
