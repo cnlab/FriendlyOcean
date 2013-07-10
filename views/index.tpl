@@ -200,7 +200,7 @@
                     </ul>
                 </section>
                 
-                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns" data-state="sns-login">
+                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns">
                     <div class="page-header">
                         <h2>Facebook</h2>
                     </div>
@@ -208,6 +208,7 @@
                     </ul>
                 </section>
                 
+<!-- 
                 <section id="face2face" data-category="face2face" data-show="help" class="category add-names">
                     <div class="page-header">
                         <h2>Face to Face - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -223,9 +224,15 @@
                     <ul class="friend-list">
                     </ul>
                 </section>
+ -->
+                
+                <section id="merge" data-category="merge" data-show="help" class="merge add-names">
+                    <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
+                <!--Leave this space empty. Lists are dynamically generated.-->
+                </section>
                 
                 <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" class="chart">
-                <!--Leave this empty. It is where the svg canvas is inserted when strength.js is initiated-->
+                <!--Leave this space empty. It is where the svg canvas is inserted when strength.js is initiated-->
                 </section>
                 
                 <section data-state="end">
@@ -268,8 +275,6 @@
     	<script src="assets/js/d3.v2.js"></script>
 
 		<script type="text/javascript">
-            
-            var Friendly = new FriendlyApp();
             
             $('#help').on('hidden', function(){
                 $(Reveal.getCurrentSlide()).find('input').focus();
@@ -403,6 +408,8 @@
             
             $('#next-arrow').click(function( event ){
                 var currentSlide = Reveal.getCurrentSlide();
+                
+                //Add names if appropriate
                 if ($(currentSlide).hasClass('add-names')){
                     var li = $(currentSlide).find('.friend-list li');
                     if(li.length < 1){
@@ -411,9 +418,11 @@
                         }
                     }
                     else{
-                        Friendly.addNames(li);
+                        addNames(li);
                     }
                 }
+                
+                //Validate strength values
                 if (currentSlide.dataset.category == 'closeness') {
                     if (!strength.validate()) { 
                         error('STRENGTH');
@@ -430,7 +439,7 @@
                     }
                 }
                 
-                Friendly.saveApp();
+                saveApp();
                 Reveal.next();
             });
                         
@@ -442,7 +451,7 @@
                     var islandName = $('input[name="island-name"]').val();
                     $(row).html("<h3>Welcome to " + islandName + "!</h3>");                     
                     Friendly.islandName = islandName;
-                    Friendly.saveApp();                     
+                    saveApp();                     
                 }
                 else if(event.which == 13 && value.length < 1){
                     $(this).val("");
@@ -473,7 +482,7 @@
 			//Debug code for dumping log at the end
 			
 			Reveal.addEventListener('end', function( event ){
-			    console.log(JSON.stringify(JSON.parse(window.localStorage.getItem("FriendlyApp-1")), undefined, 2));
+			    console.log(JSON.stringify(JSON.parse(window.localStorage.getItem("Friendly-1")), undefined, 2));
 			    FB.logout();
 			});
 			
@@ -486,7 +495,7 @@
             } );
             
             Reveal.addEventListener( 'strengthInit', function( event ) {
-                var data = Friendly.getApp();
+                var data = getApp();
                 var names = [];
                 $(data.friends).each(function(i, obj) {
                     names.push(obj.name);
@@ -497,13 +506,20 @@
             Reveal.addEventListener( 'slidechanged', function( event ) {
                 
                 //Update application position
-                Friendly.updateIndex(); 
+                updateIndex(); 
                 $(Reveal.getCurrentSlide()).find('input').focus();
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
                 if(category){
                     $('#help #modal-label').text("Instructions - {category}".supplant({'category': category.capitalize()}));
-                    $('#help').find('.modal-body .lead').text(Friendly.config.categories[category].help)
+                    var mb = $('#help').find('.modal-body');
+                    $(mb).children().remove();
+                    var helpList = Friendly.config.categories[category].help;
+                    $(helpList).each(function(i,obj){
+                        var p = $("<p class='lead'></p>");
+                        $(p).text(obj);
+                        $(mb).append(p);
+                    });
                 }
                 else{
                    
@@ -534,6 +550,11 @@
                   $("#error").fadeOut('slow'); 
                   clearInterval(fade); }, 2000);
             }
+            
+            function mergeFriends(){
+            
+            }
+            
             </script>
         
 	</body>
