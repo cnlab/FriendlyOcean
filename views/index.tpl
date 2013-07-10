@@ -263,7 +263,7 @@
 		<script src="assets/js/jquery.tinysort.min.js"></script>
 		<script src="assets/js/bootstrap.min.js"></script>
     	<script src="assets/js/reveal.js"></script>
-    	<script src="assets/js/friendly.js"></script>
+    	<script src="assets/friendly/friendly.js"></script>
     	<script src="assets/js/strength.js"></script>
     	<script src="assets/js/d3.v2.js"></script>
 
@@ -369,11 +369,13 @@
                     var cat = 'facebook';
                     var id = obj[0];
                     var name = obj[1].trim();
+                    var hash = obj[2];
                     var li = $("<li></li>").text(name);
                     var span = $("<span></span>").attr({
                             'class':'delete',
                             'data-category':cat,
-                            'id':id
+                            'id':id,
+                            'data-hash':hash
                         });
                     $(span).on("click", function(){
                         $(this).parent().remove();

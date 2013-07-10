@@ -377,7 +377,7 @@ def get_interactions_from_last(access_code, start_point):
 
 	print new_links
 
-	return {'friends':[(FB_f[n], shorten_name(friend_dict[n])) for n in interaction_list],
+	return {'friends':[(FB_f[n], shorten_name(friend_dict[n]), hash(n)) for n in interaction_list],
 			'fb_fof': new_links
 			}
 

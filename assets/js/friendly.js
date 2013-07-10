@@ -55,10 +55,11 @@ function FriendlyApp(config){
     links = this.links;
     
     //Define Friend object
-    function Friend(name, id){
+    function Friend(name, id, hash){
         this.name = name;
         this.friendNumber = "f{number}".supplant({'number':friends.length + 1});
         this.category = [id];
+        this.hash = hash;
     };
     
     //Add names from friend-list to application object
@@ -67,10 +68,11 @@ function FriendlyApp(config){
             var name = $(obj).text();
             var span = $(obj).children();
             var category = $(span).data('category');
+            var hash = $(span).data('hash') || null;
             var number = i+1;
             var id = $(span).attr('id') || "{category}_f{number}".supplant({'category':category,'number':number});
-            var friend = new Friend(name, id);
-            this.friends.push(friend);
+            var friend = new Friend(name, id, hash);
+            friends.push(friend);
         });
     }
     
