@@ -3,7 +3,31 @@
  * Common styles across all themes.
  *
  */
- 
+
+.merge-div {
+    font-size: 24px;
+    border: 1px solid black;
+    float: left;
+}
+
+.merge-list {
+    list-style-type: none;
+    font-size:  16px;
+    line-height: 25px;
+}
+
+.merge-list li {
+    cursor: pointer;
+}
+
+.btn-large {
+    font-size: 20px;
+}
+
+.selected {
+    background: #FFFF00;
+}
+
 .chart {
     font-size: 18px;
     text-align: center;

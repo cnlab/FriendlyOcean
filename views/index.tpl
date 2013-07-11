@@ -226,9 +226,15 @@
                 </section>
  -->
                 
-                <section id="merge" data-category="merge" data-show="help" class="merge add-names">
-                    <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
-                <!--Leave this space empty. Lists are dynamically generated.-->
+                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge add-names">
+                    <div class="container">
+                        <div class="row">
+                            <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
+                        </div>
+                        <div class="row">
+                            <!--Leave this space empty. Lists are dynamically generated.-->
+                        </div>
+                    </div>
                 </section>
                 
                 <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" class="chart">
@@ -488,6 +494,51 @@
 			
 			//End debug code
 			
+			Reveal.addEventListener('merge', function( event ) {
+                var slide = $('#merge .row')[1];
+			    var cats = $('.category');
+			    
+			    //Create list for each category
+			    $(cats).each(function(i,obj){
+			        var cat = $(obj).data('category');
+			        var div = $("<div class='span2 merge-div'></div>");
+			        var p = $("<p></p>").text(cat.capitalize());
+			        var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
+			        
+			        //Get all members of a category
+			        var members = jQuery.grep(Friendly.friends, function (friend) {
+    			                        return friend.category[0].search(cat) != -1;
+                                    });
+			        $(members).each(function(i,obj){
+			            var name = obj.name;
+			            var friendNumber = obj.friendNumber;
+			            var catId = obj.category[0];
+			            var hash = obj.hash;
+			            var li = $("<li></li>").attr('onclick', 'selectForMerge(this)');
+			            var span = $("<span></span>").data({
+			                            friendNumber: friendNumber,
+			                            catId: catId,
+			                            hash: hash
+			                        })
+			                        .text(name);
+			            $(li).append(span);
+			            $(ul).append(li);
+			        });
+			        
+			        $(div).append(p);
+			        $(div).append(ul).tsort();
+			        $(slide).append(div);
+			    });
+			    
+			    //Create list for merged names
+			    var div = $("<div class='span2 merge-div'></div>");
+			    var p = $("<p></p>").text("Merged");
+			    var ul = $("<ul id='merged' class='merge-list'></ul>");
+			    $(div).append(p);
+			    $(div).append(ul);
+			    $(slide).append(div);
+			});
+			
             Reveal.addEventListener( 'fragmentshown', function( event ) {
                 if(event.fragment.dataset.show=="help-button"){
                     $('#help-img').css('display', 'block');
@@ -551,8 +602,58 @@
                   clearInterval(fade); }, 2000);
             }
             
-            function mergeFriends(){
             
+            function selectForMerge(e){
+                $(e).children().toggleClass('selected');
+            }
+            
+            function mergeFriends(){
+                var selected = $('.selected');
+                var m = $('#merged');
+                if (selected.length > 1) {
+                    var mList = [];
+                    $(selected).each(function (i, obj) {
+                        var data = $(obj).data();
+                        var name = $(obj).text();
+                        data.name = name;
+                        mList.push(data);
+                    });
+                    var newLi = $('<li></li>');
+                    var name = $(selected[0]).text();
+                    var newSpan = $('<span></span>').text(name);
+                    var merged = {
+                        merged: mList
+                    };
+                    $(newSpan).data('merged', merged);
+                    newSpan.on('dblclick', merged, split);
+                    newLi.append(newSpan);
+                    m.append(newLi);
+                    $(selected).parent().remove();
+                }
+                m.tsort();
+            }
+            
+            function split(event) {
+                var merged = event.data.merged;
+                $(merged).each(function (i, obj) {
+                    var friendNumber = obj.friendNumber;
+                    var name = obj.name;
+                    var hash = obj.hash;
+                    var catId = obj.catId;
+                    var homeList = $("#{cat}-list".supplant({'cat':catId.split('_')[0]}));
+                    var li = $('<li></li>').attr('onclick', 'selectForMerge(this)');
+                    var span = $('<span></span>').data({
+                                    friendNumber: friendNumber,
+                                    catId: catId,
+                                    name: name,
+                                    hash: hash
+                                })
+                        .text(name);
+                    li.append(span);
+                    homeList.append(li);
+                });
+                $(event.target).parent().remove();
+                $('.merge-list').tsort();
             }
             
             </script>

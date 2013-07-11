@@ -367,7 +367,7 @@ def get_interactions_from_last(access_code, start_point):
 
 	interaction_list = set(interactions)
 	
-	FB_f = dict(zip(interaction_list,['FB_f%i' % i for i in range(1,len(interaction_list)+1)]))
+	FB_f = dict(zip(interaction_list,['facebook_f%i' % i for i in range(1,len(interaction_list)+1)]))
 
 	# get FOF data for friend list
 	fof_links = fof_interaction(interaction_list, access_code)
