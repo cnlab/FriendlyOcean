@@ -226,7 +226,7 @@
                 </section>
  -->
                 
-                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge add-names">
+                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge">
                     <div class="container">
                         <div class="row">
                             <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
@@ -415,36 +415,45 @@
             $('#next-arrow').click(function( event ){
                 var currentSlide = Reveal.getCurrentSlide();
                 
-                //Add names if appropriate
-                if ($(currentSlide).hasClass('add-names')){
-                    var li = $(currentSlide).find('.friend-list li');
-                    if(li.length < 1){
-                        if(!confirm("Are you sure you don't want to add any names?")){
+                switch( currentSlide.id ){
+                    case 'family':
+                    case 'calling':
+                    case 'texting':
+                    case 'facebook':
+                    case 'face2face':
+                    case 'other':
+                        var li = $( currentSlide ).find('.friend-list li');
+                        if( li.length < 1 ){
+                            if( !confirm("Are you sure you don't want to add any names?") ){
+                                return;
+                            }
+                        }
+                        else{
+                            addNames( li );
+                        }
+                        break;
+                    case 'closeness':
+                        if ( !strength.validate() ) { 
+                            error('STRENGTH');
                             return;
+                            }
+                        else {
+                            var vals = strength.values();
+                            var friends = Friendly.friends;
+                            $(vals).each(function(i, obj){
+                                friends[i].strength = obj[0];
+                                friends[i].strengthLength = obj[1];
+                            });
+                            Friendly.friends = friends;
                         }
-                    }
-                    else{
-                        addNames(li);
-                    }
+                        break;
+                    case 'merge':
+                        finalMerge();
+                        break;
+                    default:
+                        break;
                 }
-                
-                //Validate strength values
-                if (currentSlide.dataset.category == 'closeness') {
-                    if (!strength.validate()) { 
-                        error('STRENGTH');
-                        return;
-                        }
-                    else {
-                        var vals = strength.values();
-                        var friends = Friendly.friends;
-                        $(vals).each(function(i, obj){
-                            friends[i].strength = obj[0];
-                            friends[i].strengthLength = obj[1];
-                        });
-                        Friendly.friends = friends;
-                    }
-                }
-                
+
                 saveApp();
                 Reveal.next();
             });
@@ -488,7 +497,7 @@
 			//Debug code for dumping log at the end
 			
 			Reveal.addEventListener('end', function( event ){
-			    console.log(JSON.stringify(JSON.parse(window.localStorage.getItem("Friendly-1")), undefined, 2));
+			    console.log(JSON.stringify(getApp()), undefined, 2);
 			    FB.logout();
 			});
 			
@@ -601,8 +610,7 @@
                   $("#error").fadeOut('slow'); 
                   clearInterval(fade); }, 2000);
             }
-            
-            
+                   
             function selectForMerge(e){
                 $(e).children().toggleClass('selected');
             }
@@ -611,30 +619,41 @@
                 var selected = $('.selected');
                 var m = $('#merged');
                 if (selected.length > 1) {
+                                  
                     var mList = [];
+                    
                     $(selected).each(function (i, obj) {
                         var data = $(obj).data();
-                        var name = $(obj).text();
-                        data.name = name;
-                        mList.push(data);
+                        if ( data.hasOwnProperty('merged')) {
+                            $(data.merged).each(function(i,d){
+                                mList.push(d);
+                            });
+                        }
+                        else{
+                            var name = $(obj).text();
+                            data.name = name;
+                            mList.push(data);
+                        }
                     });
-                    var newLi = $('<li></li>');
+                    
+                    var newLi = $('<li></li>').attr('onclick', 'selectForMerge(this)');
                     var name = $(selected[0]).text();
                     var newSpan = $('<span></span>').text(name);
-                    var merged = {
-                        merged: mList
-                    };
-                    $(newSpan).data('merged', merged);
-                    newSpan.on('dblclick', merged, split);
+                    $(newSpan).data('merged', mList);
+                    $(newSpan).on('dblclick', split);
                     newLi.append(newSpan);
                     m.append(newLi);
                     $(selected).parent().remove();
                 }
+                else {
+                    return;
+                }
                 m.tsort();
             }
-            
+
             function split(event) {
-                var merged = event.data.merged;
+                var element = event.toElement;
+                var merged = $(element).data('merged');
                 $(merged).each(function (i, obj) {
                     var friendNumber = obj.friendNumber;
                     var name = obj.name;
@@ -656,7 +675,7 @@
                 $('.merge-list').tsort();
             }
             
-            </script>
+        </script>
         
 	</body>
 </html>

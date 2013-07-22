@@ -58,6 +58,12 @@ var Friendly = {
                                     'These are all the relationships who make up your island. Please rate how emotionally close you are with each one by moving their name into the circle to determine how much land they each get.',
                                     'You can rate them from NOT AT ALL CLOSE (perimeter) to EXTREMEMELY CLOSE (center).'
                                 ]
+                    },
+                    'friendsOfFriend': {
+                        'show': true,
+                        'help': [
+                                    'Next, put your friends who know each other together in the same place on the island. For each friend bring the people they know to the same side of the island by clicking on their circle. If you make a mistake you can click again to return them to the other side of the island.'
+                                ]
                     }
                 }
             },
@@ -80,7 +86,32 @@ var Friendly = {
     
 }
 
-    
+//Merge friends for good
+function finalMerge(){
+    var merged = [];
+    var friend_list = $('.merge-list li');
+    $(friend_list).each(function( i, li ){
+        var span = $(li).children();
+        var data = $(span).data();
+        if ( data.hasOwnProperty('merged') ) {
+            var mainFriend = $(Friendly.friends).filter(function( i ) {
+                return this.friendNumber == data.merged[0].friendNumber;
+            })[0];
+            
+            $(data.merged).each(function(i,obj){
+                if ( obj.friendNumber != mainFriend.friendNumber ){
+                    mainFriend.category.push(obj.catId);
+                    $(Friendly.friends).each(function(a,b){
+                        if (b.friendNumber == obj.friendNumber) {
+                            Friendly.friends.splice(a,1);
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
 //Add names from friend-list to application object
 function addNames(li){
     $(li).each(function(i,obj){
