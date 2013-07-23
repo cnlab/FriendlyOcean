@@ -241,6 +241,24 @@
                 <!--Leave this space empty. It is where the svg canvas is inserted when strength.js is initiated-->
                 </section>
                 
+                <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help">
+                    <div class="container">
+                        <table id="lastSeenTable" class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Within the last week</th>
+                                    <th>More than a week ago but within the last month</th>
+                                    <th>More than a month ago but within the last year</th>
+                                    <th>More than a year ago</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
                 <section data-state="end">
                     <div class="page-header"> 
                         <h2>End so far...</h2>
@@ -279,8 +297,12 @@
     	<script src="assets/friendly/friendly.js"></script>
     	<script src="assets/js/strength.js"></script>
     	<script src="assets/js/d3.v2.js"></script>
-
+    	<script src="assets/js/jquery.dataTables.min.js"></script>
+    	
 		<script type="text/javascript">
+		
+            //Global variable used in lastSeen section
+            var lst;
             
             $('#help').on('hidden', function(){
                 $(Reveal.getCurrentSlide()).find('input').focus();
@@ -388,6 +410,7 @@
                             'id':id,
                             'data-hash':hash
                         });
+                        
                     $(span).on("click", function(){
                         $(this).parent().remove();
                         
@@ -450,6 +473,14 @@
                     case 'merge':
                         finalMerge();
                         break;
+                    case 'lastSeen':
+                        if ( !validateLastSeen() ) {
+                            return;
+                        }
+                        else {
+                            getLastSeen();
+                        }
+                        break;                       
                     default:
                         break;
                 }
@@ -494,14 +525,59 @@
 				]
 			});
 			
-			//Debug code for dumping log at the end
+			//Debug code
 			
 			Reveal.addEventListener('end', function( event ){
 			    console.log(JSON.stringify(getApp()), undefined, 2);
 			    FB.logout();
 			});
 			
+			function generateNames(number){
+			    //Add names to a category list. number denotes how many names to each list
+			    var names = ["Werner", "Humberto", "Marni", "Ruth", "Ashly", "Evelin", "Deloris", "Mignon", "Sophie", "Suk", "Isidra", "Fredia", "Yun", "Dee", "Bart", "Shantelle", "Elvin", "Carissa", "Pa", "Vito", "Dorothy", "Carri", "Roy", "Maritza", "Leida", "Ulysses", "Antonetta", "Crysta", "Catherine", "Jeromy", "Keith", "Houston", "Lu", "Joane", "Minna", "Megan", "Emelina", "Mandie", "Steven", "Martin", "Rutha", "Reid", "Suzy", "Maurine", "Evelia", "Azalee", "Letitia", "Kary", "Ryann", "Liliana", "Laree", "Izola", "Tennille", "Belia", "Josette", "Korey", "Jefferson", "Celena", "Sharri", "Argelia", "Elyse", "Eleanor", "Georgette", "Yoko", "Nicki", "Felica", "Librada", "Terrie", "Sacha", "Stefany", "Vanetta", "Afton", "Alida", "Justa", "Earline", "Melvin", "Alberto", "Curtis", "Monika", "Julianne", "Clarita", "Clemmie", "Brigette", "Adria", "Kaycee", "Johnie", "Reginia", "Marybelle", "Lawanna", "Jacquelyne", "Yuki", "Pandora", "Shery", "Ronald", "Traci", "Tatyana", "Kristen", "Noelle", "Kimberlee", "Hyo"];
+			    var c = 0;
+			    var d = 0;
+			    $('.friend-list').each(function(i,obj){
+                    var cat = $(this).parent().data('category');
+			        while(d < number){
+                        var li = $("<li></li>").text(names[c]);
+                        var span = $("<span class='delete' data-category='{cat}'></span>".supplant({'cat':cat}));
+                        $(span).on("click", function(){
+                            $(this).parent().remove();
+                        });
+                        $(li).prepend(span);
+                        $(this).append(li);
+                        c++;
+                        d++;
+			        }
+			        $(this).tsort();
+			        d = 0;
+			    });
+			}
+			
 			//End debug code
+
+			Reveal.addEventListener('lastSeen', function( event ) {
+			    //Build lastSeen table
+			    buildLastSeen();
+			    
+			    //Run DataTable.js on lastSeen table for pagination, if needed
+			    if ( Friendly.friends.length > 20 ) {
+			        lst = $('#lastSeenTable').dataTable( {
+                        "bInfo":false,
+                        "bDestroy":true,
+                        "iDisplayLength": 20,
+                        "sPaginationType":"scrolling",
+                        "bSort":false,
+                        'bFilter':false,
+                        "bLengthChange":false,
+                    });
+			    }
+			    
+			    //Style pagination buttons because DataTables hates JP
+			    $('.paging-div button').addClass("btn btn-primary");
+			    
+			});
 			
 			Reveal.addEventListener('merge', function( event ) {
                 var slide = $('#merge .row')[1];
@@ -566,12 +642,13 @@
             Reveal.addEventListener( 'slidechanged', function( event ) {
                 
                 //Update application position
-                updateIndex(); 
+                updateIndex();
+                
                 $(Reveal.getCurrentSlide()).find('input').focus();
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
                 if(category){
-                    $('#help #modal-label').text("Instructions - {category}".supplant({'category': category.capitalize()}));
+                    $('#help #modal-label').text("Instructions - {category}".supplant({'category': Friendly.config.categories[category].title}));
                     var mb = $('#help').find('.modal-body');
                     $(mb).children().remove();
                     var helpList = Friendly.config.categories[category].help;
@@ -599,17 +676,22 @@
               var mess;
               if (type=='STRENGTH') {
                 mess="Please bring all of your friends into the circle";
-              } else if (type=='FOF') {
+              } 
+              else if (type=='FOF') {
                 mess="FOF ERROR";
-              } else if (type=='NAMES') {
+              }
+              else if (type=='NAMES') {
                 mess="Are you sure you don't want to enter any names?";
               }
+              else if (type=='LASTSEEN') {
+                mess="Please select missing values.";
+               } 
               $('#error').text(mess);
               $('#error').fadeIn('fast');
               var fade = setInterval(function() { 
                   $("#error").fadeOut('slow'); 
                   clearInterval(fade); }, 2000);
-            }
+                }
                    
             function selectForMerge(e){
                 $(e).children().toggleClass('selected');
@@ -675,7 +757,132 @@
                 $('.merge-list').tsort();
             }
             
-        </script>
+            //Settings for DataTables custom pagination
+            /* Time between each scrolling frame */
+            $.fn.dataTableExt.oPagination.iTweenTime = 100;
+            
+            $.fn.dataTableExt.oPagination.scrolling = {
+                "fnInit": function ( oSettings, nPaging, fnCallbackDraw )
+                {
+                    /* Store the next and previous elements in the oSettings object as they can be very
+                     * usful for automation - particularly testing
+                     */
+                    var nPrevious = document.createElement( 'button' );
+                    var nNext = document.createElement( 'button' );
+        
+                    if ( oSettings.sTableId !== '' )
+                    {
+                        nPaging.setAttribute( 'id', oSettings.sTableId+'_paginate' );
+                        nPrevious.setAttribute( 'id', oSettings.sTableId+'_previous' );
+                        nNext.setAttribute( 'id', oSettings.sTableId+'_next' );
+                    }
+                    
+                    nPaging.setAttribute( 'class', 'paging-div' );
+                    nPrevious.setAttribute( 'class', 'paginate_disabled_previous' );
+                    nNext.setAttribute( 'class', 'paginate_disabled_next' );
+        
+                    nPrevious.title = oSettings.oLanguage.oPaginate.sPrevious;
+                    nNext.title = oSettings.oLanguage.oPaginate.sNext;
+
+                    nPrevious.textContent = oSettings.oLanguage.oPaginate.sPrevious;
+                    nNext.textContent = oSettings.oLanguage.oPaginate.sNext;
+                    
+                    nPaging.appendChild( nPrevious );
+                    nPaging.appendChild( nNext );
+        
+                    $(nPrevious).click( function() {
+                        /* Disallow paging event during a current paging event */
+                        if ( typeof oSettings.iPagingLoopStart != 'undefined' && oSettings.iPagingLoopStart != -1 )
+                        {
+                            return;
+                        }
+            
+                        oSettings.iPagingLoopStart = oSettings._iDisplayStart;
+                        oSettings.iPagingEnd = oSettings._iDisplayStart - oSettings._iDisplayLength;
+            
+                        /* Correct for underrun */
+                        if ( oSettings.iPagingEnd < 0 )
+                        {
+                          oSettings.iPagingEnd = 0;
+                        }
+            
+                        var iTween = $.fn.dataTableExt.oPagination.iTweenTime;
+                        var innerLoop = function () {
+                            if ( oSettings.iPagingLoopStart > oSettings.iPagingEnd ) {
+                                oSettings.iPagingLoopStart--;
+                                oSettings._iDisplayStart = oSettings.iPagingLoopStart;
+                                fnCallbackDraw( oSettings );
+                                setTimeout( function() { innerLoop(); }, iTween );
+                            } else {
+                                oSettings.iPagingLoopStart = -1;
+                            }
+                        };
+                        innerLoop();
+                    } );
+        
+                    $(nNext).click( function() {
+                        /* Disallow paging event during a current paging event */
+                        if ( typeof oSettings.iPagingLoopStart != 'undefined' && oSettings.iPagingLoopStart != -1 )
+                        {
+                            return;
+                        }
+                        else if ( !validateLastSeen() )
+                        {
+                            return;
+                        }
+            
+                        oSettings.iPagingLoopStart = oSettings._iDisplayStart;
+            
+                        /* Make sure we are not over running the display array */
+                        if ( oSettings._iDisplayStart + oSettings._iDisplayLength < oSettings.fnRecordsDisplay() )
+                        {
+                            oSettings.iPagingEnd = oSettings._iDisplayStart + oSettings._iDisplayLength;
+                        }
+            
+                        var iTween = $.fn.dataTableExt.oPagination.iTweenTime;
+                        var innerLoop = function () {
+                            if ( oSettings.iPagingLoopStart < oSettings.iPagingEnd ) {
+                                oSettings.iPagingLoopStart++;
+                                oSettings._iDisplayStart = oSettings.iPagingLoopStart;
+                                fnCallbackDraw( oSettings );
+                                setTimeout( function() { innerLoop(); }, iTween );
+                            } else {
+                                oSettings.iPagingLoopStart = -1;
+                            }
+                        };
+                        innerLoop();
+                    } );
+        
+                    /* Take the brutal approach to cancelling text selection */
+                    $(nPrevious).bind( 'selectstart', function () { return false; } );
+                    $(nNext).bind( 'selectstart', function () { return false; } );
+                },
+    
+                "fnUpdate": function ( oSettings, fnCallbackDraw )
+                {
+                    if ( !oSettings.aanFeatures.p )
+                    {
+                        return;
+                    }
+        
+                    /* Loop over each instance of the pager */
+                    var an = oSettings.aanFeatures.p;
+                    for ( var i=0, iLen=an.length ; i<iLen ; i++ )
+                    {
+                        if ( an[i].childNodes.length !== 0 )
+                        {
+                            an[i].childNodes[0].className = 
+                                ( oSettings._iDisplayStart === 0 ) ? 
+                                oSettings.oClasses.sPagePrevDisabled : oSettings.oClasses.sPagePrevEnabled;
+                
+                            an[i].childNodes[1].className = 
+                                ( oSettings.fnDisplayEnd() == oSettings.fnRecordsDisplay() ) ? 
+                                oSettings.oClasses.sPageNextDisabled : oSettings.oClasses.sPageNextEnabled;
+                        }
+                    }
+                }
+            }
+            </script>
         
 	</body>
 </html>

@@ -4,12 +4,14 @@ var Friendly = {
                 appID : 1,
                 categories: {
                     'family': {
+                        'title': 'Family',
                         'show': true,
                         'help': [
                                     'Please enter the names (using initials if necessary) of your family members who you know personally and would like to continue to have a personal relationship with.'
                                 ]
                     },
                     'calling': {
+                        'title': 'Calling',
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the voice call log.',
@@ -17,6 +19,7 @@ var Friendly = {
                                 ]
                     },
                     'texting': {
+                        'title': 'Texting',
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the texting (SMS) log.',
@@ -24,6 +27,7 @@ var Friendly = {
                                 ]
                     },
                     'facebook': {
+                        'title': 'Facebook',
                         'show': true,
                         'help': [
                                     'If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you\'ve interacted with in the last week.',
@@ -31,12 +35,14 @@ var Friendly = {
                                 ]
                     },
                     'face2face': {
+                        'title': 'Face to Face',
                         'show': true,
                         'help': [
                                     'Enter the first names and last initial (or nicknames) of everyone you know personally who you have seen FACE-TO-FACE IN THE LAST WEEK who is missing from your current list of islanders.'
                                 ]
                     },
                     'other': {
+                        'title': 'Anyone else?',
                         'show': true,
                         'help': [
                                     'Now look at the list of names one last time to see if there anyone who would not want to forget to bring.',
@@ -44,6 +50,7 @@ var Friendly = {
                                 ]
                     },
                     'merge': {
+                        'title': 'Merge',
                         'show': true,
                         'help': [
                                     'Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count.',
@@ -53,13 +60,23 @@ var Friendly = {
                                 ]
                     },
                     'closeness': {
+                        'title': 'Closeness',
                         'show': true,
                         'help': [
                                     'These are all the relationships who make up your island. Please rate how emotionally close you are with each one by moving their name into the circle to determine how much land they each get.',
                                     'You can rate them from NOT AT ALL CLOSE (perimeter) to EXTREMEMELY CLOSE (center).'
                                 ]
                     },
-                    'friendsOfFriend': {
+                    'lastSeen': {
+                        'title': 'Last Seen',
+                        'show': true,
+                        'help': [
+                                    'Okay, you have now brought over the first four boats of contacts to your island. These are the family members you know and the friends you\'ve interacted with in the past week.',
+                                    'Before moving on to the next boat, please indicate the last time you saw each of them face-to-face.'
+                                ]
+                    },
+                    'friendOfFriend': {
+                        'title': 'Friends of Friends',
                         'show': true,
                         'help': [
                                     'Next, put your friends who know each other together in the same place on the island. For each friend bring the people they know to the same side of the island by clicking on their circle. If you make a mistake you can click again to return them to the other side of the island.'
@@ -70,7 +87,7 @@ var Friendly = {
 	
 	//Island name
 	islandName: null,
-	
+
 	//Max number of people for each category
 	maxFriendsPerCategory: 20,
   
@@ -84,6 +101,65 @@ var Friendly = {
     
     links: []
     
+}
+
+//Get and set values from Last See Table
+function getLastSeen() {
+    var inputs = lst.$('input:checked');
+    $(inputs).each(function( i, obj ) {
+        var value = $(obj).val();
+        var fnum = obj.name.split("_")[1];
+        var friend = jQuery.grep(Friendly.friends, function ( f ) {
+            return f.friendNumber == fnum;
+        })[0];
+        
+        friend.lastSeen = value;
+    });
+}
+
+//Validate Last Seen Table
+function validateLastSeen() {
+  
+  //Get all rows via DataTables api
+  var rows = $("#lastSeenTable tbody tr");
+  
+  var missingCnt=0;
+  
+  $(rows).each(function( i, obj ) {
+    var inputs = $(obj).find('input');
+    var isSelected = inputs[0].checked || inputs[1].checked || inputs[2].checked || inputs[3].checked;
+    
+    if (isSelected) {
+      $(obj).removeClass('error');
+    } 
+    else {
+      $(obj).addClass('error');
+      missingCnt++;
+    }
+  });
+
+  if (missingCnt==0) {
+    return true;
+  } 
+  else {
+    error("LASTSEEN");
+    return false;
+  }
+}
+
+//Build lastSeen table
+function buildLastSeen() {
+    var table = $('#lastSeenTable');
+    var friends = Friendly.friends.sort(function( a, b ){
+        var aName = a.name.toLowerCase();
+        var bName = b.name.toLowerCase(); 
+        return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+    });
+    
+    $(friends).each(function( i, obj ) {
+        var tr = $('<tr data-fid="{fnum}"><td>{name}</td><td><input value="week" name="seen_{fnum}" type="radio" /></td><td><input value="month" name="seen_{fnum}" type="radio" /></td><td><input value="year" name="seen_{fnum}" type="radio" /></td><td><input value="overayear" name="seen_{fnum}" type="radio" /></td>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
+        $(table).append(tr);
+    });
 }
 
 //Merge friends for good

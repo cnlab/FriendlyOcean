@@ -61,8 +61,7 @@ body {
 
 .reveal a:not(.image):hover {
   color: #0000f1;
-  text-shadow: none;
-  border: none; }
+  text-shadow: none; }
 
 .reveal .roll span:after {
   color: #fff;
