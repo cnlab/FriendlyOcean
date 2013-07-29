@@ -546,8 +546,8 @@
 			
 			//End debug code
 
-            Reveal.addEventListener('friendOfFriendaa', function( event ) {
-                var slide = Reveal.getCurrentSlide();
+            Reveal.addEventListener('friendOfFriend', function( event ) {
+                var slide = $('#friendOfFriend');
                 var row = $(slide).find('.row')[0];
                 
                 //Build friend lists on slide
@@ -693,7 +693,7 @@
                   clearInterval(fade); }, 2000);
                 }
                    
-            function selectForMerge(e){
+            function select(e){
                 $(e).children().toggleClass('selected');
             }
             
@@ -718,7 +718,7 @@
                         }
                     });
                     
-                    var newLi = $('<li></li>').attr('onclick', 'selectForMerge(this)');
+                    var newLi = $('<li></li>').attr('onclick', 'select(this)');
                     var name = $(selected[0]).text();
                     var newSpan = $('<span></span>').text(name);
                     $(newSpan).data('merged', mList);
@@ -742,7 +742,7 @@
                     var hash = obj.hash;
                     var catId = obj.catId;
                     var homeList = $("#{cat}-list".supplant({'cat':catId.split('_')[0]}));
-                    var li = $('<li></li>').attr('onclick', 'selectForMerge(this)');
+                    var li = $('<li></li>').attr('onclick', 'select(this)');
                     var span = $('<span></span>').data({
                                     friendNumber: friendNumber,
                                     catId: catId,
@@ -772,12 +772,13 @@
 			        var members = jQuery.grep(Friendly.friends, function (friend) {
     			                        return friend.category[0].search(cat) != -1;
                                     });
+                                    
 			        $(members).each(function(i,obj){
 			            var name = obj.name;
 			            var friendNumber = obj.friendNumber;
 			            var catId = obj.category[0];
 			            var hash = obj.hash;
-			            var li = $("<li></li>").attr('onclick', 'selectForMerge(this)');
+			            var li = $("<li></li>").attr('onclick', 'select(this)');
 			            var span = $("<span></span>").data({
 			                            friendNumber: friendNumber,
 			                            catId: catId,
