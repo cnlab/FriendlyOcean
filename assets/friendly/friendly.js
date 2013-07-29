@@ -105,7 +105,7 @@ var Friendly = {
 
 //Get and set values from Last See Table
 function getLastSeen() {
-    var inputs = lst.$('input:checked');
+    var inputs = lst ? lst.$('input:checked') : $('input:checked');
     $(inputs).each(function( i, obj ) {
         var value = $(obj).val();
         var fnum = obj.name.split("_")[1];
