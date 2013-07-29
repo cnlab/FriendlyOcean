@@ -213,7 +213,7 @@
                             <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
                         </div>
                     <div class="container">
-                        <div class="row">
+                        <div class="row lists-row">
                             <!--Leave this space empty. Lists are dynamically generated.-->
                         </div>
                     </div>
@@ -243,15 +243,13 @@
                 
                 <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help">
                     <div class="page-header">
-                        <h2>Who knows <span id="currentFOF"></span>? <button class="btn btn-primary">Next <i class="icon-forward icon-white"></i></button></h2>
+                        <h2>Who knows <span id="currentFOF"></span>? <button class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
                     </div>
                     <div class="container">
-                        <div class="row">
+                        <div class="row lists-row">
                         <!--Leave this space empty. Lists are dynamically generated.-->
                         </div>
                     </div>
-                    <ul class="friend-list">
-                    </ul>
                 </section>
                 
                 <section data-state="end">
@@ -548,7 +546,7 @@
 			
 			//End debug code
 
-            Reveal.addEventListener('friendOfFriend', function( event ) {
+            Reveal.addEventListener('friendOfFriendaa', function( event ) {
                 var slide = Reveal.getCurrentSlide();
                 var row = $(slide).find('.row')[0];
                 
@@ -582,7 +580,7 @@
 
                 var firstFriend=fof.init(friends.jplist);
                 fof.initLinks(fblinks);
-            }
+            });
             
 			Reveal.addEventListener('lastSeen', function( event ) {
 			    //Build lastSeen table
@@ -607,10 +605,11 @@
 			});
 			
 			Reveal.addEventListener('merge', function( event ) {
-                var slide = Reveal.getCurrentSlide();
+                
+                var slide = $('#merge');
                 var row = $(slide).find('.row')[0];
-                /
-                /Build friend lists
+                
+                //Build friend lists
                 createFriendLists(row);
 			    
 			    //Create list for merged names
@@ -765,7 +764,7 @@
 			    //Create list for each category
 			    $(cats).each(function(i,obj){
 			        var cat = $(obj).data('category');
-			        var div = $("<div class='span2 merge-div'></div>");
+			        var div = $("<div class='merge-div'></div>");
 			        var p = $("<p></p>").text(cat.capitalize());
 			        var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
 			        

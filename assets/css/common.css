@@ -38,10 +38,21 @@
     text-align: center;
 }
 
+.lists-row {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 1px;
+}
+
 .merge-div {
     font-size: 24px;
     border: 1px solid black;
-    float: left;
+    text-align: left;
+    display: inline-block;
+    margin: auto 15px;
+    padding: 0px 10px 0px 10px;
+    vertical-align: top;
 }
 
 .merge-list {
