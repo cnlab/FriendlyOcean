@@ -112,7 +112,7 @@
                         <p>
                             <span class="inline-help">Name your island </span>
                             <input class="input-large" name="island-name" type="text"/>
-                            <span class="inline-help"> and press enter.</span>
+                            <span class="inline-help"> and click the next arrow.</span>
                         </p>
                     </div>                
                 </section>
