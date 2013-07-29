@@ -241,6 +241,14 @@
                     </div>
                 </section>
                 
+                <section id="friendOfFriend'" data-category="friendOfFriend'" data-show="help">
+                    <div class="page-header">
+                        <h2>Who knows <span id="currentFOF"></span>?</h2>
+                    </div>
+                    <ul class="friend-list">
+                    </ul>
+                </section>
+                
                 <section data-state="end">
                     <div class="page-header"> 
                         <h2>End so far...</h2>
