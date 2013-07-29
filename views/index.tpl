@@ -241,9 +241,9 @@
                     </div>
                 </section>
                 
-                <section id="friendOfFriend" data-category="friendOfFriend'" data-show="help">
+                <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help">
                     <div class="page-header">
-                        <h2>Who knows <span id="currentFOF"></span>?</h2>
+                        <h2>Who knows <span id="currentFOF"></span>? <button class="btn btn-primary">Next <i class="icon-forward icon-white"></i></button></h2>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -543,6 +543,39 @@
 			
 			//End debug code
 
+            Reveal.addEventListener('friendOfFriend', function( event ) {
+                
+                //Build friend lists
+                createFriendLists();
+                
+                  var friend_list = [];
+                  for (var f=0; f<friends.jplist.length; f++) {
+                    var fname = friends.jplist[f].name;
+                    var fid = friends.jplist[f].id;
+                    friend_list.push([fname, fid]);
+                  }
+  
+                    var FBid2Fid = {};
+                    $(friends.jplist).each(function(i, obj){
+                        var fid = obj.id;
+                        $(obj.categories).each(function(i,cat){
+                            var catSplit = cat.split("_");
+                            if (catSplit[0] == "FB"){
+                                FBid2Fid[cat] = fid;
+                            }
+                        });
+                    });
+
+                  var fblinks=[];			
+                  for (var link in fbfriends.fb_fof) {
+                    var source = FBid2Fid[fbfriends.fb_fof[link][0]];
+                    var target = FBid2Fid[fbfriends.fb_fof[link][1]];
+                    fblinks.push([source,target]);
+                  }
+
+                  var firstFriend=fof.init(friends.jplist);
+                  fof.initLinks(fblinks);
+            }
 			Reveal.addEventListener('lastSeen', function( event ) {
 			    //Build lastSeen table
 			    buildLastSeen();
@@ -566,40 +599,9 @@
 			});
 			
 			Reveal.addEventListener('merge', function( event ) {
-                var slide = $('#merge .row')[1];
-			    var cats = $('.category');
-			    
-			    //Create list for each category
-			    $(cats).each(function(i,obj){
-			        var cat = $(obj).data('category');
-			        var div = $("<div class='span2 merge-div'></div>");
-			        var p = $("<p></p>").text(cat.capitalize());
-			        var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
-			        
-			        //Get all members of a category
-			        var members = jQuery.grep(Friendly.friends, function (friend) {
-    			                        return friend.category[0].search(cat) != -1;
-                                    });
-			        $(members).each(function(i,obj){
-			            var name = obj.name;
-			            var friendNumber = obj.friendNumber;
-			            var catId = obj.category[0];
-			            var hash = obj.hash;
-			            var li = $("<li></li>").attr('onclick', 'selectForMerge(this)');
-			            var span = $("<span></span>").data({
-			                            friendNumber: friendNumber,
-			                            catId: catId,
-			                            hash: hash
-			                        })
-			                        .text(name);
-			            $(li).append(span);
-			            $(ul).append(li);
-			        });
-			        
-			        $(div).append(p);
-			        $(div).append(ul).tsort();
-			        $(slide).append(div);
-			    });
+                
+                //Build friend lists
+                createFriendLists();
 			    
 			    //Create list for merged names
 			    var div = $("<div class='span2 merge-div'></div>");
@@ -744,6 +746,43 @@
                 });
                 $(event.target).parent().remove();
                 $('.merge-list').tsort();
+            }
+            
+            function createFriendLists() {
+                var slide = $('#merge .row')[1];
+			    var cats = $('.category');
+			    
+			    //Create list for each category
+			    $(cats).each(function(i,obj){
+			        var cat = $(obj).data('category');
+			        var div = $("<div class='span2 merge-div'></div>");
+			        var p = $("<p></p>").text(cat.capitalize());
+			        var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
+			        
+			        //Get all members of a category
+			        var members = jQuery.grep(Friendly.friends, function (friend) {
+    			                        return friend.category[0].search(cat) != -1;
+                                    });
+			        $(members).each(function(i,obj){
+			            var name = obj.name;
+			            var friendNumber = obj.friendNumber;
+			            var catId = obj.category[0];
+			            var hash = obj.hash;
+			            var li = $("<li></li>").attr('onclick', 'selectForMerge(this)');
+			            var span = $("<span></span>").data({
+			                            friendNumber: friendNumber,
+			                            catId: catId,
+			                            hash: hash
+			                        })
+			                        .text(name);
+			            $(li).append(span);
+			            $(ul).append(li);
+			        });
+			        
+			        $(div).append(p);
+			        $(div).append(ul).tsort();
+			        $(slide).append(div);
+			    });
             }
             
             //Settings for DataTables custom pagination
