@@ -208,24 +208,6 @@
                     </ul>
                 </section>
                 
-<!-- 
-                <section id="face2face" data-category="face2face" data-show="help" class="category add-names">
-                    <div class="page-header">
-                        <h2>Face to Face - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
-                    </div>
-                    <ul class="friend-list">
-                    </ul>
-                </section>
-                
-                <section id="other" data-category="other" data-show="help" class="category add-names">
-                    <div class="page-header">
-                        <h2>Anyone else? - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
-                    </div>
-                    <ul class="friend-list">
-                    </ul>
-                </section>
- -->
-                
                 <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge">
                     <div class="container">
                         <div class="row">
