@@ -241,7 +241,7 @@
                     </div>
                 </section>
                 
-                <section id="friendOfFriend'" data-category="friendOfFriend'" data-show="help">
+                <section id="friendOfFriend" data-category="friendOfFriend'" data-show="help">
                     <div class="page-header">
                         <h2>Who knows <span id="currentFOF"></span>?</h2>
                     </div>
