@@ -421,6 +421,17 @@
                 var currentSlide = Reveal.getCurrentSlide();
                 
                 switch( currentSlide.id ){
+                    case 'objective':
+                        if ( $('input[name="island-name"]').val().trim().length > 0 ) {
+                            var islandName = $('input[name="island-name"]').val().trim();
+                            $('.islandName').text(islandName);
+                            Friendly.islandName = islandName;
+                        }
+                        else {
+                            error("ISLANDNAME");
+                            return;
+                        }
+                        break;
                     case 'family':
                     case 'calling':
                     case 'texting':
@@ -469,21 +480,6 @@
 
                 saveApp();
                 Reveal.next();
-            });
-                        
-            $('input[name="island-name"]').keypress(function(event){
-                var value = $(this).val().trim()
-                if(event.which == 13 && value.length > 0){
-                    $('.islandName').text($('input[name="island-name"]').val());
-                    var row = $(Reveal.getCurrentSlide()).children('.row')[1];
-                    var islandName = $('input[name="island-name"]').val();
-                    $(row).html("<h3>Welcome to " + islandName + "!</h3>");                     
-                    Friendly.islandName = islandName;
-                    saveApp();                     
-                }
-                else if(event.which == 13 && value.length < 1){
-                    $(this).val("");
-                }
             });
 
             // Full list of configuration options available here:
@@ -544,11 +540,11 @@
 			    buildLastSeen();
 			    
 			    //Run DataTable.js on lastSeen table for pagination, if needed
-			    if ( Friendly.friends.length > 20 ) {
+			    if ( Friendly.friends.length > 10 ) {
 			        lst = $('#lastSeenTable').dataTable( {
                         "bInfo":false,
                         "bDestroy":true,
-                        "iDisplayLength": 20,
+                        "iDisplayLength": 10,
                         "sPaginationType":"scrolling",
                         "bSort":false,
                         'bFilter':false,
@@ -661,6 +657,9 @@
               } 
               else if (type=='FOF') {
                 mess="FOF ERROR";
+              }
+              else if (type=='ISLANDNAME') {
+                mess="Please enter a name.";
               }
               else if (type=='NAMES') {
                 mess="Are you sure you don't want to enter any names?";
