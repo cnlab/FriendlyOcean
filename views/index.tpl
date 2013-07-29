@@ -423,7 +423,7 @@
                     $(ul).append(li);
                 });
                 
-                $(ul).tsort();
+                $(ul).children('li').tsort();
             }
             
             $('.friend-input').keypress(friendInputHandler);
@@ -539,7 +539,7 @@
                         c++;
                         d++;
 			        }
-			        $(this).tsort();
+			        $(this).children('li').tsort();
 			        d = 0;
 			    });
 			}
@@ -613,7 +613,7 @@
                 createFriendLists(row);
 			    
 			    //Create list for merged names
-			    var div = $("<div class='span2 merge-div'></div>");
+			    var div = $("<div class='merge-div'></div>");
 			    var p = $("<p></p>").text("Merged");
 			    var ul = $("<ul id='merged' class='merge-list'></ul>");
 			    $(div).append(p);
@@ -730,7 +730,7 @@
                 else {
                     return;
                 }
-                m.tsort();
+                $(m).children('li').tsort();
             }
 
             function split(event) {
@@ -754,7 +754,7 @@
                     homeList.append(li);
                 });
                 $(event.target).parent().remove();
-                $('.merge-list').tsort();
+                $('.merge-list li').tsort();
             }
             
             function createFriendLists(targetElement) {
@@ -790,7 +790,7 @@
 			        });
 			        
 			        $(div).append(p);
-			        $(div).append(ul).tsort();
+			        $(div).append(ul).children('li').tsort();
 			        $(targetElement).append(div);
 			    });
             }
