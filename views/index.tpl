@@ -209,10 +209,10 @@
                 </section>
                 
                 <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge">
-                    <div class="container">
-                        <div class="row">
+                        <div class="page-header">
                             <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
                         </div>
+                    <div class="container">
                         <div class="row">
                             <!--Leave this space empty. Lists are dynamically generated.-->
                         </div>
@@ -244,6 +244,11 @@
                 <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help">
                     <div class="page-header">
                         <h2>Who knows <span id="currentFOF"></span>? <button class="btn btn-primary">Next <i class="icon-forward icon-white"></i></button></h2>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                        <!--Leave this space empty. Lists are dynamically generated.-->
+                        </div>
                     </div>
                     <ul class="friend-list">
                     </ul>
@@ -285,7 +290,7 @@
 		<script src="assets/js/bootstrap.min.js"></script>
     	<script src="assets/js/reveal.js"></script>
     	<script src="assets/friendly/friendly.js"></script>
-    	<script src="assets/js/strength.js"></script>
+    	<script src="assets/friendly/strength.js"></script>
     	<script src="assets/js/d3.v2.js"></script>
     	<script src="assets/js/jquery.dataTables.min.js"></script>
     	
@@ -544,38 +549,41 @@
 			//End debug code
 
             Reveal.addEventListener('friendOfFriend', function( event ) {
+                var slide = Reveal.getCurrentSlide();
+                var row = $(slide).find('.row')[0];
                 
-                //Build friend lists
-                createFriendLists();
+                //Build friend lists on slide
+                createFriendLists(row);
                 
-                  var friend_list = [];
-                  for (var f=0; f<friends.jplist.length; f++) {
+                var friend_list = [];
+                for (var f=0; f<friends.jplist.length; f++) {
                     var fname = friends.jplist[f].name;
                     var fid = friends.jplist[f].id;
                     friend_list.push([fname, fid]);
-                  }
-  
-                    var FBid2Fid = {};
-                    $(friends.jplist).each(function(i, obj){
-                        var fid = obj.id;
-                        $(obj.categories).each(function(i,cat){
-                            var catSplit = cat.split("_");
-                            if (catSplit[0] == "FB"){
-                                FBid2Fid[cat] = fid;
-                            }
-                        });
-                    });
+                }
 
-                  var fblinks=[];			
-                  for (var link in fbfriends.fb_fof) {
+                var FBid2Fid = {};
+                $(friends.jplist).each(function(i, obj){
+                    var fid = obj.id;
+                    $(obj.categories).each(function(i,cat){
+                        var catSplit = cat.split("_");
+                        if (catSplit[0] == "FB"){
+                            FBid2Fid[cat] = fid;
+                        }
+                    });
+                });
+
+                var fblinks=[];			
+                for (var link in fbfriends.fb_fof) {
                     var source = FBid2Fid[fbfriends.fb_fof[link][0]];
                     var target = FBid2Fid[fbfriends.fb_fof[link][1]];
                     fblinks.push([source,target]);
-                  }
+                }
 
-                  var firstFriend=fof.init(friends.jplist);
-                  fof.initLinks(fblinks);
+                var firstFriend=fof.init(friends.jplist);
+                fof.initLinks(fblinks);
             }
+            
 			Reveal.addEventListener('lastSeen', function( event ) {
 			    //Build lastSeen table
 			    buildLastSeen();
@@ -599,9 +607,11 @@
 			});
 			
 			Reveal.addEventListener('merge', function( event ) {
-                
-                //Build friend lists
-                createFriendLists();
+                var slide = Reveal.getCurrentSlide();
+                var row = $(slide).find('.row')[0];
+                /
+                /Build friend lists
+                createFriendLists(row);
 			    
 			    //Create list for merged names
 			    var div = $("<div class='span2 merge-div'></div>");
@@ -609,7 +619,7 @@
 			    var ul = $("<ul id='merged' class='merge-list'></ul>");
 			    $(div).append(p);
 			    $(div).append(ul);
-			    $(slide).append(div);
+			    $(row).append(div);
 			});
 			
             Reveal.addEventListener( 'fragmentshown', function( event ) {
@@ -748,8 +758,8 @@
                 $('.merge-list').tsort();
             }
             
-            function createFriendLists() {
-                var slide = $('#merge .row')[1];
+            function createFriendLists(targetElement) {
+
 			    var cats = $('.category');
 			    
 			    //Create list for each category
@@ -781,7 +791,7 @@
 			        
 			        $(div).append(p);
 			        $(div).append(ul).tsort();
-			        $(slide).append(div);
+			        $(targetElement).append(div);
 			    });
             }
             
