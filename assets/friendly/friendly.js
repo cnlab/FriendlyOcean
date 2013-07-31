@@ -75,6 +75,13 @@ var Friendly = {
                                     'Before moving on to the next boat, please indicate the last time you saw each of them face-to-face.'
                                 ]
                     },
+                    'circles': {
+                        'title': 'Your circles',
+                        'show': true,
+                        'help': [
+                                    'All right. Let\'s put some people in some circles.'
+                                ]
+                    },
                     'friendOfFriend': {
                         'title': 'Friends of Friends',
                         'show': true,
@@ -94,12 +101,14 @@ var Friendly = {
     //Current slide index used for reloading app
     slide: 0,
     
-    //Running lists of friends and links
+    //Running lists of friends, links, and circles
     friends: [],
     
     fbFriends: {},
     
-    links: []
+    links: [],
+    
+    circles: []
     
 }
 
@@ -249,3 +258,20 @@ String.prototype.supplant = function (o) {
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
+
+//Add shuffle function to jQuery NS
+(function($){
+
+    $.fn.shuffle = function() {
+        return this.each(function(){
+        var items = $(this).children().clone(true);
+        return (items.length) ? $(this).html($.shuffle(items)) : this;
+        });
+    }
+
+    $.shuffle = function(arr) {
+        for(var j, x, i = arr.length; i; j = parseInt(Math.random() * i), x = arr[--i], arr[i] = arr[j], arr[j] = x);
+        return arr;
+    }
+
+})(jQuery);
