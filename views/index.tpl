@@ -310,12 +310,6 @@
     	<script src="assets/js/jquery.dataTables.min.js"></script>
     	
 		<script type="text/javascript">
-		
-            //Global variable used in lastSeen section
-            var lst;
-            
-            //Array of colors for circles
-            var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);
             
             $('#help').on('hidden', function(){
                 $(Reveal.getCurrentSlide()).find('input').focus();
@@ -372,8 +366,11 @@
                                 {access_token:access_token},
                                 function(response){
                                     var data = JSON.parse(response);
-                                    if(data.response === 'false') {
+                                    if( data.response === 'false' ) {
                                         noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the arrow to continue</h4>');
+                                    }
+                                    else if( data.fbFriends.friends.length < 1 ){
+                                        noSNS('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
                                     }
                                     else {
                                         Friendly.fbFriends = data.fbFriends;
@@ -410,7 +407,6 @@
             function fillFBList(friends){
             
                 var ul = $('#facebook .friend-list');
-
                 $(friends).each(function(i, obj){
                     var cat = 'facebook';
                     var id = obj[0];
@@ -445,6 +441,13 @@
                 
                 $(ul).children('li').tsort();
             }
+            
+            $('input[name="island-name"]').keypress( function( event ){
+                var value = $(this).val().trim();
+                if ( event.which == 13 && value.length > 0 ){
+                    $('#next-arrow').click();
+                }
+            });
             
             $('.friend-input').keypress(friendInputHandler);
             
@@ -529,7 +532,18 @@
                         else {
                             getLastSeen();
                         }
-                        break;                       
+                        break;
+                    case 'circles':
+                        $('.circle').each( function( i, obj ){
+                            var name = $(this).children('p').text();
+                            var members = [];
+                            $(obj).find('span').each( function( a, s ){
+                                members.push($(s).data('friendNumber'));
+                            });
+                            var circle = { name: name, members: members };
+                            Friendly.circles.push(circle);
+                        });
+                        break;
                     default:
                         break;
                 }
@@ -627,6 +641,15 @@
                 
                 //Build friend lists on slide
                 createFriendLists(row);
+                
+                //Generate links from fb and circle data
+                $(Friendly.circles).each( function( i, obj ){
+                    var combos = buildLinks(obj.members, 2);
+                    $(combos).each( function( n, c ){
+                        var link = { source: c[0] , target: c[1] };
+                        Friendly.links.push(link);
+                    });
+                });
                 
                 var friend_list = [];
                 for (var f=0; f<friends.jplist.length; f++) {
@@ -755,47 +778,52 @@
                 }
                 $('#circles-list i.toggle:not(.collapsed)').click();
                 var div = $("<div></div>").addClass('circle span2 no-text-select');
+                var p = $("<p></p>");
+                var remove = $("<i></i>");
+                var toggle = $("<i></i>");
+                var ul = $("<ul></ul>");
                 var clr = circleColors.pop();
-                var p = $("<p></p>")
-                        .addClass('circle-title')
-                        .css('background-color', clr)
-                        .text(value);
-                var remove = $("<i></i>")
-                             .addClass("icon-remove")
-                             .click( function(){
-                                var bg = $(this).parent().css('background-color');
-                                var bg = bg.replace(/\)/, ", 1)");
-                                var bg = bg.replace(/rgb/, "rgba");
-                                circleColors.unshift(bg);
-                                if( $(div).hasClass('circle-selected') ){
-                                    $('#names-list .circle-member').removeClass('circle-member').css('background-color', '');
-                                }
-                                $(this).parent().parent().remove()
-                              })
-                             .appendTo(p);
-                var toggle = $("<i></i>").attr({
-                             'class': 'icon-chevron-up toggle',
-                             'data-toggle': 'collapse',
-                             'data-target': '#{title}-list'.supplant({'title':value.toLowerCase()})
-                             })
-                             .click( function(){
-                                $(this).toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
-                                if( $(this).hasClass('icon-chevron-down') && $(div).hasClass('circle-selected') ){
-                                    /*$('#circles-list i.toggle:not(.collapsed)').click();
-                                    var li = $(this).parent().next().children();
-                                    var members = [];
-                                    $(li).each( function( i, obj ){
-                                
-                                    });*/
-                                    $(this).parent().next().click();
-                                }
-                             })
-                             .appendTo(p);
-                var ul = $("<ul></ul>").attr({
-                         'class': 'collapse in',
-                         'id': value.toLowerCase() + "-list"
+                $(p).addClass('circle-title')
+                    .css('background-color', clr)
+                    .attr({
+                        'data-toggle': 'collapse',
+                        'data-target': '#{title}-list'.supplant({'title':value.toLowerCase()})
+                    })
+                    .click( function(){
+                        if( !$(ul).hasClass('in') && !$(div).hasClass('circle-selected') ){
+                            selectCircle( clr, div );
+                        }
+                        else if( $(ul).hasClass('in') && $(div).hasClass('circle-selected') ){
+                            selectCircle( clr, div );
+                        }
+                        $(toggle).toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
+                    })
+                    .text(value);
+                $(remove).addClass("icon-remove")
+                         .click( function(){
+                            var bg = $(this).parent().css('background-color');
+                            var bg = bg.replace(/\)/, ", 1)");
+                            var bg = bg.replace(/rgb/, "rgba");
+                            circleColors.unshift(bg);
+                            if( $(div).hasClass('circle-selected') ){
+                                $('#names-list .circle-member').removeClass('circle-member').css('background-color', '');
+                            }
+                            $(this).parent().parent().remove()
+                          })
+                         .appendTo(p);
+                $(toggle).attr({
+                         'class': 'icon-chevron-up toggle'
+//                         'data-toggle': 'collapse',
+  //                          'data-target': '#{title}-list'.supplant({'title':value.toLowerCase()})
                          })
-                         .click( {'color':clr, 'parent': div}, selectCircle );
+                         .appendTo(p);
+                $(ul).attr({
+                     'class': 'collapse in',
+                     'id': value.toLowerCase() + "-list"
+                     })
+                     .click( function(){
+                        selectCircle( clr, div );
+                     });
                 $(selected).each( function( i, obj ){
                     var li = $("<li></li>");
                     $(obj).clone(true).removeClass('selected').css('background-color', '').off().appendTo(li);
@@ -804,7 +832,7 @@
                 });
                 $(ul).children('li').tsort();
                 $(div).append(p, ul).appendTo('#circles-list');
-                $(ul).click();
+                selectCircle( clr, div );
             }
             
             function toggleCircleMember( friend, circle ){
@@ -834,9 +862,8 @@
                 return;
             }
             
-            function selectCircle( event ){
-                var clr = event.data.color;
-                var circle = event.data.parent;
+            function selectCircle( clr, circle ){
+                $('.selected').click();
                 if( $(circle).hasClass('circle-selected') ){
                     $(circle).css({
                         'box-shadow': 'none',
