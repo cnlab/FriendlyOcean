@@ -207,3 +207,40 @@
 .underline {
     text-decoration: underline;
 }
+
+@font-face {
+  font-family: 'News Cycle';
+  font-style: normal;
+  font-weight: 400;
+  src: local('../font/News_Cycle/News Cycle Regular'), local('../font/News_Cycle/NewsCycle-Regular'), url(https://themes.googleusercontent.com/static/fonts/newscycle/v9/9Xe8dq6pQDsPyVH2D3tMQr3hpw3pgy2gAi-Ip7WPMi0.woff) format('woff');
+}
+@font-face {
+  font-family: 'News Cycle';
+  font-style: normal;
+  font-weight: 700;
+  src: local('../font/News_Cycle/News Cycle Bold'), local('../font/News_Cycle/NewsCycle-Bold'), url(https://themes.googleusercontent.com/static/fonts/newscycle/v9/G28Ny31cr5orMqEQy6ljt3bFhgvWbfSbdVg11QabG8w.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('../font/Lato/Lato Regular'), local('../font/Lato/Lato-Regular'), url(https://themes.googleusercontent.com/static/fonts/lato/v6/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('../font/Lato/Lato Bold'), local('../font/Lato/Lato-Bold'), url(https://themes.googleusercontent.com/static/fonts/lato/v6/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: local('../font/Lato/Lato Italic'), local('../font/Lato/Lato-Italic'), url(https://themes.googleusercontent.com/static/fonts/lato/v6/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 700;
+  src: local('../font/Lato/Lato Bold Italic'), local('../font/Lato/Lato-BoldItalic'), url(https://themes.googleusercontent.com/static/fonts/lato/v6/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+}

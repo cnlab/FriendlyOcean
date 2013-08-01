@@ -240,9 +240,6 @@ function saveApp(){
 function getApp(){
     return JSON.parse(window.localStorage.getItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID})));
 }
-    
-//Extended permissions for Facebook
-var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
 
 //Helper function for string formatting
 String.prototype.supplant = function (o) {
@@ -275,3 +272,46 @@ String.prototype.capitalize = function() {
     }
 
 })(jQuery);
+
+//Create links given an array where n is the number of members per link
+function buildLinks(array, n) {
+    /*
+    derived from: https://gist.github.com/doph/3118596
+    */
+    var i, j, combs, head, tailcombs;
+
+    if (n > array.length || n <= 0) {
+        return [];
+    }
+
+    if (n == array.length) {
+        return [array];
+    }
+
+    if (n == 1) {
+        combs = [];
+        for (i = 0; i < array.length; i++) {
+            combs.push([array[i]]);
+        }
+    return combs;
+    }
+    combs = [];
+    for (i = 0; i < array.length - n + 1; i++) {
+        head = array.slice(i, i+1);
+        tailcombs = generateLinks(array.slice(i + 1), n - 1);
+        for (j = 0; j < tailcombs.length; j++) {
+            combs.push(head.concat(tailcombs[j]));
+        }
+    }
+    
+    return combs;
+}
+
+//Global variable for DataTable
+var lst;
+    
+//Extended permissions for Facebook
+var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
+
+//Array of colors for circles
+var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);
