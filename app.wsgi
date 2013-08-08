@@ -61,11 +61,6 @@ def get_interaction():
 @route('/channel')
 def channel():
     return render('<script src="//connect.facebook.net/en_US/all.js"></script>')
-    
-@post('/help')
-def help():
-    category = post_get('category', default='')
-    return template('help', category=category)
 
 @route('/')
 def index():
