@@ -258,22 +258,28 @@
                     </div>
                 </section>
                 
-                <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help">
+                <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help" class="no-text-select">
                     <div class="page-header">
-                        <h2>Who knows <span id="currentFOF"></span>? <button class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
+                        <h2>Who knows <span id="currentFOF"></span>? <button id="next-friend" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
                     </div>
                     <div class="container">
-                        <div class="row lists-row">
-                        <!--Leave this space empty. Lists are dynamically generated.-->
+                        <div class="row">
+                            <div class="span4" id="node-list">
+                            </div>
+                            <div class="span7" id="friendGraph">
+                            <!--Leave this space empty. Graph is genereated by fof object.-->
+                            </div>
+                        
                         </div>
                     </div>
                 </section>
                 
-                <section data-state="end">
+                <section id="end" data-category="end" data-state="end" class="no-text-select">
                     <div class="page-header"> 
-                        <h2>End so far...</h2>
+                        <h2>Welcome to <span class='islandName'></span>!</h2>
                     </div>
-                    <p>See console log for the output of the current application</p>
+                    <div class="container" id="myNetwork">
+                    </div>
                 </section>
                 
 			</div>
@@ -308,11 +314,25 @@
     	<script src="assets/friendly/strength.js"></script>
     	<script src="assets/js/d3.v2.js"></script>
     	<script src="assets/js/jquery.dataTables.min.js"></script>
+    	<script src="assets/friendly/fof.js"></script>
+    	<script src="assets/friendly/myNetwork.js"></script>
     	
 		<script type="text/javascript">
             
             $('#help').on('hidden', function(){
                 $(Reveal.getCurrentSlide()).find('input').focus();
+            });
+            
+            $('#next-friend').click(function( event ){
+                var next = fof.nextFriend();
+                if(next){
+                    $("#currentFOF").text(next.name);
+                }
+                else{
+                    fof.finalizeLinks();
+                    saveApp();
+                    Reveal.next();
+                }
             });
             
             function friendInputHandler(event){
@@ -544,6 +564,16 @@
                             Friendly.circles.push(circle);
                         });
                         break;
+                    case 'friendOfFriend':
+                        var next = fof.nextFriend();
+                        if(next){
+                            $("#currentFOF").text(next.name);
+                            return;
+                        }
+                        else{
+                            fof.finalizeLinks();
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -578,6 +608,10 @@
 			Reveal.addEventListener('end', function( event ){
 			    console.log(JSON.stringify(getApp()), undefined, 2);
 			    FB.logout();
+			    myNetwork.init( network );
+			    myNetwork.draw();
+			    $("#next-arrow").remove();
+			    $("#help-img").remove();
 			});
 			
 			function generateNames(num){
@@ -605,7 +639,7 @@
 			}
 			
 			//End debug code
-            
+
             Reveal.addEventListener( 'circles', function( event ) {
                 var slide = $('#circles');
                 var fList = $('#names-list');
@@ -639,45 +673,32 @@
                 var slide = $('#friendOfFriend');
                 var row = $(slide).find('.row')[0];
                 
-                //Build friend lists on slide
-                createFriendLists(row);
-                
-                //Generate links from fb and circle data
+                //Generate links from circle data
                 $(Friendly.circles).each( function( i, obj ){
                     var combos = buildLinks(obj.members, 2);
                     $(combos).each( function( n, c ){
-                        var link = { source: c[0] , target: c[1] };
-                        Friendly.links.push(link);
+                        addLink(c[0], c[1]);
                     });
                 });
                 
-                var friend_list = [];
-                for (var f=0; f<friends.jplist.length; f++) {
-                    var fname = friends.jplist[f].name;
-                    var fid = friends.jplist[f].id;
-                    friend_list.push([fname, fid]);
-                }
-
-                var FBid2Fid = {};
-                $(friends.jplist).each(function(i, obj){
-                    var fid = obj.id;
-                    $(obj.categories).each(function(i,cat){
-                        var catSplit = cat.split("_");
-                        if (catSplit[0] == "FB"){
-                            FBid2Fid[cat] = fid;
-                        }
+                //Generate links from Facebook data
+                $(Friendly.fbFriends.fb_fof).each(function( i, obj ){
+                    var s = obj[0];
+                    var t = obj[1];
+                    var arr = [];
+                    $(Friendly.friends).each(function( a, b ){
+                        $(b.category).each(function( c, d ){
+                            if( d == s || d == t){
+                                arr.push(b.friendNumber);
+                            }
+                        });
                     });
+                    addLink( arr[0], arr[1] );
                 });
 
-                var fblinks=[];			
-                for (var link in fbfriends.fb_fof) {
-                    var source = FBid2Fid[fbfriends.fb_fof[link][0]];
-                    var target = FBid2Fid[fbfriends.fb_fof[link][1]];
-                    fblinks.push([source,target]);
-                }
-
-                var firstFriend=fof.init(friends.jplist);
-                fof.initLinks(fblinks);
+                var firstFriend=fof.init(Friendly.friends, Friendly.links);
+                $("#currentFOF").text(firstFriend.name);
+                fof.addCenterFriend(firstFriend);
             });
             
 			Reveal.addEventListener('lastSeen', function( event ) {
@@ -776,7 +797,7 @@
                     error("CIRCLEDUP");
                     return;
                 }
-                $('#circles-list i.toggle:not(.collapsed)').click();
+                $('#circles-list ul.in').prev().click();
                 var div = $("<div></div>").addClass('circle span2 no-text-select');
                 var p = $("<p></p>");
                 var remove = $("<i></i>");
@@ -813,8 +834,6 @@
                          .appendTo(p);
                 $(toggle).attr({
                          'class': 'icon-chevron-up toggle'
-//                         'data-toggle': 'collapse',
-  //                          'data-target': '#{title}-list'.supplant({'title':value.toLowerCase()})
                          })
                          .appendTo(p);
                 $(ul).attr({
@@ -826,7 +845,7 @@
                      });
                 $(selected).each( function( i, obj ){
                     var li = $("<li></li>");
-                    $(obj).clone(true).removeClass('selected').css('background-color', '').off().appendTo(li);
+                    $(obj).clone(true).removeClass('selected').css('background-color', '').unbind().appendTo(li);
                     $(ul).append(li);
                     $(obj).click();
                 });
@@ -853,7 +872,7 @@
                     }
                 }
                 else{
-                    var clone = $(friend).clone(true);
+                    var clone = $(friend).clone(true).unbind().removeClass('selected');
                     var li = $("<li></li>").append(clone);
                     $(friend).addClass('circle-member').css({'background-color': clr});
                     $(ul).append(li);
@@ -1155,6 +1174,5 @@
                 }
             }
             </script>
-        
 	</body>
 </html>

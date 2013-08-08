@@ -3,6 +3,67 @@
  * Common styles across all themes.
  *
  */
+#friendGraph,
+#node-list{
+    line-height: normal;
+}
+
+#node-list{
+    border-right: 1px solid #000000;
+}
+
+.node-list-off {
+    color: #FFFFFF;
+    cursor: default;
+}
+
+.node-list-off:hover{
+    background-color: #FFFFFF;
+    color: #FFFFFF;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;  
+}
+
+.node-list-on{
+    padding: 0 5px 0 5px;
+}
+
+.node-list-on:hover{
+    background-color: #b8cefa;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+#node-list li{
+    font-size: 14px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+#node-list ul{
+    column-count: 3;
+    -moz-column-count: 3;
+    -webkit-column-count: 3;
+    list-style: none;
+    margin: 0px;
+}
+
+#friendGraph{
+    width: 592px;
+}
+
+.node-name {
+    font-size: 20px;
+}
+
+.link,
+.node,
+.node-name,
+text {
+    cursor: pointer;
+}
 
 .circle {
     border: 1px solid #cccccc;

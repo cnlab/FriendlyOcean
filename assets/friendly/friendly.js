@@ -88,6 +88,13 @@ var Friendly = {
                         'help': [
                                     'Next, put your friends who know each other together in the same place on the island. For each friend bring the people they know to the same side of the island by clicking on their circle. If you make a mistake you can click again to return them to the other side of the island.'
                                 ]
+                    },
+                    'end': {
+                        'title': 'The End',
+                        'show': true,
+                        'help': [
+                                    'You\'re all done!'
+                                ]
                     }
                 }
             },
@@ -223,11 +230,27 @@ function Friend(name, id, hash){
     this.category = [id];
     this.hash = hash;
 }
-        
+
 //Add links to application object
 function addLink(source, target){
-    var link = {source:source, target:target};
-    Friendly.links.push(link);
+
+    //Check links in case two people are in two groups together or already friends on FB
+    function checkLink( ls, lt ){
+        var result = true;
+        $(Friendly.links).each(function(i, o){
+            if( (o.source === ls && o.target === lt) || (o.source === lt && o.target === ls) ){
+                result = false;
+            }
+        });
+        
+        return result;
+    }
+    
+    if( checkLink( source, target ) ){
+        var link = {source:source, target:target};
+        Friendly.links.push(link);
+    }
+    
 }
 
 //Save application object to localStorage
@@ -298,7 +321,7 @@ function buildLinks(array, n) {
     combs = [];
     for (i = 0; i < array.length - n + 1; i++) {
         head = array.slice(i, i+1);
-        tailcombs = generateLinks(array.slice(i + 1), n - 1);
+        tailcombs = buildLinks(array.slice(i + 1), n - 1);
         for (j = 0; j < tailcombs.length; j++) {
             combs.push(head.concat(tailcombs[j]));
         }
@@ -309,9 +332,15 @@ function buildLinks(array, n) {
 
 //Global variable for DataTable
 var lst;
-    
+
+//Global object for final link network
+var network = {};
+
 //Extended permissions for Facebook
 var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
+
+//Icons for final network visualization
+var icons = ["starfish.png", "hut.png", "statue.png", "tree.png"];
 
 //Array of colors for circles
 var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);

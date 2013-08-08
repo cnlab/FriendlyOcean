@@ -44,7 +44,7 @@ def get_interaction():
     access_token = post_get('access_token')
     tps.stored_access_token = access_token
     
-    week = datetime.timedelta(weeks=3)
+    week = datetime.timedelta(weeks=10)
     start_date = datetime.datetime.today() - week
     response = {}
     
@@ -57,13 +57,6 @@ def get_interaction():
         response['response'] = 'false'
 
     return json.dumps(response)
-
-@post('/fb.html')
-@route('/fb.html')
-def fb():
-    access_token = post_get('access_token')
-    print "Token:", access_token    
-    return template('fb')
     
 @route('/channel')
 def channel():
