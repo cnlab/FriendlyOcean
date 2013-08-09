@@ -2,24 +2,17 @@
 
 var strength = (function() {
 
-var nodes  = [{name: 'YOU', fixed: true, x: 360, y:360}];
-var links = [];
 
 var rings = [50, 100, 140, 180, 220, 260, 300];
-
-function init(names) {
-
-
-var w = 720,
+var w = 760,
     h = 720,
     r = 20,
     fill = d3.scale.category20();
-    
 
+var nodes  = [{name: 'YOU', fixed: true, x: w/2, y:h/2}];
+var links = [];
 
-
-
-
+function init(names) {
 
 var scale_text = [ "Not at all close",
  				   "Not close",
@@ -35,11 +28,11 @@ var col = d3.scale.linear().domain([50,275]).range(['red','blue']);
 
 
 
-var vis = d3.select(".chart").append("svg:svg")
+var vis = d3.select("#closenessChart").append("svg:svg")
     .attr("width", w)
     .attr("height", h);
     
-var tooltip = d3.select('.chart').append("div")
+var tooltip = d3.select("#closenessChart").append("div")
 				.style("position", "absolute")
 				.style("visibility", "hidden")
 				.text("");
@@ -51,8 +44,8 @@ var tooltip = d3.select('.chart').append("div")
 	.style("fill", col)
 	.style("fill-opacity", 0.2)
 	.attr("r", function(d) { return d })
-	.attr("cx", 360)
-	.attr("cy", 360)
+	.attr("cx", w/2)
+	.attr("cy", h/2)
 	.on("mouseover", function() { return tooltip.style("visibility", "visible") } )
 	.on("mousemove", function(d,i) { return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px").text(scale_text[i]); })
 	.on("mouseout", function() { return tooltip.style("visibility", "hidden"); })
@@ -121,8 +114,9 @@ var node_drag = d3.behavior.drag()
   	.enter()
  	  .append("svg:text")
  	  .attr("class", function(d,i) { if (i==0) { return "EGO" } else { return "node" }})
- 	  .attr("dx", "-1em")
-    .attr("dy", "0.2em")
+ 	  //.attr("dx", "-1em")
+      //.attr("dy", "0.2em")
+      .attr("text-anchor", "middle")
  	  .text(function(d) { return d.name })
     .call(node_drag);
     

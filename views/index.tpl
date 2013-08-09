@@ -145,8 +145,6 @@
                             <li>Calling</li>
                             <li>Texting</li>
                             <li>Facebook</li>
-                            <li>Face-to-face</li>
-                            <li>Everyone else</li>
                         </ol>
                     </div>
                 </section>
@@ -177,54 +175,80 @@
                 </section>
                 
                 <section id="family" data-category="family" data-show="help" class="category add-names">
-                    <div class="page-header">
-                        <h2>Family - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                    <div class="container">
+                        <div class="row slide-header">
+                            <h2>Family - <input class="friend-input" name="family-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                        </div>
+                        <div class="row">
+                            <ul class="friend-list">
+                            </ul>
+                        </div>
                     </div>
-                    <ul class="friend-list">
-                    </ul>
                 </section>
                 
                 <section id="calling" data-category="calling" data-show="help" class="category add-names">
-                    <div class="page-header">
-                        <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                    <div class="container">
+                        <div class="row slide-header">
+                            <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                        </div>
+                        <div class="row">
+                            <ul class="friend-list">
+                            </ul>
+                        </div>
                     </div>
-                    <ul class="friend-list">
-                    </ul>
                 </section>
                 
                 <section id="texting" data-category="texting" data-show="help" class="category add-names">
-                    <div class="page-header">
-                        <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                    <div class="container">
+                        <div class="row slide-header">
+                            <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                        </div>
+                        <div class="row">
+                            <ul class="friend-list">
+                            </ul>
+                        </div>
                     </div>
-                    <ul class="friend-list">
-                    </ul>
                 </section>
                 
                 <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns">
-                    <div class="page-header">
-                        <h2>Facebook</h2>
+                    <div class="container">
+                        <div class="row slide-header">
+                            <h2>Facebook</h2>
+                        </div>
+                        <div class="row">
+                            <ul class="friend-list">
+                           </ul>
+                        </div>
                     </div>
-                    <ul class="friend-list">
-                    </ul>
                 </section>
                 
                 <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge">
-                        <div class="page-header">
-                            <button class="btn btn-large" onclick="mergeFriends();">Merge</button>
-                        </div>
                     <div class="container">
+                        <div class="row slide-header">
+                            <h2>Merge Duplicates and Disembark <button class="btn btn-large btn-primary" onclick="mergeFriends();">Merge</button></h2>
+                        </div>
                         <div class="row lists-row">
                             <!--Leave this space empty. Lists are dynamically generated.-->
                         </div>
                     </div>
                 </section>
                 
-                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" class="chart">
-                <!--Leave this space empty. It is where the svg canvas is inserted when strength.js is initiated-->
+                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit">
+                    <div class="container">
+                        <div class="row slide-header">
+                            <h2>Closeness</h2>
+                        </div>
+                        <div class="row chart" id="closenessChart">
+                        <!--Leave this space empty. It is where the svg canvas is inserted when strength.js is initiated-->
+                        </div>
+                    </div>
                 </section>
                 
                 <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help">
                     <div class="container">
+                        <div class="row slide-header">
+                            <h2>When did you last see everyone?</h2>
+                        </div>
                         <table id="lastSeenTable" class="table table-striped table-condensed">
                             <thead>
                                 <tr>
@@ -243,6 +267,9 @@
                 
                 <section id="circles" data-category="circles" data-state="circles" data-show="help">
                     <div class="container">
+                        <div class="row slide-header">
+                            <h2>Social Circles</h2>
+                        </div>
                         <div class="row"><p>Your Friends</p></div>
                         <div id="names-list" class="row circles-row">
                             <!--Leave this space empty. Data is dynamically generated.-->
@@ -259,10 +286,10 @@
                 </section>
                 
                 <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help" class="no-text-select">
-                    <div class="page-header">
-                        <h2>Who knows <span id="currentFOF"></span>? <button id="next-friend" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
-                    </div>
                     <div class="container">
+                        <div class="row slide-header">
+                            <h2>Friends of friends: Who knows <span id="currentFOF"></span>? <button id="next-friend" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
+                        </div>
                         <div class="row">
                             <div class="span4" id="node-list">
                             </div>
@@ -275,10 +302,10 @@
                 </section>
                 
                 <section id="end" data-category="end" data-state="end" class="no-text-select">
-                    <div class="page-header"> 
-                        <h2>Welcome to <span class='islandName'></span>!</h2>
-                    </div>
                     <div class="container" id="myNetwork">
+                        <div class="row"> 
+                            <h2>Welcome to <span class='islandName'></span>!</h2>
+                        </div>
                     </div>
                 </section>
                 
@@ -302,7 +329,7 @@
         
         <!--/End help modal-->
         
-        <!--Error div for strength.validate()-->
+        <!--Error div-->
         <div id="error"></div>
         
         <!--Javascripts-->
@@ -310,9 +337,9 @@
 		<script src="assets/js/jquery.tinysort.min.js"></script>
 		<script src="assets/js/bootstrap.min.js"></script>
     	<script src="assets/js/reveal.js"></script>
+    	<script src="assets/js/d3.v2.js"></script>
     	<script src="assets/friendly/friendly.js"></script>
     	<script src="assets/friendly/strength.js"></script>
-    	<script src="assets/js/d3.v2.js"></script>
     	<script src="assets/js/jquery.dataTables.min.js"></script>
     	<script src="assets/friendly/fof.js"></script>
     	<script src="assets/friendly/myNetwork.js"></script>
@@ -725,11 +752,10 @@
 			
 			Reveal.addEventListener('merge', function( event ) {
                 
-                var slide = $('#merge');
-                var row = $(slide).find('.row')[0];
+                var ele = $('#merge .lists-row');
                 
                 //Build friend lists
-                createFriendLists(row);
+                createFriendLists( ele );
 			    
 			    //Create list for merged names
 			    var div = $("<div class='merge-div'></div>");
@@ -737,7 +763,7 @@
 			    var ul = $("<ul id='merged' class='merge-list'></ul>");
 			    $(div).append(p);
 			    $(div).append(ul);
-			    $(row).append(div);
+			    $(ele).append(div);
 			});
 			
             Reveal.addEventListener( 'fragmentshown', function( event ) {

@@ -3,13 +3,20 @@
  * Common styles across all themes.
  *
  */
+ 
+.slide-header{
+    font-size: 20px;
+}
+
+.slide-header h2{
+    border-bottom: 1px solid #cccccc;
+    float: left;
+    padding: 0px 0px 10px 0px;
+}
+
 #friendGraph,
 #node-list{
     line-height: normal;
-}
-
-#node-list{
-    border-right: 1px solid #000000;
 }
 
 .node-list-off {
@@ -52,6 +59,7 @@
 
 #friendGraph{
     width: 592px;
+    border-left: 1px solid #000000;
 }
 
 .node-name {
@@ -97,6 +105,7 @@ text {
     line-height: 1.5;
 }
 
+.merge-list span,
 #names-list span {
     float: left;
     font-size: 14px;
@@ -185,6 +194,9 @@ text {
 
 .selected {
     background-color: #FFFF00;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
 }
 
 .chart {
@@ -194,7 +206,7 @@ text {
 
 .chart svg {
     position: relative;
-    top: -25px;
+    top: -75px;
 }
 
 .chart .node {

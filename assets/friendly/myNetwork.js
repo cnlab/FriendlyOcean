@@ -80,16 +80,12 @@ function draw() {
 	
 	
 	})
-	function stop(){
-        force.stop();	
-	}
 }
 
 
 return {
 	init: init,
-	draw: draw,
-	stop: stop
+	draw: draw
 }
 
 })();
