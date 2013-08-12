@@ -330,6 +330,31 @@ function buildLinks(array, n) {
     return combs;
 }
 
+//Animate rehoming of elements on merge page
+function yourNewHome( element, newParent ) {
+    element = $(element); //Allow passing in either a JQuery object or selector
+    newParent = $(newParent); //Allow passing in either a JQuery object or selector
+    var oldOffset = element.offset();
+    element.appendTo(newParent);
+    var newOffset = element.offset();
+
+    var temp = element.clone().appendTo('body');
+    temp.css('position', 'absolute')
+    .css('left', oldOffset.left)
+    .css('top', oldOffset.top)
+    .css('zIndex', 1000);
+    element.hide();
+    temp.animate({
+        'top': newOffset.top,
+        'left': newOffset.left
+    }, 
+    'slow',
+    function () {
+        element.show();
+        temp.remove();
+    });
+}
+
 //Global variable for DataTable
 var lst;
 

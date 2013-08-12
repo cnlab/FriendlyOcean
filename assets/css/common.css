@@ -109,13 +109,27 @@ text {
 #names-list span {
     float: left;
     font-size: 14px;
-    margin: 3px;
+    margin: 1px;
     padding-right: 5px;
     padding-left: 5px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;
     cursor: pointer;
+}
+.merge-list span {
+    float: left;
+    font-size: 14px;
+    padding-right: 5px;
+    padding-left: 5px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.merge-list span:hover{
+    background: #FFFF00;
 }
 
 .paging-div {
@@ -161,12 +175,8 @@ text {
 
 .merge-div {
     font-size: 24px;
-    border: 1px solid black;
     text-align: left;
-    display: inline-block;
-    margin: auto 15px;
-    padding: 0px 10px 0px 10px;
-    vertical-align: top;
+    clear: both;
 }
 
 .merge-list {
@@ -251,6 +261,10 @@ text {
     width: 18px;
     height: 36px;
     display: inline-block;
+}
+
+.friend-input {
+    vertical-align: text-bottom !important;
 }
 
 .friend-list {
