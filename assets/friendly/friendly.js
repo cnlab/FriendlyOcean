@@ -342,7 +342,8 @@ function yourNewHome( element, newParent ) {
     temp.css('position', 'absolute')
     .css('left', oldOffset.left)
     .css('top', oldOffset.top)
-    .css('zIndex', 1000);
+    .css('zIndex', 1000)
+    .css('list-style', 'none');
     element.hide();
     temp.animate({
         'top': newOffset.top,

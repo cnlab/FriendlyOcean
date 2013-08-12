@@ -997,6 +997,7 @@ function mergeFriends(){
                 var name = $(obj).text();
                 data.name = name;
                 mList.push(data);
+                yourNewHome( $(obj).parent(), m );
             }
         });
 
