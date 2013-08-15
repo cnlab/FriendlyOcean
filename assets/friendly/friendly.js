@@ -331,7 +331,7 @@ function buildLinks(array, n) {
 }
 
 //Animate rehoming of elements on merge page
-function yourNewHome( element, newParent ) {
+function disembark( element, newParent, moveAll ) {
     element = $(element); //Allow passing in either a JQuery object or selector
     newParent = $(newParent); //Allow passing in either a JQuery object or selector
     var oldOffset = element.offset();

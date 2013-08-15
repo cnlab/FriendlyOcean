@@ -225,13 +225,19 @@
                 <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge no-text-select">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>Merge Duplicates and Disembark <button class="btn btn-large btn-primary" onclick="mergeFriends();">Merge</button></h2>
+                            <h2>Merge Duplicates and Disembark</h2>
                         </div>
                         <div class="row lists-row">
                             <div class="span4 merge-lists-left">
                             </div>
-                            <div class="span3 offset3 pull-right merge-lists-right">
+                            <div class="span3 merge-lists-center">
+                                <button class="btn btn-primary" onclick="mergeFriends();">Merge  <i class="icon-forward icon-white"></i>
+                                </button>                            
                             </div>
+                            <div class="span3 merge-lists-right">
+                                <button class="btn btn-primary" onclick="disembarkCheck();">Disembark  <i class="icon-forward icon-white"></i>
+                                </button>
+                            </div>                        
                         </div>
                     </div>
                 </section>
@@ -572,8 +578,14 @@ $('#next-arrow').click(function( event ){
         }
         break;
         case 'merge':
-        finalMerge();
-        break;
+            if( confirm("Are you sure you've found all of the duplicates?") ){
+                disembark(null, null, true);
+                finalMerge();
+            }
+            else{
+                return;
+            }
+            break;
         case 'lastSeen':
         if ( !validateLastSeen() ) {
             return;
@@ -615,8 +627,8 @@ $('#next-arrow').click(function( event ){
             // https://github.com/hakimel/reveal.js#configuration
             Reveal.initialize({
                 controls: false,
-                progress: true,
-                history: true,
+                progress: false,
+                history: false,
                 center: false,
                 touch: true,
                 overview: false,
@@ -755,19 +767,28 @@ Reveal.addEventListener('lastSeen', function( event ) {
 Reveal.addEventListener('merge', function( event ) {
 
     var left = $('#merge .merge-lists-left'),
+          center = $("#merge .merge-lists-center"),
           right = $('#merge .merge-lists-right');
 
                 //Build friend lists
                 createFriendLists( left );
 
-			    //Create list for merged names
-			    var div = $("<div class='merge-div'></div>");
-			    var p = $("<p></p>").text("Merged");
-			    var ul = $("<ul id='merged' class='merge-list'></ul>");
-			    $(div).append(p);
-			    $(div).append(ul);
-			    $(right).append(div);
-			});
+	    //Create list for merged names
+	    var div = $("<div class='merge-div'></div>");
+	    var p = $("<p></p>").text("Merged");
+	    var ul = $("<ul id='merged' class='merge-list'></ul>");
+	    $(div).append(p);
+	    $(div).append(ul);
+	    $(center).append(div);
+
+                 //Create list for the island/dock/whatevs
+                 div = $("<div class='merge-div'></div>");
+                 p = $("<p></p>").text("The Dock");
+                 ul = $("<ul id='merged' class='merge-list'></ul>");
+                $(div).append(p);
+                $(div).append(ul);
+                $(right).append(div);
+	});
 
 Reveal.addEventListener( 'fragmentshown', function( event ) {
     if(event.fragment.dataset.show=="help-button"){
@@ -942,37 +963,37 @@ function selectCircle( clr, circle ){
     }
 }
 
-function error(type) {
-  var mess;
-  if (type=='STRENGTH') {
-    mess="Please bring all of your friends into the circle";
-}
-else if (type=='CIRCLEDUP') {
-    mess="There is already a group with that title. Please choose a different title.";
-}
-else if (type=='CIRCLETITLE') {
-    mess="Please pick a title for this circle.";
-}
-else if (type=='CIRCLESNAMES') {
-    mess="A group needs at least 2 people.";
-}
-else if (type=='FOF') {
-    mess="FOF ERROR";
-}
-else if (type=='ISLANDNAME') {
-    mess="Please enter a name.";
-}
-else if (type=='NAMES') {
-    mess="Are you sure you don't want to enter any names?";
-}
-else if (type=='LASTSEEN') {
-    mess="Please select missing values.";
-} 
-$('#error').text(mess);
-$('#error').fadeIn('fast');
-var fade = setInterval(function() { 
-  $("#error").fadeOut('slow'); 
-  clearInterval(fade); }, 2000);
+function error( type ) {
+    var mess;
+    if (type=='STRENGTH') {
+        mess="Please bring all of your friends into the circle";
+    }
+    else if (type=='CIRCLEDUP') {
+        mess="There is already a group with that title. Please choose a different title.";
+    }
+    else if (type=='CIRCLETITLE') {
+        mess="Please pick a title for this circle.";
+    }
+    else if (type=='CIRCLESNAMES') {
+        mess="A group needs at least 2 people.";
+    }
+    else if (type=='FOF') {
+        mess="FOF ERROR";
+    }
+    else if (type=='ISLANDNAME') {
+        mess="Please enter a name.";
+    }
+    else if (type=='NAMES') {
+        mess="Are you sure you don't want to enter any names?";
+    }
+    else if (type=='LASTSEEN') {
+        mess="Please select missing values.";
+    } 
+    $('#error').text(mess);
+    $('#error').fadeIn('fast');
+    var fade = setInterval(function() { 
+        $("#error").fadeOut('slow'); 
+        clearInterval(fade); }, 2000);
 }
 
 function select(e){
@@ -997,7 +1018,6 @@ function mergeFriends(){
                 var name = $(obj).text();
                 data.name = name;
                 mList.push(data);
-                yourNewHome( $(obj).parent(), m );
             }
         });
 
@@ -1076,6 +1096,10 @@ function createFriendLists(targetElement) {
 			        $(div).append(ul).children('li').tsort();
 			        $(targetElement).append(div);
 			    });
+}
+
+function disembarkCheck(){
+
 }
 
             //Settings for DataTables custom pagination

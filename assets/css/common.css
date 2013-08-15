@@ -3,7 +3,17 @@
  * Common styles across all themes.
  *
  */
- 
+div[class*='merge-lists-']{
+    background-color: rgba(255, 255, 255,0.7);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+div[class*='merge-lists-']>button{
+    float: right;
+    margin: 5px 5px 0px 0px;
+}
+
 .slide-header{
     font-size: 20px;
 }
@@ -176,7 +186,11 @@ text {
 .merge-div {
     font-size: 24px;
     text-align: left;
-    clear: both;
+    clear: left;
+}
+
+.merge-div>p{
+    margin-left: 5px;
 }
 
 .merge-list {
