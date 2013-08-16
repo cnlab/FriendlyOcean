@@ -39,16 +39,41 @@ var tooltip = d3.select("#closenessChart").append("div")
     
     vis.selectAll(".ring")
 	.data(rings.reverse()).enter().append("circle")
-	.style("class", "ring")
-	.style("stroke", "solid 1px")
-	.style("fill", col)
-	.style("fill-opacity", 0.2)
-	.attr("r", function(d) { return d })
-	.attr("cx", w/2)
-	.attr("cy", h/2)
-	.on("mouseover", function() { return tooltip.style("visibility", "visible") } )
-	.on("mousemove", function(d,i) { return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px").text(scale_text[i]); })
-	.on("mouseout", function() { return tooltip.style("visibility", "hidden"); })
+	.attr({
+                "class": "ring",
+                "id": function(d) { return "ring-"+d; },
+                "r": function(d) { return d; },
+                "cx":  w/2,
+                "cy": h/2,
+                "stroke": col,
+                "stroke-width": "1px",
+                "stroke-opacity": .2,
+                "fill": col,
+                "fill-opacity": .2
+              })
+             .on({
+                "mouseover": function(d) { 
+                                        var s = ".ring:not(#ring-{num})".supplant({"num": d});
+                                        d3.selectAll(s).attr({
+                                                                    "fill": "#c7c7c7",
+                                                                    "fill-opacity": 1,
+                                                                    "stroke": "#ffffff",
+                                                                    "stroke-opacity": 1
+                                                                 })
+                                        d3.select(this).attr("stroke", "#ffffff");
+                                        tooltip.style("visibility", "visible");
+                                        },
+                "mousemove": function(d,i) { return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px").text(scale_text[i]); },
+                "mouseout": function(d) { 
+                                        d3.selectAll(".ring").attr({
+                                                                    "fill": col,
+                                                                    "fill-opacity": .2,
+                                                                    "stroke": col,
+                                                                    "stroke-opacity": .2
+                                                                 });
+                                        tooltip.style("visibility", "hidden");
+                                      }
+             });
 
     
 
