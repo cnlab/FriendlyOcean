@@ -231,12 +231,9 @@
                             <div class="span4 merge-lists-left">
                             </div>
                             <div class="span3 merge-lists-center">
-                                <button class="btn btn-primary" onclick="mergeFriends();">Merge  <i class="icon-forward icon-white"></i>
-                                </button>                            
+                                                           
                             </div>
                             <div class="span3 merge-lists-right">
-                                <button class="btn btn-primary" onclick="disembarkCheck();">Disembark  <i class="icon-forward icon-white"></i>
-                                </button>
                             </div>                        
                         </div>
                     </div>
@@ -768,8 +765,7 @@ Reveal.addEventListener('lastSeen', function( event ) {
 
 			    //Style pagination buttons because DataTables hates JP
 			    $('.paging-div button').addClass("btn btn-primary");
-			    
-			});
+            });
 
 Reveal.addEventListener('merge', function( event ) {
 
@@ -782,17 +778,21 @@ Reveal.addEventListener('merge', function( event ) {
 
 	    //Create list for merged names
 	    var div = $("<div class='merge-div'></div>");
-	    var p = $("<p></p>").text("Merged");
+	    var bM = $("<button></button>").addClass("btn btn-primary btn-block")
+                                                                            .on("click", mergeFriends)
+                                                                            .text("Merge");
 	    var ul = $("<ul id='merged' class='merge-list'></ul>");
-	    $(div).append(p);
+	    $(div).append(bM);
 	    $(div).append(ul);
 	    $(center).append(div);
 
                  //Create list for the island/dock/whatevs
                  div = $("<div class='merge-div'></div>");
-                 p = $("<p></p>").text("The Dock");
+                 bD = $("<button></button>").addClass("btn btn-primary btn-block")
+                                                                      .on("click", disembarkCheck)
+                                                                      .text("Disembark");
                  ul = $("<ul id='merged' class='merge-list'></ul>");
-                $(div).append(p);
+                $(div).append(bD);
                 $(div).append(ul);
                 $(right).append(div);
 	});
