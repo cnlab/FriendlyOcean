@@ -19,7 +19,7 @@ var Reveal = (function(){
 
 			// The "normal" size of the presentation, aspect ratio will be preserved
 			// when the presentation is scaled to fit different resolutions
-			width: 1000,
+			width: 960,
 			height: 700,
 
 			// Factor of the display size that should remain empty around the content
@@ -200,9 +200,9 @@ var Reveal = (function(){
 		}
 
 		// Progress bar
-		if( !dom.wrapper.querySelector( '.reveal-progress' ) ) {
+		if( !dom.wrapper.querySelector( '.progress' ) ) {
 			var progressElement = document.createElement( 'div' );
-			progressElement.classList.add( 'reveal-progress' );
+			progressElement.classList.add( 'progress' );
 			progressElement.innerHTML = '<span></span>';
 			dom.wrapper.appendChild( progressElement );
 		}
@@ -233,8 +233,8 @@ var Reveal = (function(){
 		}
 
 		// Cache references to elements
-		dom.progress = document.querySelector( '.reveal .reveal-progress' );
-		dom.progressbar = document.querySelector( '.reveal .reveal-progress span' );
+		dom.progress = document.querySelector( '.reveal .progress' );
+		dom.progressbar = document.querySelector( '.reveal .progress span' );
 
 		if ( config.controls ) {
 			dom.controls = document.querySelector( '.reveal .controls' );
@@ -272,6 +272,7 @@ var Reveal = (function(){
 			var data = {
 				background: slide.getAttribute( 'data-background' ),
 				backgroundSize: slide.getAttribute( 'data-background-size' ),
+				backgroundImage: slide.getAttribute( 'data-background-image' ),
 				backgroundColor: slide.getAttribute( 'data-background-color' ),
 				backgroundRepeat: slide.getAttribute( 'data-background-repeat' ),
 				backgroundPosition: slide.getAttribute( 'data-background-position' ),
@@ -283,7 +284,7 @@ var Reveal = (function(){
 
 			if( data.background ) {
 				// Auto-wrap image urls in url(...)
-				if( /\.(png|jpg|jpeg|gif|bmp)$/gi.test( data.background ) ) {
+				if( /^(http|file|\/\/)/gi.test( data.background ) || /\.(png|jpg|jpeg|gif|bmp)$/gi.test( data.background ) ) {
 					element.style.backgroundImage = 'url('+ data.background +')';
 				}
 				else {
@@ -293,6 +294,7 @@ var Reveal = (function(){
 
 			// Additional and optional background properties
 			if( data.backgroundSize ) element.style.backgroundSize = data.backgroundSize;
+			if( data.backgroundImage ) element.style.backgroundImage = 'url("' + data.backgroundImage + '")';
 			if( data.backgroundColor ) element.style.backgroundColor = data.backgroundColor;
 			if( data.backgroundRepeat ) element.style.backgroundRepeat = data.backgroundRepeat;
 			if( data.backgroundPosition ) element.style.backgroundPosition = data.backgroundPosition;
@@ -1916,10 +1918,10 @@ var Reveal = (function(){
 
 				toArray( fragments ).forEach( function( element ) {
 					element.classList.add( 'visible' );
-
-					// Notify subscribers of the change
-					dispatchEvent( 'fragmentshown', { fragment: element } );
 				} );
+
+				// Notify subscribers of the change
+				dispatchEvent( 'fragmentshown', { fragment: fragments[0], fragments: fragments } );
 
 				updateControls();
 				return true;
@@ -1950,10 +1952,10 @@ var Reveal = (function(){
 
 				toArray( fragments ).forEach( function( f ) {
 					f.classList.remove( 'visible' );
-
-					// Notify subscribers of the change
-					dispatchEvent( 'fragmenthidden', { fragment: f } );
 				} );
+
+				// Notify subscribers of the change
+				dispatchEvent( 'fragmenthidden', { fragment: fragments[0], fragments: fragments } );
 
 				updateControls();
 				return true;
