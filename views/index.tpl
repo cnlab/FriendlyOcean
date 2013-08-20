@@ -624,6 +624,7 @@ $('#next-arrow').click(function( event ){
             // https://github.com/hakimel/reveal.js#configuration
             Reveal.initialize({
                 controls: false,
+                width: 1000,
                 progress: false,
                 history: false,
                 center: false,
@@ -648,7 +649,6 @@ $('#next-arrow').click(function( event ){
              FB.logout();
              myNetwork.init( network );
              myNetwork.draw();
-             $("#next-arrow").remove();
              $("#help-img").remove();
          });
 			
@@ -715,6 +715,7 @@ $('#next-arrow').click(function( event ){
             });
 
 Reveal.addEventListener('friendOfFriend', function( event ) {
+    $("#next-arrow").remove();
     var slide = $('#friendOfFriend');
     var row = $(slide).find('.row')[0];
 
@@ -768,7 +769,6 @@ Reveal.addEventListener('lastSeen', function( event ) {
             });
 
 Reveal.addEventListener('merge', function( event ) {
-
     var left = $('#merge .merge-lists-left'),
           center = $("#merge .merge-lists-center"),
           right = $('#merge .merge-lists-right');
