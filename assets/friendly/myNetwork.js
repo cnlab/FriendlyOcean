@@ -57,7 +57,7 @@ function draw() {
 
     node.append("svg:image")
         .attr("class", "circle")
-        .attr("xlink:href", function(){ return "assets/img/" + icons[Math.floor(Math.random() * icons.length)]; })
+        .attr("xlink:href", function(){ return "assets/img/elements/" + icons[Math.floor(Math.random() * icons.length)]; })
         .attr("x", "-8px")
         .attr("y", "-8px")
         .attr("width", "25px")

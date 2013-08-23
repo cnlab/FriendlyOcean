@@ -17,7 +17,7 @@ div[class*='merge-lists-']{
 }
 
 .slide-header h2{
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #eeeeee
     float: left;
     padding: 0px 0px 10px 0px;
 }
@@ -28,13 +28,11 @@ div[class*='merge-lists-']{
 }
 
 .node-list-off {
-    color: #FFFFFF;
+    color: transparent;
     cursor: default;
 }
 
 .node-list-off:hover{
-    background-color: #FFFFFF;
-    color: #FFFFFF;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;  
@@ -254,20 +252,19 @@ text {
     position:fixed;
     cursor: pointer;
     right: 0;
-    bottom: 10%;
-    width: 8%;
-    height: 9%;
-    background-image: url('../img/arrow.png');
-    background-repeat: no-repeat;
-    background-position: 0 0px;
-    background-size: 100%;
+    bottom: 0;
     margin: 5px;
     z-index: 5;
+    max-width:10%
+}
+
+#next-arrow>img{
+    max-width: 100%;
 }
 
 .delete {
     cursor: pointer;
-    background-image: url('../img/delete.png');
+    background-image: url('../img/elements/delete.png');
     background-repeat: no-repeat;
     background-position: 0 0px;
     background-size: 100%;
@@ -292,7 +289,7 @@ text {
 
 #help-img {
     cursor: pointer;
-    background-image: url('../img/help.png');
+    background-image: url('../img/elements/help.png');
     background-repeat: no-repeat;
     background-position: 0 0;
     background-size: 100%;

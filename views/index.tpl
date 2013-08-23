@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Friendly Island</title>
+  <title></title>
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -13,15 +13,14 @@
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/reveal.css">
-  <link rel="stylesheet" href="assets/css/theme/jp.css" id="theme">
+  <link rel="stylesheet" id="theme">
   <link rel="stylesheet" href="assets/css/common.css">
+    <!--[if lt IE 9]>
+        <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
 
-		<!--[if lt IE 9]>
-		<script src="assets/js/html5shiv.js"></script>
-		<![endif]-->
-	</head>
-
-	<body>
+<body>
 
         <!--Facebook SDK for login-->
 
@@ -53,16 +52,16 @@
 
             <a id="help-img" data-toggle="modal" href="#help"></a>
             <div id="next-arrow"></div>
-            <div class="reveal">
+            <div class="reveal" data-state>
 
              <!-- Any section element inside of this container is displayed as a slide -->
              <div class="slides">
 
-                <section id="title">
+                <section id="title" data-background="assets/img/backgrounds/title.png">
                     <div class="row">
                         <div class="span5">
-                            <h1>Friendly<br/>Island</h1>
-                            <p>Click the arrow to begin!</p>
+                            <h1>Friendly<br/><span class="island-type-caps"></span></h1>
+                            <p>Click the <span class="arrow-type"></span> to begin!</p>
                         </div>
                     </div>
                 </section>
@@ -91,10 +90,10 @@
                         <h2>Congratulations!</h2>
                     </div>
                     <p>
-                        You have just been awarded an empty tropical island for you and all of your friends and family.
+                        You have just been awarded an empty tropical <span class="island-type"></span> for you and all of your friends and family.
                     </p>
                     <p class="fragment">
-                        This study is trying to understand how individuals’ islands (or social networks) are different from one another in the 21st Century.
+                        This study is trying to understand how individuals’ <span class="island-type-plural"></span> (or social networks) are different from one another in the 21st Century.
                     </p>
                 </section>
                 
@@ -104,13 +103,13 @@
                             <h3>Your Goal</h3>
                         </div>
                         <p>
-                            Populate your island with everyone in your social network that you talk to regularly or know personally.
+                            Populate your <span class="island-type"></span> with everyone in your social network that you talk to regularly or know personally.
                         </p>
                     </div>
                     <div class="row">
                         <h3>Before you get started...</h3>
                         <p>
-                            <span class="inline-help">Name your island </span>
+                            <span class="inline-help">Name your <span class="island-type"></span> </span>
                             <input class="input-large" name="island-name" type="text"/>
                             <span class="inline-help"> and click the next arrow.</span>
                         </p>
@@ -137,8 +136,8 @@
                     <div class="page-header">
                         <h3>Instructions</h3>
                     </div>
-                    <p>On <span class='islandName'></span>, each of your personal relationships will each get their own piece of the island.</p>
-                    <p>In order for your to build the most complete island civilization, you will bring people over in six different boats.</p>
+                    <p>On <span class='islandName'></span>, each of your personal relationships will each get their own piece of the <span class="island-type"></span>.</p>
+                    <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in six different boats.</p>
                     <div class="span5 offset2">
                         <ol>
                             <li>Family</li>
@@ -154,7 +153,7 @@
                         <h3>Instructions</h3>
                     </div>
                     <p>After you have transported everyone to <span class='islandName'></span>, you will then decide how much land they get based on how close you are to them.</p>
-                    <p>Finally, you will decide who will live on the same part of the island as other individuals based on who knows who.</p>
+                    <p>Finally, you will decide who will live on the same part of the <span class="island-type"></span> as other individuals based on who knows who.</p>
                 </section>
                 
                 <section class="instructions" data-transition="none">
@@ -352,9 +351,18 @@
 
     <script type="text/javascript">
 
+    //Do these things on load
+    $("link#theme").attr("href", "assets/css/theme/{type}.css".supplant({"type": Friendly.config.islandType}));
+    $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
     var pID = "{{ pID }}";
     Friendly.appID = "{{ appID }}";
-    
+    $(".island-type").text(Friendly.config.islandType);
+    $(".island-type-plural").text(Friendly.config.islandType+"s");
+    $(".island-type-caps").text(Friendly.config.islandType.capitalize());
+    $(".arrow-type").text(Friendly.config.arrowType);
+    $("<img></img>").attr('src', 'assets/img/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
+    ////
+
     $('#help').on('hidden', function(){
         $(Reveal.getCurrentSlide()).find('input').focus();
     });

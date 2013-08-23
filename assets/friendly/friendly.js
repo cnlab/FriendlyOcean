@@ -1,6 +1,8 @@
 var Friendly = {
 	
 	config :{
+                islandType: "ocean",
+                arrowType: "starfish",
                 appID : 1,
                 categories: {
                     'family': {
@@ -370,4 +372,3 @@ var icons = ["starfish.png", "hut.png", "statue.png", "tree.png"];
 
 //Colors for circles
 var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);
-//var circleColors = d3.scale().category20();
