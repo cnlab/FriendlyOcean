@@ -13,7 +13,7 @@
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/reveal.css">
-  <link rel="stylesheet" id="theme">
+  <link rel="stylesheet" href="assets/css/theme/{{ theme }}.css" id="theme">
   <link rel="stylesheet" href="assets/css/common.css">
     <!--[if lt IE 9]>
         <script src="assets/js/html5shiv.js"></script>
@@ -76,10 +76,10 @@
                         </div>
                         <div class="span12">
                             <p>
-                                <button class="btn btn-success" onclick="yesSNS();">Log in</button>
+                                <button class="btn btn-primary btn-large" onclick="yesSNS();">Log in</button>
                             </p>
                             <h5>
-                                <a href="javascript:void(0);" onclick="noSNS();">No thanks</a>
+                                <a href="javascript:void(0);" onclick="noSNS();">Enter names manually</a>
                             </h5>
                         </div>                
                     </div>
@@ -352,7 +352,6 @@
     <script type="text/javascript">
 
     //Do these things on load
-    $("link#theme").attr("href", "assets/css/theme/{type}.css".supplant({"type": Friendly.config.islandType}));
     $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
     var pID = "{{ pID }}";
     Friendly.appID = "{{ appID }}";
@@ -413,7 +412,6 @@
                 //Grab current slide
                 var currentSlide = Reveal.getCurrentSlide();
                 var span = $(currentSlide).find('.span12')[1];
-                $(span).html('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
                 
                 //Login to FB using SDK
                 FB.login(
@@ -421,6 +419,8 @@
                     //Callback for FB.login()
                     function(response){
 
+                        $(span).html('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
+                        
                         //Check that we're connected
                         if(response.status === 'connected'){
 

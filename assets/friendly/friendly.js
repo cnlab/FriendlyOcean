@@ -173,11 +173,11 @@ function buildLastSeen() {
         var bName = b.name.toLowerCase(); 
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
     });
-    
+
     $(friends).each(function( i, obj ) {
-        var tr = $('<tr data-fid="{fnum}"><td>{name}</td><td><input value="week" name="seen_{fnum}" type="radio" /></td><td><input value="month" name="seen_{fnum}" type="radio" /></td><td><input value="year" name="seen_{fnum}" type="radio" /></td><td><input value="overayear" name="seen_{fnum}" type="radio" /></td>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
-        $(table).append(tr);
-    });
+            var tr = $('<tr data-fid="{fnum}"><td>{name}</td><td><input value="week" name="seen_{fnum}" type="radio" /></td><td><input value="month" name="seen_{fnum}" type="radio" /></td><td><input value="year" name="seen_{fnum}" type="radio" /></td><td><input value="overayear" name="seen_{fnum}" type="radio" /></td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
+            $(table).append(tr);
+     });
 }
 
 //Merge friends for good

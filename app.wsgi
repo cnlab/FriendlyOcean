@@ -74,7 +74,12 @@ def index():
     else:
         appID = "cnl"
 
-    return template('index', pID=pID, appID=appID)
+    if request.query.theme:
+        theme = request.query.theme
+    else:
+        theme = "ocean"
+
+    return template('index', pID=pID, appID=appID, theme=theme)
     
 @route('/assets/<file_path:path>')
 def static(file_path):
