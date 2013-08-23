@@ -352,6 +352,9 @@
 
     <script type="text/javascript">
 
+    var pID = "{{ pID }}";
+    Friendly.appID = "{{ appID }}";
+    
     $('#help').on('hidden', function(){
         $(Reveal.getCurrentSlide()).find('input').focus();
     });
@@ -402,7 +405,7 @@
                 //Grab current slide
                 var currentSlide = Reveal.getCurrentSlide();
                 var span = $(currentSlide).find('.span12')[1];
-                $(span).html('<p>Loading...</p><div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
+                $(span).html('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
                 
                 //Login to FB using SDK
                 FB.login(
@@ -633,32 +636,24 @@ $('#next-arrow').click(function( event ){
                 keyboard: false,
                 rollingLinks: false,
                 backgroundTransition: 'slide',
-				transition: 'linear', // default/cube/page/concave/zoom/linear/fade/none
+                transition: 'linear', // default/cube/page/concave/zoom/linear/fade/none
 
-				// Optional libraries used to extend on reveal.js
-				dependencies: [
-               { src: 'assets/js/classList.js', condition: function() { return !document.body.classList; } },
-					//{ src: 'assets/js/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
-                    ]
-                });
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                   { src: 'assets/js/classList.js', condition: function() { return !document.body.classList; } },
+    	   //{ src: 'assets/js/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+                        ]
+            });
 
-			//Debug code
-			
-			Reveal.addEventListener('end', function( event ){
-             console.log(JSON.stringify(getApp()), undefined, 2);
-             FB.logout();
-             myNetwork.init( network );
-             myNetwork.draw();
-             $("#help-img").remove();
-         });
-			
-			function generateNames(num){
-			    //Add names to a category list. number denotes how many names to each list, default is 20
-			    var number = num || 20;
-			    var names = ["Werner", "Humberto", "Marni", "Ruth", "Ashly", "Evelin", "Deloris", "Mignon", "Sophie", "Suk", "Isidra", "Fredia", "Yun", "Dee", "Bart", "Shantelle", "Elvin", "Carissa", "Pa", "Vito", "Dorothy", "Carri", "Roy", "Maritza", "Leida", "Ulysses", "Antonetta", "Crysta", "Catherine", "Jeromy", "Keith", "Houston", "Lu", "Joane", "Minna", "Megan", "Emelina", "Mandie", "Steven", "Martin", "Rutha", "Reid", "Suzy", "Maurine", "Evelia", "Azalee", "Letitia", "Kary", "Ryann", "Liliana", "Laree", "Izola", "Tennille", "Belia", "Josette", "Korey", "Jefferson", "Celena", "Sharri", "Argelia", "Elyse", "Eleanor", "Georgette", "Yoko", "Nicki", "Felica", "Librada", "Terrie", "Sacha", "Stefany", "Vanetta", "Afton", "Alida", "Justa", "Earline", "Melvin", "Alberto", "Curtis", "Monika", "Julianne", "Clarita", "Clemmie", "Brigette", "Adria", "Kaycee", "Johnie", "Reginia", "Marybelle", "Lawanna", "Jacquelyne", "Yuki", "Pandora", "Shery", "Ronald", "Traci", "Tatyana", "Kristen", "Noelle", "Kimberlee", "Hyo"];
-			    var c = 0;
-			    var d = 0;
-			    $('.friend-list').each(function(i,obj){
+            //Debug code
+	
+	function generateNames(num){
+	    //Add names to a category list. number denotes how many names to each list, default is 20
+	    var number = num || 20;
+	    var names = ["Werner", "Humberto", "Marni", "Ruth", "Ashly", "Evelin", "Deloris", "Mignon", "Sophie", "Suk", "Isidra", "Fredia", "Yun", "Dee", "Bart", "Shantelle", "Elvin", "Carissa", "Pa", "Vito", "Dorothy", "Carri", "Roy", "Maritza", "Leida", "Ulysses", "Antonetta", "Crysta", "Catherine", "Jeromy", "Keith", "Houston", "Lu", "Joane", "Minna", "Megan", "Emelina", "Mandie", "Steven", "Martin", "Rutha", "Reid", "Suzy", "Maurine", "Evelia", "Azalee", "Letitia", "Kary", "Ryann", "Liliana", "Laree", "Izola", "Tennille", "Belia", "Josette", "Korey", "Jefferson", "Celena", "Sharri", "Argelia", "Elyse", "Eleanor", "Georgette", "Yoko", "Nicki", "Felica", "Librada", "Terrie", "Sacha", "Stefany", "Vanetta", "Afton", "Alida", "Justa", "Earline", "Melvin", "Alberto", "Curtis", "Monika", "Julianne", "Clarita", "Clemmie", "Brigette", "Adria", "Kaycee", "Johnie", "Reginia", "Marybelle", "Lawanna", "Jacquelyne", "Yuki", "Pandora", "Shery", "Ronald", "Traci", "Tatyana", "Kristen", "Noelle", "Kimberlee", "Hyo"];
+	    var c = 0;
+	    var d = 0;
+	    $('.friend-list').each(function(i,obj){
                     var cat = $(this).closest('section').data('category');
                     while(d < number){
                         var li = $("<li></li>").text(names[c]);
@@ -674,9 +669,31 @@ $('#next-arrow').click(function( event ){
                     $(this).children('li').tsort();
                     d = 0;
                 });
-			}
-			
-			//End debug code
+	}
+	
+	//End debug code
+            
+            Reveal.addEventListener('end', function( event ){
+                FB.getLoginStatus( function( response ){
+                    switch (response.status){
+                        case "connected":
+                        case "not_authorized":
+                            FB.logout();
+                            break;
+                    }
+                });
+                myNetwork.init( network );
+                myNetwork.draw();
+                var log = {
+                    "friends": Friendly.friends,
+                    "links": Friendly.links,
+                    "pID":  pID,
+                    "appID": Friendly.appID,
+                    "circles": Friendly.circles
+                }
+                $.post("/log", JSON.stringify(log));
+                $("#help-img").remove();
+            });
 
             Reveal.addEventListener( 'circles', function( event ) {
                 var slide = $('#circles');
@@ -748,11 +765,11 @@ Reveal.addEventListener('friendOfFriend', function( event ) {
             });
 
 Reveal.addEventListener('lastSeen', function( event ) {
-			    //Build lastSeen table
-			    buildLastSeen();
-			    
-			    //Run DataTable.js on lastSeen table for pagination, if needed
-			    if ( Friendly.friends.length > 10 ) {
+    //Build lastSeen table
+    buildLastSeen();
+    
+    //Run DataTable.js on lastSeen table for pagination, if needed
+    if ( Friendly.friends.length > 10 ) {
                  lst = $('#lastSeenTable').dataTable( {
                     "bInfo":false,
                     "bDestroy":true,
@@ -764,8 +781,8 @@ Reveal.addEventListener('lastSeen', function( event ) {
                 });
              }
 
-			    //Style pagination buttons because DataTables hates JP
-			    $('.paging-div button').addClass("btn btn-primary");
+    //Style pagination buttons because DataTables hates JP
+    $('.paging-div button').addClass("btn btn-primary");
             });
 
 Reveal.addEventListener('merge', function( event ) {
