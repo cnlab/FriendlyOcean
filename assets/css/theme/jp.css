@@ -2,8 +2,8 @@
  * GLOBAL STYLES
  *********************************************/
 body {
-  background: white;
-  background-color: white; }
+  background: url("../../img/bg_ocean.jpg");
+}
 
 .reveal {
   font-family: "Lato", sans-serif;

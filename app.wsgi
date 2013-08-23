@@ -64,32 +64,40 @@ def channel():
 
 @route('/')
 def index():
-    return template('index')
+    if request.query.pID:
+        pID = request.query.pID
+    else:
+        pID = "anon"
+
+    if request.query.appID:
+        appID = request.query.appID
+    else:
+        appID = "cnl"
+
+    return template('index', pID=pID, appID=appID)
     
 @route('/assets/<file_path:path>')
 def static(file_path):
-	return static_file(file_path, root="assets/")
+    return static_file(file_path, root="assets/")
 	
 @route('/log', method="POST")
 def write_log():
-
-	try:
-		data=json.loads(request.body.read())
-		log_file = check_unique("%s_%s" % (data['taskID'],data['pID']))
-		log = open('logs/%s.txt' % log_file, 'w')
-		log.write(json.dumps(data))
-		log.close()
-		update_stage()
-	except:
-		response.status = 500;
-		return "<div>ERROR WRITING RESPONSES</div>"
+    try:
+        data=json.loads(request.body.read())
+        log_file = check_unique("%s_%s" % (data['appID'],data['pID']))
+        log = open('logs/%s.json' % log_file, 'w')
+        log.write(json.dumps(data))
+        log.close()
+        response.status = 200;
+    except:
+        response.status = 500;
 
 def check_unique(fname,suffix=1):
-	fname_new=fname
-	while (os.path.exists('logs/%s.txt' % fname_new)):
-		fname_new = '%s_%i' % (fname,suffix)
-		suffix+=1
-	return fname_new
+    fname_new=fname
+    while (os.path.exists('logs/%s.json' % fname_new)):
+        fname_new = '%s_%i' % (fname,suffix)
+        suffix+=1
+    return fname_new
 	
 # #  Web application main  # #
 
