@@ -131,14 +131,14 @@ var fof = (function(){
                       "mouseover": function(d){ 
                                        if( d.id != center.id ){
                                            d3.select('.center-node').attr({"fill": nodeHover});
-                                           d3.select("#"+d.id).attr({"fill": nodeHover});
+                                           d3.selectAll('.node').filter(function(n){ return n.id == d.id; }).attr({"fill": nodeHover});
                                            d3.selectAll('line').filter(function(a){ return (a.source.id == d.id && a.target.id == center.id)  || (a.source.id == center.id && a.target.id == d.id) }).attr({"stroke": lineHover});
                                        }
                                     },
                       "mouseout": function(d){ 
                                        if( d.id != center.id ){
                                            d3.select('.center-node').attr({"fill": centerColor});
-                                           d3.select("#"+d.id).attr({"fill": nodeColor});
+                                           d3.selectAll('.node').filter(function(n){ return n.id == d.id; }).attr({"fill": nodeColor});
                                            d3.selectAll('line').filter(function(a){ return (a.source.id == d.id && a.target.id == center.id)  || (a.source.id == center.id && a.target.id == d.id) }).attr({"stroke": lineColor});
                                
                                        }
