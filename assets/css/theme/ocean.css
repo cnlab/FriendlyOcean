@@ -1,17 +1,20 @@
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
+body{
+    background: url("../../img/backgrounds/bg_ocean.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
 .reveal {
     font-family: "Lato", sans-serif;
     font-size: 36px;
     font-weight: 200;
     letter-spacing: -0.02em;
     color: black; 
-    background: url("../../img/backgrounds/bg_ocean.jpg") no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
 }
 
 ::selection {

@@ -238,7 +238,7 @@
                     </div>
                 </section>
                 
-                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit">
+                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" class="no-text-select">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Closeness</h2>
@@ -254,7 +254,7 @@
                         <div class="row slide-header">
                             <h2>When did you last see everyone?</h2>
                         </div>
-                        <table id="lastSeenTable" class="table table-striped table-condensed">
+                        <table id="lastSeenTable" class="table">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -829,10 +829,9 @@ Reveal.addEventListener( 'fragmentshown', function( event ) {
 } );
 
 Reveal.addEventListener( 'strengthInit', function( event ) {
-    var data = getApp();
     var names = [];
-    $(data.friends).each(function(i, obj) {
-        names.push(obj.name);
+    $(Friendly.friends).each(function(i, obj) {
+        names.push({name:obj.name, fnum: obj.friendNumber});
     });
     strength.init(names);
 });
