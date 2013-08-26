@@ -3,7 +3,8 @@ var Friendly = {
 	config :{
                 islandType: "ocean",
                 arrowType: "starfish",
-                appID : 1,
+                appID : null,
+                maxFriendsPerCategory: 20,
                 categories: {
                     'family': {
                         'title': 'Family',
@@ -101,11 +102,11 @@ var Friendly = {
                 }
             },
 	
-	//Island name
-	islandName: null,
+    //Island name
+    islandName: null,
 
-	//Max number of people for each category
-	maxFriendsPerCategory: 20,
+    //SNS flag
+    sns: null,
   
     //Current slide index used for reloading app
     slide: 0,
@@ -221,8 +222,9 @@ function addNames(li){
 }
 
 //Update application position
+//Reveal function returns current slide, adding 1 to get next slide
 function updateIndex(){
-    Friendly.slide = Reveal.getIndices().h;
+    Friendly.slide = Reveal.getIndices().h + 1;
 }
     
 //Define Friend object
@@ -263,7 +265,13 @@ function saveApp(){
 
 //Retrieve application object from localStorage
 function getApp(){
-    return JSON.parse(window.localStorage.getItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID})));
+    var app = 'Friendly-{appID}'.supplant({'appID': Friendly.config.appID});
+    return JSON.parse(window.localStorage.getItem(app));
+}
+
+//Delete application object from localStorage
+function deleteApp(){
+    window.localStorage.removeItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID}));
 }
 
 //Helper function for string formatting

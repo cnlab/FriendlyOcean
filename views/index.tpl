@@ -362,14 +362,16 @@
     <script type="text/javascript">
 
     //Do these things on load
-    $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
-    var pID = "{{ pID }}";
-    Friendly.appID = "{{ appID }}";
-    $(".island-type").text(Friendly.config.islandType);
-    $(".island-type-plural").text(Friendly.config.islandType+"s");
-    $(".island-type-caps").text(Friendly.config.islandType.capitalize());
-    $(".arrow-type").text(Friendly.config.arrowType);
-    $("<img></img>").attr('src', 'assets/img/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
+        //Set some global variables
+        var pID = "{{ pID }}";
+        Friendly.config.appID = "{{ appID }}";
+
+        $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
+        $(".island-type").text(Friendly.config.islandType);
+        $(".island-type-plural").text(Friendly.config.islandType+"s");
+        $(".island-type-caps").text(Friendly.config.islandType.capitalize());
+        $(".arrow-type").text(Friendly.config.arrowType);
+        $("<img></img>").attr('src', 'assets/img/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
     ////
 
     $('#help').on('hidden', function(){
@@ -395,7 +397,7 @@
             var cat = slide.dataset.category;
             var friendList = $(slide).find('.friend-list');
 
-            if(friendList.children().length == Friendly.maxFriendsPerCategory){
+            if(friendList.children().length == Friendly.config.maxFriendsPerCategory){
                 alert("Sorry, you've reached the maximum number of friends for this category");
                 $(this).val("");
             }
@@ -464,6 +466,7 @@
             fbPermissions
             );
             $(".arrow-type").text(Friendly.config.arrowType);
+            Friendly.sns = true;
 }
 
 function noSNS(msg){
@@ -477,6 +480,7 @@ function noSNS(msg){
     var header = $(slide).find('.slide-header h2');
     $(header).append(" - ").append(input);
     $(".arrow-type").text(Friendly.config.arrowType);
+    Friendly.sns = false;
 }
 
 function fillFBList(friends){
@@ -487,13 +491,12 @@ function fillFBList(friends){
         var id = obj[0];
         var name = obj[1].trim();
         var hash = obj[2];
-        var li = $("<li></li>").text(name);
+        var li = $("<li></li>");
         var span = $("<span></span>").attr({
-            'class':'delete',
             'data-category':cat,
             'id':id,
             'data-hash':hash
-        });
+        }).text(name);
 
         $(span).on("click", function(){
             $(this).parent().remove();
@@ -719,6 +722,7 @@ $('#next-arrow').click(function( event ){
                 }
                 $.post("/log", JSON.stringify(log));
                 $("#help-img").remove();
+                deleteApp();
             });
 
             Reveal.addEventListener( 'circles', function( event ) {
@@ -1332,6 +1336,16 @@ $(nNext).bind( 'selectstart', function () { return false; } );
     }
 }
 }
+    //Check for app in local storage
+    if( getApp() ){
+        Friendly = getApp();
+        if( Friendly.config.categories.facebook.show && Friendly.sns && Friendly.fbFriends.friends.length > 0 ){
+            fillFBList(Friendly.fbFriends.friends);
+        }else if( Friendly.config.categories.facebook.show ){
+            noSNS();
+        }
+        Reveal.slide(Friendly.slide);
+    }
 </script>
 </body>
 </html>
