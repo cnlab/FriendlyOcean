@@ -293,18 +293,34 @@ text {
     -webkit-column-count: 4;
 }
 
-#help-img {
+.friend-list>li>span{
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
     cursor: pointer;
-    background-image: url('../img/elements/help.png');
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-size: 100%;
-    position: fixed;
-    display: none;
-    width: 4%;
-    height: 8%;
-    z-index: 5;
+    padding: 5px 10px 8px 10px;
+    border: 1px solid transparent;
+}
+
+.friend-list>li>span:hover{
+    border-color: #ff0000;
+    background-color: #ff7c7c;
+    color: #ffffff:;
+}
+
+#help-img {
+    position:fixed;
+    cursor: pointer;
+    top: 0;
+    left: 0;
     margin: 5px;
+    z-index: 5;
+    max-width:5%;
+    display: none;
+}
+
+#help-img>a>img{
+    max-width:100%;
 }
 
 .underline {

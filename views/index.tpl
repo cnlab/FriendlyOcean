@@ -20,7 +20,7 @@
     <![endif]-->
 </head>
 
-<body>
+<body class="no-text-select">
 
         <!--Facebook SDK for login-->
 
@@ -50,7 +50,9 @@
 
             <!--End Facebook SDK for login-->
 
-            <a id="help-img" data-toggle="modal" href="#help"></a>
+            <div id="help-img">
+                <a data-toggle="modal" href="#help"><img src="assets/img/elements/help.png" /></a>
+            </div>
             <div id="next-arrow"></div>
             <div class="reveal" data-state>
 
@@ -399,12 +401,12 @@
             }
             else{
                 var name = $(this).val();
-                var li = $("<li></li>").text(name);
-                var span = $("<span class='delete' data-category='{cat}'></span>".supplant({'cat':cat}));
+                var li = $("<li></li>");
+                var span = $("<span data-category='{cat}'></span>".supplant({'cat':cat})).text(name);
                 $(span).on("click", function(){
                     $(this).parent().remove();
                 });
-                $(li).prepend(span);
+                $(li).append(span);
                 $(friendList).append(li);
                 $('.friend-list li').tsort();
                 $(this).val("");            
