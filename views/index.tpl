@@ -67,7 +67,7 @@
                 </section>
                 
                 <section id="authorize">
-                    <div class="page-header">
+                    <div class="row slide-header">
                         <h2>Facebook Authorization</h2>
                     </div>
                     <div class="row">
@@ -86,90 +86,100 @@
                 </section>
                 
                 <section id="congratulations">
-                    <div class="page-header">
+                    <div class="row slide-header">
                         <h2>Congratulations!</h2>
                     </div>
-                    <p>
-                        You have just been awarded an empty tropical <span class="island-type"></span> for you and all of your friends and family.
-                    </p>
-                    <p class="fragment">
-                        This study is trying to understand how individuals’ <span class="island-type-plural"></span> (or social networks) are different from one another in the 21st Century.
-                    </p>
+                    <div class="row">
+                        <p>
+                            You have just been awarded an empty tropical <span class="island-type"></span> for you and all of your friends and family.
+                        </p>
+                        <p class="fragment">
+                            This study is trying to understand how individuals’ <span class="island-type-plural"></span> (or social networks) are different from one another in the 21st Century.
+                        </p>
+                    </div>
                 </section>
                 
                 <section id="objective" data-transition="none">
-                    <div class="row">
-                        <div class="page-header">
-                            <h3>Your Goal</h3>
+                        <div class="row slide-header">
+                            <h2>Your Goal</h2>
                         </div>
-                        <p>
-                            Populate your <span class="island-type"></span> with everyone in your social network that you talk to regularly or know personally.
-                        </p>
-                    </div>
+                        <div class="row">
+                            <p>
+                                Populate your <span class="island-type"></span> with everyone in your social network that you talk to regularly or know personally.
+                            </p>
+                        </div>
                     <div class="row">
-                        <h3>Before you get started...</h3>
+                        <p>Before you get started...</p>
                         <p>
                             <span class="inline-help">Name your <span class="island-type"></span> </span>
                             <input class="input-large" name="island-name" type="text"/>
-                            <span class="inline-help"> and click the next arrow.</span>
+                            <span class="inline-help"> and click the <span class="arrow-type"></span>.</span>
                         </p>
                     </div>                
                 </section>
                 
                 <section class="instructions" data-transition="none">
-                    <div class="page-header">
-                        <h3>Instructions</h3>
+                    <div class="row slide-header">
+                        <h2>Instructions</h2>
                     </div>
-                    <p>Now, you need to bring over some people to join you on <span class='islandName'></span>.</p>
-                    <p>Please read the following instructions carefully before beginning the game...</p>
-                </section>
-                
-                <section class="instructions" data-transition="none">
-                    <div class="page-header">
-                        <h3>Instructions</h3>
-                    </div>
-                    <p>During the game, you will be asked to enter the first name and initial (or a nickname like “Mom” or “Matt from School”) of your family, friends, and acquaintances who you interact with on a normal basis and know personally.</p>
-                    <p>The reason to enter names with initials (or a nickname) is so that you can keep track of which person is which throughout the game.</p>
-                </section>
-                
-                <section class="instructions" data-transition="none">
-                    <div class="page-header">
-                        <h3>Instructions</h3>
-                    </div>
-                    <p>On <span class='islandName'></span>, each of your personal relationships will each get their own piece of the <span class="island-type"></span>.</p>
-                    <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in six different boats.</p>
-                    <div class="span5 offset2">
-                        <ol>
-                            <li>Family</li>
-                            <li>Calling</li>
-                            <li>Texting</li>
-                            <li>Facebook</li>
-                        </ol>
+                    <div class="row">
+                        <p>Now, you need to bring over some people to join you on <span class='islandName'></span>.</p>
+                        <p>Please read the following instructions carefully before beginning the game...</p>
                     </div>
                 </section>
                 
                 <section class="instructions" data-transition="none">
-                    <div class="page-header">
-                        <h3>Instructions</h3>
+                    <div class="row slide-header">
+                        <h2>Instructions</h2>
                     </div>
-                    <p>After you have transported everyone to <span class='islandName'></span>, you will then decide how much land they get based on how close you are to them.</p>
-                    <p>Finally, you will decide who will live on the same part of the <span class="island-type"></span> as other individuals based on who knows who.</p>
+                    <div class="row">
+                        <p>During the game, you will be asked to enter the first name and initial (or a nickname like “Mom” or “Matt from School”) of your family, friends, and acquaintances who you interact with on a normal basis and know personally.</p>
+                        <p>The reason to enter names with initials (or a nickname) is so that you can keep track of which person is which throughout the game.</p>
+                    </div>
                 </section>
                 
                 <section class="instructions" data-transition="none">
-                    <div class="page-header">
-                        <h3>Three more important things</h3>
+                    <div class="row slide-header">
+                        <h2>Instructions</h2>
+                    </div>
+                    <div class="row">
+                        <p>On <span class='islandName'></span>, each of your personal relationships will each get their own piece of the <span class="island-type"></span>.</p>
+                        <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in six different boats.</p>
+                        <div class="span5 offset2">
+                            <ol>
+                                <li>Family</li>
+                                <li>Calling</li>
+                                <li>Texting</li>
+                                <li>Facebook</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="instructions" data-transition="none">
+                    <div class="row slide-header">
+                        <h2>Instructions</h2>
+                    </div>
+                    <div class="row">
+                        <p>After you have transported everyone to <span class='islandName'></span>, you will then decide how much land they get based on how close you are to them.</p>
+                        <p>Finally, you will decide who will live on the same part of the <span class="island-type"></span> as other individuals based on who knows who.</p>
+                    </div>
+                </section>
+                
+                <section class="instructions" data-transition="none">
+                    <div class="row slide-header">
+                        <h2>Three more important things</h2>
                     </div>
                     <div class="row fragment">
-                        <h3>1&#41; Privacy</h3>
+                        <p><strong>1&#41; Privacy</strong></p>
                         <p>After you have finished the game, we will remove <span class="underline">all</span> of your friends’ names/nicknames automatically so that your social network is <span class="underline">completely anonymous</span>.</p>
                     </div>
                     <div class="row fragment" data-show="help-button">
-                        <h3>2&#41; Help</h3>
+                        <p><strong>2&#41; Help</strong></p>
                         <p>You'll receive instructions along the way. If you ever need to revisit them, you can click the question mark in the upper left-hand corner. Give it a try right now!</p>
                     </div>
                     <div class="row fragment">
-                        <h3>3&#41; Have fun!</h3>
+                        <p><strong>3&#41; Have fun!</strong></p>
                     </div>
                 </section>
                 
