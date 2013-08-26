@@ -789,6 +789,9 @@ Reveal.addEventListener('lastSeen', function( event ) {
             if( Friendly.friends.length <= 10 ){
                 $("#lastSeenTable_paginate").css("display", "none")
             }
+            else{
+                $("#lastSeenTable_paginate button").addClass("btn btn-primary");
+            }
         }
     });
 
