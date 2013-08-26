@@ -254,7 +254,7 @@
                         <div class="row slide-header">
                             <h2>When did you last see everyone?</h2>
                         </div>
-                        <table id="lastSeenTable" class="table">
+                        <table id="lastSeenTable" class="table table-striped">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -544,47 +544,47 @@ $('#next-arrow').click(function( event ){
 
     switch( currentSlide.id ){
         case 'objective':
-        if ( $('input[name="island-name"]').val().trim().length > 0 ) {
-            var islandName = $('input[name="island-name"]').val().trim();
-            $('.islandName').text(islandName);
-            Friendly.islandName = islandName;
-        }
-        else {
-            error("ISLANDNAME");
-            return;
-        }
-        break;
+            if ( $('input[name="island-name"]').val().trim().length > 0 ) {
+                var islandName = $('input[name="island-name"]').val().trim();
+                $('.islandName').text(islandName);
+                Friendly.islandName = islandName;
+            }
+            else {
+                error("ISLANDNAME");
+                return;
+            }
+            break;
         case 'family':
         case 'calling':
         case 'texting':
         case 'facebook':
         case 'face2face':
         case 'other':
-        var li = $( currentSlide ).find('.friend-list li');
-        if( li.length < 1 ){
-            if( !confirm("Are you sure you don't want to add any names?") ){
+            var li = $( currentSlide ).find('.friend-list li');
+            if( li.length < 1 ){
+                if( !confirm("Are you sure you don't want to add any names?") ){
+                    return;
+                }
+            }
+            else{
+                addNames( li );
+            }
+            break;
+        case 'closeness':
+            if ( !strength.validate() ) { 
+                error('STRENGTH');
                 return;
             }
-        }
-        else{
-            addNames( li );
-        }
-        break;
-        case 'closeness':
-        if ( !strength.validate() ) { 
-            error('STRENGTH');
-            return;
-        }
-        else {
-            var vals = strength.values();
-            var friends = Friendly.friends;
-            $(vals).each(function(i, obj){
-                friends[i].strength = obj[0];
-                friends[i].strengthLength = obj[1];
-            });
-            Friendly.friends = friends;
-        }
-        break;
+            else {
+                var vals = strength.values();
+                var friends = Friendly.friends;
+                $(vals).each(function(i, obj){
+                    friends[i].strength = obj[0];
+                    friends[i].strengthLength = obj[1];
+                });
+                Friendly.friends = friends;
+            }
+            break;
         case 'merge':
             if( confirm("Are you sure you've found all of the duplicates?") ){
                 //disembark(null, null, true);
@@ -649,19 +649,19 @@ $('#next-arrow').click(function( event ){
                 // Optional libraries used to extend on reveal.js
                 dependencies: [
                    { src: 'assets/js/classList.js', condition: function() { return !document.body.classList; } },
-    	   //{ src: 'assets/js/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+           //{ src: 'assets/js/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
                         ]
             });
 
             //Debug code
-	
-	function generateNames(num){
-	    //Add names to a category list. number denotes how many names to each list, default is 20
-	    var number = num || 20;
-	    var names = ["Werner", "Humberto", "Marni", "Ruth", "Ashly", "Evelin", "Deloris", "Mignon", "Sophie", "Suk", "Isidra", "Fredia", "Yun", "Dee", "Bart", "Shantelle", "Elvin", "Carissa", "Pa", "Vito", "Dorothy", "Carri", "Roy", "Maritza", "Leida", "Ulysses", "Antonetta", "Crysta", "Catherine", "Jeromy", "Keith", "Houston", "Lu", "Joane", "Minna", "Megan", "Emelina", "Mandie", "Steven", "Martin", "Rutha", "Reid", "Suzy", "Maurine", "Evelia", "Azalee", "Letitia", "Kary", "Ryann", "Liliana", "Laree", "Izola", "Tennille", "Belia", "Josette", "Korey", "Jefferson", "Celena", "Sharri", "Argelia", "Elyse", "Eleanor", "Georgette", "Yoko", "Nicki", "Felica", "Librada", "Terrie", "Sacha", "Stefany", "Vanetta", "Afton", "Alida", "Justa", "Earline", "Melvin", "Alberto", "Curtis", "Monika", "Julianne", "Clarita", "Clemmie", "Brigette", "Adria", "Kaycee", "Johnie", "Reginia", "Marybelle", "Lawanna", "Jacquelyne", "Yuki", "Pandora", "Shery", "Ronald", "Traci", "Tatyana", "Kristen", "Noelle", "Kimberlee", "Hyo"];
-	    var c = 0;
-	    var d = 0;
-	    $('.friend-list').each(function(i,obj){
+    
+    function generateNames(num){
+        //Add names to a category list. number denotes how many names to each list, default is 20
+        var number = num || 20;
+        var names = ["Werner", "Humberto", "Marni", "Ruth", "Ashly", "Evelin", "Deloris", "Mignon", "Sophie", "Suk", "Isidra", "Fredia", "Yun", "Dee", "Bart", "Shantelle", "Elvin", "Carissa", "Pa", "Vito", "Dorothy", "Carri", "Roy", "Maritza", "Leida", "Ulysses", "Antonetta", "Crysta", "Catherine", "Jeromy", "Keith", "Houston", "Lu", "Joane", "Minna", "Megan", "Emelina", "Mandie", "Steven", "Martin", "Rutha", "Reid", "Suzy", "Maurine", "Evelia", "Azalee", "Letitia", "Kary", "Ryann", "Liliana", "Laree", "Izola", "Tennille", "Belia", "Josette", "Korey", "Jefferson", "Celena", "Sharri", "Argelia", "Elyse", "Eleanor", "Georgette", "Yoko", "Nicki", "Felica", "Librada", "Terrie", "Sacha", "Stefany", "Vanetta", "Afton", "Alida", "Justa", "Earline", "Melvin", "Alberto", "Curtis", "Monika", "Julianne", "Clarita", "Clemmie", "Brigette", "Adria", "Kaycee", "Johnie", "Reginia", "Marybelle", "Lawanna", "Jacquelyne", "Yuki", "Pandora", "Shery", "Ronald", "Traci", "Tatyana", "Kristen", "Noelle", "Kimberlee", "Hyo"];
+        var c = 0;
+        var d = 0;
+        $('.friend-list').each(function(i,obj){
                     var cat = $(this).closest('section').data('category');
                     while(d < number){
                         var li = $("<li></li>").text(names[c]);
@@ -677,9 +677,9 @@ $('#next-arrow').click(function( event ){
                     $(this).children('li').tsort();
                     d = 0;
                 });
-	}
-	
-	//End debug code
+    }
+    
+    //End debug code
             
             Reveal.addEventListener('end', function( event ){
                 FB.getLoginStatus( function( response ){
@@ -776,22 +776,51 @@ Reveal.addEventListener('lastSeen', function( event ) {
     //Build lastSeen table
     buildLastSeen();
     
-    //Run DataTable.js on lastSeen table for pagination, if needed
-    if ( Friendly.friends.length > 10 ) {
-                 lst = $('#lastSeenTable').dataTable( {
-                    "bInfo":false,
-                    "bDestroy":true,
-                    "iDisplayLength": 10,
-                    "sPaginationType":"scrolling",
-                    "bSort":false,
-                    'bFilter':false,
-                    "bLengthChange":false,
-                });
-             }
+    //Run DataTable.js on lastSeenTable
+     lst = $('#lastSeenTable').dataTable( {
+        "bInfo":false,
+        "bDestroy":true,
+        "iDisplayLength": 10,
+        "sPaginationType":"scrolling",
+        "bSort":false,
+        'bFilter':false,
+        "bLengthChange":false,
+        "fnDrawCallback": function(){
+            if( Friendly.friends.length <= 10 ){
+                $("#lastSeenTable_paginate").css("display", "none")
+            }
+        }
+    });
 
-    //Style pagination buttons because DataTables hates JP
-    $('.paging-div button').addClass("btn btn-primary");
-            });
+    lst.$("input[type='radio']").click(function(e){
+        e.stopPropagation();
+        $(this).closest("tr").removeClass("error");
+    });
+    
+    lst.$("td:not(:first-child)").on({
+        "mouseover": function(e){
+            var pos = lst.fnGetPosition( this );
+            var h = $("#lastSeenTable th")[pos[2]];
+            var c = $(lst.fnGetNodes(pos[0])).children()[0];
+
+            $(this).css("background", "rgba(255, 144, 3, 0.5)");
+            $(c).css("background", "rgba(255, 144, 3, 0.5)");
+            $(h).css("background", "rgba(255, 144, 3, 0.5)");
+        },
+        "mouseout": function(e){
+            var pos = lst.fnGetPosition( this );
+            var h = $("#lastSeenTable th")[pos[2]];
+            var c = $(lst.fnGetNodes(pos[0])).children()[0];
+
+            $(this).css("background", "");
+            $(h).css("background", "");
+            $(c).css("background", "");
+        },
+        "click": function(e){
+            $(this).children("input").click();
+        }
+    });       
+});
 
 Reveal.addEventListener('merge', function( event ) {
     var left = $('#merge .merge-lists-left'),
@@ -801,15 +830,15 @@ Reveal.addEventListener('merge', function( event ) {
                 //Build friend lists
                 createFriendLists( left );
 
-	    //Create list for merged names
-	    var div = $("<div class='merge-div'></div>");
-	    var bM = $("<button></button>").addClass("btn btn-primary btn-block")
+        //Create list for merged names
+        var div = $("<div class='merge-div'></div>");
+        var bM = $("<button></button>").addClass("btn btn-primary btn-block")
                                                                             .on("click", mergeFriends)
                                                                             .text("Merge");
-	    var ul = $("<ul id='merged' class='merge-list'></ul>");
-	    $(div).append(bM);
-	    $(div).append(ul);
-	    $(center).append(div);
+        var ul = $("<ul id='merged' class='merge-list'></ul>");
+        $(div).append(bM);
+        $(div).append(ul);
+        $(center).append(div);
 
                  //Create list for the island/dock/whatevs
                  div = $("<div class='merge-div'></div>");
@@ -820,7 +849,7 @@ Reveal.addEventListener('merge', function( event ) {
                 $(div).append(bD);
                 $(div).append(ul);
                 $(right).append(div);
-	});
+    });
 
 Reveal.addEventListener( 'fragmentshown', function( event ) {
     if(event.fragment.dataset.show=="help-button"){
@@ -1116,19 +1145,19 @@ function createFriendLists(targetElement) {
 
  var cats = $('.category');
 
-			    //Create list for each category
-			    $(cats).each(function(i,obj){
+                //Create list for each category
+                $(cats).each(function(i,obj){
                  var cat = $(obj).data('category');
                  var div = $("<div class='merge-div'></div>");
                  var p = $("<p></p>").text(cat.capitalize());
                  var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
 
-			        //Get all members of a category
-			        var members = jQuery.grep(Friendly.friends, function (friend) {
+                    //Get all members of a category
+                    var members = jQuery.grep(Friendly.friends, function (friend) {
                      return friend.category[0].search(cat) != -1;
                  });
 
-			        $(members).each(function(i,obj){
+                    $(members).each(function(i,obj){
                      var name = obj.name;
                      var friendNumber = obj.friendNumber;
                      var catId = obj.category[0];
@@ -1143,11 +1172,11 @@ function createFriendLists(targetElement) {
                      $(li).append(span);
                      $(ul).append(li);
                  });
-			        
-			        $(div).append(p);
-			        $(div).append(ul).children('li').tsort();
-			        $(targetElement).append(div);
-			    });
+                    
+                    $(div).append(p);
+                    $(div).append(ul).children('li').tsort();
+                    $(targetElement).append(div);
+                });
 }
 
 function disembarkCheck(){
