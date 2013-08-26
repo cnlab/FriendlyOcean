@@ -71,18 +71,16 @@
                         <h2>Facebook Authorization</h2>
                     </div>
                     <div class="row">
-                        <div class="span12">
                             <p>This application would like to access your Facebook account in order to grab the names of friends you've interacted with in the past week. Once you complete the game, you will be logged out of Facebook and your friend's names will be anonymized. Alternatively, you can enter them manually... but that's just more work for you.</p> 
-                        </div>
-                        <div class="span12">
-                            <p>
-                                <button class="btn btn-primary btn-large" onclick="yesSNS();">Log in</button>
-                            </p>
-                            <h5>
-                                <a href="javascript:void(0);" onclick="noSNS();">Enter names manually</a>
-                            </h5>
-                        </div>                
                     </div>
+                    <div class="span12">
+                        <div class="btn-group" data-toggle="buttons-radio">
+                            <ul class="inline">
+                                <li><button type="button" class="btn btn-large btn-success" onclick="yesSNS();">Log in</button></li>
+                                <li><button type="button" class="btn" onclick="noSNS();">No thanks</button></li>
+                            </ul>
+                        </div>
+                    </div>       
                 </section>
                 
                 <section id="congratulations">
@@ -419,62 +417,64 @@
 
     function yesSNS(){
 
-                //Grab current slide
-                var currentSlide = Reveal.getCurrentSlide();
-                var span = $(currentSlide).find('.span12')[1];
-                
-                //Login to FB using SDK
-                FB.login(
+        //Grab current slide
+        var currentSlide = Reveal.getCurrentSlide();
+        var span = $(currentSlide).find('.span12')[0];
+        
+        //Login to FB using SDK
+        FB.login(
 
-                    //Callback for FB.login()
-                    function(response){
+            //Callback for FB.login()
+            function(response){
 
-                        $(span).html('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
-                        
-                        //Check that we're connected
-                        if(response.status === 'connected'){
+                $(span).html('<h4>Thanks! We\'re all set here. Click the <span class="arrow-type"></span> to continue.</h4>');
 
-                            //Grab the access token and send it to the server
-                            var access_token = FB.getAccessToken();
-                            $.post('/get_interactions',
-                                   {access_token:access_token},
-                                   function(response){
-                                    var data = JSON.parse(response);
-                                    if( data.response === 'false' ) {
-                                        noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the arrow to continue</h4>');
-                                    }
-                                    else if( data.fbFriends.friends.length < 1 ){
-                                        noSNS('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
-                                    }
-                                    else {
-                                        Friendly.fbFriends = data.fbFriends;
-                                        $(span).html('<h4>Thanks! We\'re all set here. Click the arrow to continue.</h4>');
-                                        fillFBList(Friendly.fbFriends.friends);
-                                    }
-                                });
-}
+                //Check that we're connected
+                if(response.status === 'connected'){
 
-                        //We're not connected for some reason. Gotta bootstrap it!
-                        else{
-                            noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the arrow to continue</h4>');
-                        }
-                    },
-                    
-                    //Scope object required for extended permissions
-                    fbPermissions
-                    );
+                    //Grab the access token and send it to the server
+                    var access_token = FB.getAccessToken();
+                    $.post('/get_interactions',
+                           {access_token:access_token},
+                           function(response){
+                                var data = JSON.parse(response);
+                                if( data.response === 'false' ) {
+                                    noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the <span class="arrow-type"></span> to continue</h4>');
+                                }
+                                else if( data.fbFriends.friends.length < 1 ){
+                                    noSNS('<h4>Thanks! We\'re all set here. Click the <span class="arrow-type"></span> to continue.</h4>');
+                                }
+                                else {
+                                    Friendly.fbFriends = data.fbFriends;
+                                    fillFBList(Friendly.fbFriends.friends);
+                                }
+                        });
+                }
+
+                //We're not connected for some reason. Gotta bootstrap it!
+                else{
+                    noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the <span class="arrow-type"></span> to continue</h4>');
+                }
+                $(".arrow-type").text(Friendly.config.arrowType);
+            },
+            
+            //Scope object required for extended permissions
+            fbPermissions
+            );
+            $(".arrow-type").text(Friendly.config.arrowType);
 }
 
 function noSNS(msg){
-    var msg = msg || '<h4>No problem! Please click the arrow to continue.</h4>';
+    var msg = msg || '<h4>No problem! Please click the <span class="arrow-type"></span> to continue.</h4>';
     var currentSlide = Reveal.getCurrentSlide();
-    var span = $(currentSlide).find('.span12')[1];
+    var span = $(currentSlide).find('.span12')[0];
     $(span).html(msg);
     var slide = $('#facebook');
     var input = $('<input class="friend-input" name="{category}-friend-input" type="text" placeholder="Type a name and press Enter"/>'.supplant({'category': $(slide).data('category')}));
     $(input).keypress(friendInputHandler);
     var header = $(slide).find('.slide-header h2');
     $(header).append(" - ").append(input);
+    $(".arrow-type").text(Friendly.config.arrowType);
 }
 
 function fillFBList(friends){
@@ -561,6 +561,12 @@ $('#next-arrow').click(function( event ){
             }
             else {
                 error("ISLANDNAME");
+                return;
+            }
+            break;
+        case 'authorize':
+            if ( !$("#authorize button").length == 0 ){
+                error('FBAUTH');
                 return;
             }
             break;
@@ -1061,6 +1067,9 @@ function error( type ) {
     var mess;
     if (type=='STRENGTH') {
         mess="Please bring all of your friends into the circle";
+    }
+    else if(type=='FBAUTH'){
+        mess="Please choose an option.";
     }
     else if (type=='CIRCLEDUP') {
         mess="There is already a group with that title. Please choose a different title.";
