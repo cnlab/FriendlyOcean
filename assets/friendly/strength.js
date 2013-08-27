@@ -2,7 +2,7 @@
 var strength = (function() {
 
 
-    var rings = [50, 100, 140, 180, 220, 260, 300];
+    var rings = [50, 100, 140, 180, 220, 260, 300, 301];
     var w = 760,
         h = 720,
         r = 20,
@@ -38,14 +38,14 @@ var strength = (function() {
                     .attr({
                                 "class": "ring",
                                 "id": function(d) { return "ring-"+d; },
-                                "r": function(d) { return d; },
+                                "r": function(d) { return d===301 ? 300 : d; },
                                 "cx":  w/2,
                                 "cy": h/2,
-                                "stroke": col,
+                                "stroke": function(d) { return d===301 ? "#ffffff" : col(d); },
                                 "stroke-width": "1px",
                                 "stroke-opacity": .2,
-                                "fill": col,
-                                "fill-opacity": .2
+                                "fill": function(d) { return d===301 ? "" : col(d); },
+                                "fill-opacity": function(d) { return d===301 ? 0 : .2; }
                               });
 
         for (var f=1; f<=names.length; f++) {
@@ -138,18 +138,18 @@ var strength = (function() {
                             "stroke": "#ffffff",
                             "stroke-opacity": 1
                          })
-                c.attr("stroke", "#ffffff");
+                c.attr("stroke", "#ffffff").attr("stroke-opacity", 1);
             }else if(transition){
                 d3.selectAll(".ring").transition().attr({
                                             "fill": col,
-                                            "fill-opacity": .2,
+                                            "fill-opacity": function(d){ return d===301 ? 0 : .2},
                                             "stroke": col,
                                             "stroke-opacity": .2
                                          });
             }else{
                 d3.selectAll(".ring").attr({
                                             "fill": col,
-                                            "fill-opacity": .2,
+                                            "fill-opacity": function(d){ return d===301 ? 0 : .2},
                                             "stroke": col,
                                             "stroke-opacity": .2
                                          });
