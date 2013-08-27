@@ -1071,33 +1071,35 @@ function selectCircle( clr, circle ){
 
 function error( type ) {
     var mess;
-    if (type=='STRENGTH') {
-        mess="Please bring all of your friends into the circle";
+    switch( type ){
+        case "STRENGTH":
+            mess="Please bring all of your friends into the circle";
+            break;
+        case "FBAUTH":
+            mess="Please choose an option.";
+            break;
+        case "CIRCLEDUP":
+            mess="There is already a group with that title. Please choose a different title.";
+            break;
+        case "CIRCLETITLE":
+            mess="Please pick a title for this circle.";
+            break;
+        case "CIRCLESNAMES":
+            mess="A group needs at least 2 people.";
+            break;
+        case 'FOF':
+            mess="FOF ERROR";
+            break;
+        case "ISLANDNAME":
+            mess="Please enter a name.";
+            break;
+        case "NAMES":
+            mess="Are you sure you don't want to enter any names?";
+            break;
+        case "LASTSEEN":
+            mess="Please select missing values.";
+            break;
     }
-    else if(type=='FBAUTH'){
-        mess="Please choose an option.";
-    }
-    else if (type=='CIRCLEDUP') {
-        mess="There is already a group with that title. Please choose a different title.";
-    }
-    else if (type=='CIRCLETITLE') {
-        mess="Please pick a title for this circle.";
-    }
-    else if (type=='CIRCLESNAMES') {
-        mess="A group needs at least 2 people.";
-    }
-    else if (type=='FOF') {
-        mess="FOF ERROR";
-    }
-    else if (type=='ISLANDNAME') {
-        mess="Please enter a name.";
-    }
-    else if (type=='NAMES') {
-        mess="Are you sure you don't want to enter any names?";
-    }
-    else if (type=='LASTSEEN') {
-        mess="Please select missing values.";
-    } 
     $('#error').text(mess);
     $('#error').fadeIn('fast');
     var fade = setInterval(function() { 
