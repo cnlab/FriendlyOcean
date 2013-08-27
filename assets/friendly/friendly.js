@@ -1070,13 +1070,7 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
             });            
 
 function deselectCircle(){
-    $(".circle-selected").removeClass('circle-selected')
-                                     .css({
-                                        'box-shadow': 'none',
-                                        '-moz-box-shadow': 'none',
-                                        '-webkit-box-shadow': 'none',
-                                        'border': '1px solid #cccccc'
-                                     });
+    $(".circle-selected").removeClass('circle-selected');
     $('#names-list .circle-member').removeClass('circle-member')
                                                           .css({'background-color':''});
 }
@@ -1198,13 +1192,7 @@ function toggleCircleMember( friend, circle ){
 function selectCircle( clr, circle ){
     $('.selected').click();
     deselectCircle();
-    $(circle).css({
-        'box-shadow': '0px 0px 10px 5px {color}'.supplant({'color': clr.replace(/,([\s\S]{1,3})\)/, ",.75)")}),
-        '-moz-box-shadow': '0px 0px 10px 5px {color}'.supplant({'color': clr.replace(/,([\s\S]{1,3})\)/, ",.75)")}),
-        '-webkit-box-shadow': '0px 0px 10px 5px {color}'.supplant({'color': clr.replace(/,([\s\S]{1,3})\)/, ",.75)")}),
-        'border': '1px solid {color}'.supplant({'color': clr})
-    })
-    .toggleClass('circle-selected');
+    $(circle).toggleClass('circle-selected');
     var allFriends = $('#names-list span');
     var members = $(circle).find('span');
     $(members).each(function( i,obj ){

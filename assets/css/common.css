@@ -90,6 +90,8 @@ text {
     background: #ffffff     ;
 }
 
+
+
 .circle p {
     font-size: 24px;
     padding-left: 5px;
@@ -116,18 +118,31 @@ text {
     line-height: 1.5;
 }
 
-.merge-list span,
 #names-list span {
     float: left;
     font-size: 14px;
     margin: 1px;
-    padding-right: 5px;
-    padding-left: 5px;
+    padding: 0px 5px 0px 5px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;
     cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
 }
+
+.circle-selected{
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    border: 1px solid rgba(0, 0, 0, .5);
+}
+
+.circle-member{
+    border-color: #333333 !important;
+}
+
 .merge-list span {
     float: left;
     font-size: 14px;
