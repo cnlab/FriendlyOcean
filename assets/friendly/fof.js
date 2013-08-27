@@ -62,14 +62,14 @@ var fof = (function(){
                                },
                       "mouseover": function(d){
                                        var id = this.id.split("-").filter(function(b,i){ return b!=center.id });
-                                       d3.select('.center-node').attr({"fill": nodeHover});
+                                       d3.select('.center-node').attr({"fill": nodeHover, "stroke": nodeHover});
                                        d3.select("#"+id).attr({"fill": nodeHover});
                                        d3.select(this).attr({"stroke": lineHover});
                                    
                                    },
                       "mouseout": function(d){
                                       var id = this.id.split("-").filter(function(b,i){ return b!=center.id });
-                                      d3.select('.center-node').attr({"fill": centerColor});
+                                      d3.select('.center-node').attr({"fill": centerColor, "stroke": centerStroke});
                                       d3.select("#"+id).attr({"fill": nodeColor});
                                       d3.select(this).attr({"stroke": lineColor});
                                   }
@@ -96,14 +96,14 @@ var fof = (function(){
                                },
                       "mouseover": function(d){ 
                                        if( d.id != center.id ){
-                                           d3.select('.center-node').attr({"fill": nodeHover});
+                                           d3.select('.center-node').attr({"fill": nodeHover, "stroke": nodeHover});
                                            d3.select(this).attr({"fill": nodeHover});
                                            d3.selectAll('line').filter(function(a){ return (a.source.id == d.id && a.target.id == center.id)  || (a.source.id == center.id && a.target.id == d.id) }).attr({"stroke": lineHover});
                                        }
                                     },
                       "mouseout": function(d){ 
                                        if( d.id != center.id ){
-                                           d3.select('.center-node').attr({"fill": centerColor});
+                                           d3.select('.center-node').attr({"fill": centerColor, "stroke": centerStroke});
                                            d3.select(this).attr({"fill": nodeColor});
                                            d3.selectAll('line').filter(function(a){ return (a.source.id == d.id && a.target.id == center.id)  || (a.source.id == center.id && a.target.id == d.id) }).attr({"stroke": lineColor});
                                
@@ -130,14 +130,14 @@ var fof = (function(){
                                },
                       "mouseover": function(d){ 
                                        if( d.id != center.id ){
-                                           d3.select('.center-node').attr({"fill": nodeHover});
+                                           d3.select('.center-node').attr({"fill": nodeHover, "stroke": nodeHover});
                                            d3.selectAll('.node').filter(function(n){ return n.id == d.id; }).attr({"fill": nodeHover});
                                            d3.selectAll('line').filter(function(a){ return (a.source.id == d.id && a.target.id == center.id)  || (a.source.id == center.id && a.target.id == d.id) }).attr({"stroke": lineHover});
                                        }
                                     },
                       "mouseout": function(d){ 
                                        if( d.id != center.id ){
-                                           d3.select('.center-node').attr({"fill": centerColor});
+                                           d3.select('.center-node').attr({"fill": centerColor, "stroke": centerStroke});
                                            d3.selectAll('.node').filter(function(n){ return n.id == d.id; }).attr({"fill": nodeColor});
                                            d3.selectAll('line').filter(function(a){ return (a.source.id == d.id && a.target.id == center.id)  || (a.source.id == center.id && a.target.id == d.id) }).attr({"stroke": lineColor});
                                
