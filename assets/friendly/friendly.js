@@ -427,11 +427,24 @@ $('#next-friend').click(function( event ){
                 var span = $("<span data-category='{cat}'></span>".supplant({'cat':cat})).text(name);
                 $(span).on("click", function(){
                     $(this).parent().remove();
+                }).css({
+                    "opacity": 0,
+                    "border-color": "#ff0000",
+                    "background-color": "#ff7c7c",
+                    "color": "#ffffff"
                 });
                 $(li).append(span);
                 $(friendList).append(li);
-                $('.friend-list li').tsort();
-                $(this).val("");            
+                //$('.friend-list li').tsort();
+                $(span)
+                    .animate(
+                             {"opacity": 1},
+                             "slow",
+                             "linear");
+                var fade = setInterval(function() {
+                    $(span).css({"border-color": "", "background-color": "", "color": ""});
+                    clearInterval(fade); }, 1500);
+                $(this).val("");
             }
         }
         else if(event.which == 13 && value.length < 1) {
