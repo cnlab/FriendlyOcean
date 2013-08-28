@@ -430,26 +430,23 @@ $('#next-friend').click(function( event ){
                 }).css({
                     "opacity": 0,
                     "border-color": "#ff0000",
-                    "background-color": "#ff7c7c",
+                    "background": "#ff7c7c",
                     "color": "#ffffff"
                 });
                 $(li).append(span);
                 $(friendList).append(li);
-                //$('.friend-list li').tsort();
-                $(span)
-                    .animate(
-                             {"opacity": 1},
-                             "slow",
-                             "linear");
-                var fade = setInterval(function() {
-                    $(span).css({"border-color": "", "background-color": "", "color": ""});
-                    clearInterval(fade); }, 1500);
+                $('.friend-list li').tsort();
                 $(this).val("");
+                $(span).animate({"opacity": 1}, 500, "linear");
+                var fade = setInterval(function() { 
+                    $(span).removeAttr("style"); 
+                    clearInterval(fade); }, 1000);   
             }
         }
         else if(event.which == 13 && value.length < 1) {
             $(this).val("");
         }
+        
     }
 
     function yesSNS(){
