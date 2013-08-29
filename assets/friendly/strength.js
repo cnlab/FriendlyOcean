@@ -92,7 +92,7 @@ var strength = (function() {
 
                 var link = links.filter(function(a){ return a.source.fnum === d.fnum; })[0];
                 linkLength = Math.sqrt(Math.pow((link.target.x - link.source.x),2) + Math.pow((link.target.y - link.source.y),2));
-                for (var c=0; c<rings.length; c++) {
+                for (var c=1; c<rings.length; c++) {
                     if (linkLength < rings[c]) {
                         highlight(rings[c]);
                         var t = d3.selectAll(".node-close").filter(function(b){
@@ -247,12 +247,12 @@ var strength = (function() {
             linkLength = Math.sqrt(Math.pow((targetX - sourceX),2) + Math.pow((targetY - sourceY),2));
             
             var lastSeen;
-            for (var c=0; c<rings.length; c++) {
+            for (var c=1; c<rings.length; c++) {
                 if (linkLength < rings[c]) {
                     lastSeen=c;
                 }
             }
-            values.push([lastSeen+1,linkLength])
+            values.push([lastSeen,linkLength])
         }
         
         return values;
