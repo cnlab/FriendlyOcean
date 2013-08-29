@@ -237,13 +237,16 @@
                             <h2>Merge Duplicates and Disembark</h2>
                         </div>
                         <div class="row lists-row">
-                            <div class="span4 merge-lists-left">
-                            </div>
-                            <div class="span3 merge-lists-center">
-                                                           
-                            </div>
-                            <div class="span3 merge-lists-right">
-                            </div>                        
+                            <!--Leave this space empty. Lists are dynamically generated-->
+                        </div>
+                        <div class="row slide-header">
+                            <h3>Please highlight each instance of <span class="current-merge-name"></span> on this page.
+                                <!--<button class="btn btn-primary btn-merge" onclick="merger.mergeFriends();">Merge</button>-->
+                                <button class="btn btn-primary btn-merge" id="next-merge">Next Friend</button>
+                            </h3>
+                        </div>
+                        <div class="row merge-row shore">
+                            <ul id='merged' class='merge-list'></ul>
                         </div>
                     </div>
                 </section>
@@ -303,7 +306,7 @@
                 <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help" class="no-text-select">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>Friends of friends: Who knows <span id="currentFOF"></span>? <button id="next-friend" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
+                            <h2>Friends of friends: Who knows <span id="currentFOF"></span>? <button id="next-fof" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
                         </div>
                         <div class="row">
                             <div class="span4" id="node-list">
@@ -357,9 +360,22 @@
     <script src="assets/friendly/strength.js"></script>
     <script src="assets/js/jquery.dataTables.min.js"></script>
     <script src="assets/friendly/fof.js"></script>
+    <script src="assets/friendly/merger.js"></script>
     <script src="assets/friendly/myNetwork.js"></script>
 
     <script type="text/javascript">
+        //Do these things on load
+
+        //Set some global variables
+        var pID = "{{ pID }}";
+        Friendly.config.appID = "{{ appID }}";
+
+        $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
+        $(".island-type").text(Friendly.config.islandType);
+        $(".island-type-plural").text(Friendly.config.islandType+"s");
+        $(".island-type-caps").text(Friendly.config.islandType.capitalize());
+        $(".arrow-type").text(Friendly.config.arrowType);
+        $("<img></img>").attr('src', 'assets/img/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
         
         //Check for app in local storage
         if( getApp() ){

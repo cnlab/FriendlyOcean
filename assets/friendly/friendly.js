@@ -181,32 +181,6 @@ function buildLastSeen() {
      });
 }
 
-//Merge friends for good
-function finalMerge(){
-    var merged = [];
-    var friend_list = $('.merge-list li');
-    $(friend_list).each(function( i, li ){
-        var span = $(li).children();
-        var data = $(span).data();
-        if ( data.hasOwnProperty('merged') ) {
-            var mainFriend = $(Friendly.friends).filter(function( i ) {
-                return this.friendNumber == data.merged[0].friendNumber;
-            })[0];
-            
-            $(data.merged).each(function(i,obj){
-                if ( obj.friendNumber != mainFriend.friendNumber ){
-                    mainFriend.category.push(obj.catId);
-                    $(Friendly.friends).each(function(a,b){
-                        if (b.friendNumber == obj.friendNumber) {
-                            Friendly.friends.splice(a,1);
-                        }
-                    });
-                }
-            });
-        }
-    });
-}
-
 //Add names from friend-list to application object
 function addNames(li){
     $(li).each(function(i,obj){
@@ -345,7 +319,7 @@ function disembark( element, newParent, moveAll ) {
     element = $(element); //Allow passing in either a JQuery object or selector
     newParent = $(newParent); //Allow passing in either a JQuery object or selector
     var oldOffset = element.offset();
-    element.appendTo(newParent);
+    element.prependTo(newParent);
     var newOffset = element.offset();
 
     var temp = element.clone().appendTo('body');
@@ -360,6 +334,7 @@ function disembark( element, newParent, moveAll ) {
         'left': newOffset.left
     }, 
     'slow',
+    'linear',
     function () {
         element.show();
         temp.remove();
@@ -381,24 +356,12 @@ var icons = ["starfish.png", "hut.png", "statue.png", "tree.png"];
 //Colors for circles
 var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);
 
-//Do these things on load
-    //Set some global variables
-    var pID = "{{ pID }}";
-    Friendly.config.appID = "{{ appID }}";
-
-    $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
-    $(".island-type").text(Friendly.config.islandType);
-    $(".island-type-plural").text(Friendly.config.islandType+"s");
-    $(".island-type-caps").text(Friendly.config.islandType.capitalize());
-    $(".arrow-type").text(Friendly.config.arrowType);
-    $("<img></img>").attr('src', 'assets/img/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
-////
-
 $('#help').on('hidden', function(){
-    $(Reveal.getCurrentSlide()).find('input').focus();
+    var s = Reveal.getCurrentSlide();
+    $(s).find('input').focus();
 });
 
-$('#next-friend').click(function( event ){
+$('#next-fof').click(function( event ){
     var next = fof.nextFriend();
     if(next){
         $("#currentFOF").text(next.name);
@@ -407,6 +370,25 @@ $('#next-friend').click(function( event ){
         fof.finalizeLinks();
         saveApp();
         Reveal.next();
+    }
+});
+
+$("#next-merge").click(function( event ){
+    merger.mergeFriends();
+    $(".selected").removeClass("selected");
+    var next = merger.nextFriend();
+    if ( next ){
+        $(".current-merge-name").text( next.innerText );
+        $("#merged li").css("pointer-events", "auto");
+        $(next).parent().css("pointer-events", "none");
+        $(".current-merge").removeClass("current-merge");
+        $(next).addClass("current-merge");
+        //merger.matchSuspects( next.innerText );
+    }else{
+        merger.finalMerge();
+        saveApp();
+        Reveal.next();
+        $("#next-arrow").show();
     }
 });
 
@@ -638,7 +620,6 @@ $('#next-arrow').click(function( event ){
             break;
         case 'merge':
             if( confirm("Are you sure you've found all of the duplicates?") ){
-                //disembark(null, null, true);
                 finalMerge();
             }
             else{
@@ -1004,32 +985,20 @@ Reveal.addEventListener('lastSeen', function( event ) {
 });
 
 Reveal.addEventListener('merge', function( event ) {
-    var left = $('#merge .merge-lists-left'),
-          center = $("#merge .merge-lists-center"),
-          right = $('#merge .merge-lists-right');
 
-                //Build friend lists
-                createFriendLists( left );
+    //Hide next arrow so they're forced to touch each person
+    $("#next-arrow").hide();
 
-        //Create list for merged names
-        var div = $("<div class='merge-div'></div>");
-        var bM = $("<button></button>").addClass("btn btn-primary btn-block")
-                                                                            .on("click", mergeFriends)
-                                                                            .text("Merge");
-        var ul = $("<ul id='merged' class='merge-list'></ul>");
-        $(div).append(bM);
-        $(div).append(ul);
-        $(center).append(div);
+    //Build friend lists
+    createFriendLists( $('#merge .lists-row') );
 
-                 //Create list for the island/dock/whatevs
-                 div = $("<div class='merge-div'></div>");
-                 bD = $("<button></button>").addClass("btn btn-primary btn-block")
-                                                                      .on("click", disembarkCheck)
-                                                                      .text("Disembark");
-                 ul = $("<ul id='merged' class='merge-list'></ul>");
-                $(div).append(bD);
-                $(div).append(ul);
-                $(right).append(div);
+    var spans = $("#merge .lists-row").find("span");
+    var firstFriend = merger.init( spans );
+    $("#merge .current-merge-name").text( firstFriend.innerText );
+    
+    $(firstFriend).parent().css("pointer-events", "none");
+    $(firstFriend).addClass("current-merge");
+    //merger.matchSuspects( firstFriend.innerText );
     });
 
 Reveal.addEventListener( 'fragmentshown', function( event ) {
@@ -1243,6 +1212,9 @@ function error( type ) {
         case "LASTSEEN":
             mess="Please select missing values.";
             break;
+        case "NOSPLITCURRENT":
+            mess="You can't split somone who is still merging!";
+            break;
     }
     $('#error').text(mess);
     $('#error').fadeIn('fast');
@@ -1255,102 +1227,43 @@ function select(e){
     $(e).children().toggleClass('selected');
 }
 
-function mergeFriends(){
-    var selected = $('.selected');
-    var m = $('#merged');
-    if (selected.length > 1) {
+function createFriendLists( targetElement ) {
 
-        var mList = [];
+     var cats = $('.category');
 
-        $(selected).each(function (i, obj) {
-            var data = $(obj).data();
-            if ( data.hasOwnProperty('merged')) {
-                $(data.merged).each(function(i,d){
-                    mList.push(d);
-                });
-            }
-            else{
-                var name = $(obj).text();
-                data.name = name;
-                mList.push(data);
-            }
-        });
+    //Create list for each category
+    $(cats).each(function(i,obj){
+         var cat = $(obj).data('category');
+         var div = $("<div class='merge-div'></div>");
+         var p = $("<p></p>").text(cat.capitalize());
+         var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
 
-        var newLi = $('<li></li>').attr('onclick', 'select(this)');
-        var name = $(selected[0]).text();
-        var newSpan = $('<span></span>').text(name);
-        $(newSpan).data('merged', mList);
-        $(newSpan).on('dblclick', split);
-        newLi.append(newSpan);
-        m.append(newLi);
-        $(selected).parent().remove();
-    }
-    else {
-        return;
-    }
-    $(m).children('li').tsort();
-}
+        //Get all members of a category
+        var members = jQuery.grep(Friendly.friends, function (friend) {
+            return friend.category[0].search(cat) != -1;
+         });
 
-function split(event) {
-    var element = event.toElement;
-    var merged = $(element).data('merged');
-    $(merged).each(function (i, obj) {
-        var friendNumber = obj.friendNumber;
-        var name = obj.name;
-        var hash = obj.hash;
-        var catId = obj.catId;
-        var homeList = $("#{cat}-list".supplant({'cat':catId.split('_')[0]}));
-        var li = $('<li></li>').attr('onclick', 'select(this)');
-        var span = $('<span class="no-text-select"></span>').data({
-            friendNumber: friendNumber,
-            catId: catId,
-            name: name,
-            hash: hash
-        })
-        .text(name);
-        li.append(span);
-        homeList.append(li);
+        $(members).each(function(i,obj){
+             var name = obj.name;
+             var friendNumber = obj.friendNumber;
+             var catId = obj.category[0];
+             var hash = obj.hash;
+             var li = $("<li></li>").attr('onclick', 'select(this)');
+             var span = $("<span></span>").data({
+                 friendNumber: friendNumber,
+                 catId: catId,
+                 hash: hash
+             })
+             .attr("id", friendNumber+"-merge")
+             .text(name);
+             $(li).append(span);
+             $(ul).append(li);
+         });
+            
+            $(div).append(p);
+            $(div).append(ul).children('li').tsort();
+            $(targetElement).append(div);
     });
-    $(event.target).parent().remove();
-    $('.merge-list li').tsort();
-}
-
-function createFriendLists(targetElement) {
-
- var cats = $('.category');
-
-                //Create list for each category
-                $(cats).each(function(i,obj){
-                 var cat = $(obj).data('category');
-                 var div = $("<div class='merge-div'></div>");
-                 var p = $("<p></p>").text(cat.capitalize());
-                 var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
-
-                    //Get all members of a category
-                    var members = jQuery.grep(Friendly.friends, function (friend) {
-                     return friend.category[0].search(cat) != -1;
-                 });
-
-                    $(members).each(function(i,obj){
-                     var name = obj.name;
-                     var friendNumber = obj.friendNumber;
-                     var catId = obj.category[0];
-                     var hash = obj.hash;
-                     var li = $("<li></li>").attr('onclick', 'select(this)');
-                     var span = $("<span class='no-text-select'></span>").data({
-                         friendNumber: friendNumber,
-                         catId: catId,
-                         hash: hash
-                     })
-                     .text(name);
-                     $(li).append(span);
-                     $(ul).append(li);
-                 });
-                    
-                    $(div).append(p);
-                    $(div).append(ul).children('li').tsort();
-                    $(targetElement).append(div);
-                });
 }
 
 function disembarkCheck(){

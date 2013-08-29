@@ -198,17 +198,32 @@ text {
     white-space: nowrap;
     overflow: hidden;
     padding: 1px;
+    margin-bottom: 20px;
+}
+
+.disappear{
+    color: transparent !important;
+    pointer-events: none !important;
+}
+
+.current-merge {
+    background-color: #FFFF00;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.btn-merge{
+    margin-left: 5px;
+    vertical-align: top;
 }
 
 .merge-div {
     font-size: 24px;
     text-align: left;
-    clear: left;
-    margin: 5px;
-}
-
-.merge-div button {
-    margin-bottom: 10px;
+    float: left;
+    width: 20%;
+    margin-left: 30px;
 }
 
 .merge-list {
@@ -219,6 +234,13 @@ text {
 
 .merge-list li {
     cursor: pointer;
+}
+
+.shore{
+    background: rgba(255,255,255,.5);
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
 }
 
 .no-text-select {
