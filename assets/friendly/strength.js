@@ -99,7 +99,7 @@ var strength = (function() {
                             return b.fnum === d.fnum;
                         });
                         t = t.node();
-                        t.textContent = scale_text[c];
+                        t.textContent = scale_text[c-1];
                     }else if (linkLength > 300){
                         highlight();
                         var t = d3.selectAll(".node-close").filter(function(b){
