@@ -85,7 +85,7 @@
                     </div>       
                 </section>
                 
-                <section id="congratulations">
+                <section id="congratulations" data-background="assets/img/backgrounds/instr1.png">
                     <div class="row slide-header">
                         <h2>Congratulations!</h2>
                     </div>
@@ -99,7 +99,7 @@
                     </div>
                 </section>
                 
-                <section id="objective" data-transition="none">
+                <section id="objective" data-transition="none" data-background="assets/img/backgrounds/instr2.png">
                         <div class="row slide-header">
                             <h2>Your Goal</h2>
                         </div>
@@ -118,7 +118,7 @@
                     </div>                
                 </section>
                 
-                <section class="instructions" data-transition="none">
+                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr3.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -128,7 +128,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none">
+                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr4.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -138,7 +138,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none">
+                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr5.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -156,7 +156,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none">
+                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr6.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -166,7 +166,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none">
+                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr7.png">
                     <div class="row slide-header">
                         <h2>Three more important things</h2>
                     </div>
@@ -183,7 +183,7 @@
                     </div>
                 </section>
                 
-                <section id="family" data-category="family" data-show="help" class="category add-names">
+                <section id="family" data-category="family" data-show="help" class="category add-names" data-background="assets/img/backgrounds/family.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Family - <input class="friend-input" name="family-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -195,7 +195,7 @@
                     </div>
                 </section>
                 
-                <section id="calling" data-category="calling" data-show="help" class="category add-names">
+                <section id="calling" data-category="calling" data-show="help" class="category add-names" data-background="assets/img/backgrounds/calling.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -207,7 +207,7 @@
                     </div>
                 </section>
                 
-                <section id="texting" data-category="texting" data-show="help" class="category add-names">
+                <section id="texting" data-category="texting" data-show="help" class="category add-names" data-background="assets/img/backgrounds/texting.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -219,7 +219,7 @@
                     </div>
                 </section>
                 
-                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns">
+                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns" data-background="assets/img/backgrounds/facebook.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Facebook</h2>
@@ -231,19 +231,20 @@
                     </div>
                 </section>
                 
-                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge no-text-select">
+                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge no-text-select" data-background="assets/img/backgrounds/merge.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Merge Duplicates and Disembark</h2>
                         </div>
+                        <div class="row slide-header">
+                            <h3>Please highlight each instance of <span class="current-merge-name"></span> on this page.
+                                <button class="btn btn-primary btn-merge" id="next-merge">Next Friend <i class="icon-forward icon-white"></i></button>
+                            </h3>
+                        </div>
                         <div class="row lists-row">
                             <!--Leave this space empty. Lists are dynamically generated-->
                         </div>
-                        <div class="row slide-header">
-                            <h3>Please highlight each instance of <span class="current-merge-name"></span> on this page.
-                                <!--<button class="btn btn-primary btn-merge" onclick="merger.mergeFriends();">Merge</button>-->
-                                <button class="btn btn-primary btn-merge" id="next-merge">Next Friend</button>
-                            </h3>
+                        <div class="row div-row">
                         </div>
                         <div class="row merge-row shore">
                             <ul id='merged' class='merge-list'></ul>
@@ -262,7 +263,7 @@
                     </div>
                 </section>
                 
-                <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help">
+                <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help" data-background="assets/img/backgrounds/lastseen.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>When did you last see everyone?</h2>

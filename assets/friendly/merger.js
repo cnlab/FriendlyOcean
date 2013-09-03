@@ -48,8 +48,61 @@ var merger = (function(){
             });
 
             $(currentSpan).data('merged', mList);
+            
+            //list for popover
+            var ul = $("<ul class='unstyled'></ul>");
+            $(mList).each( function(i,o){
+                if(o.friendNumber != cData.friendNumber){
+                    var li = $("<li></li>").text(o.name + " (" +o.catId.split("_")[0]+")").click(function(e){e.stopPropagation();}).appendTo(ul);
+/*                    var remove = $("<i class='icon-remove'></i>").data({'friend':o, 'parent': "#"+cData.friendNumber+"-merge"}).css("cursor", "pointer")
+                                                                    .click(function( e ){ 
+                                                                        e.stopPropagation();
+                                                                        e.preventDefault();
+                                                                        var main = $(this).data("parent");
+                                                                        var friend = $(this).data("friend");
+                                                                        main = $(main);
+                                                                        var index;
+                                                                        $(main).data('merged').forEach( function( f, i ){
+                                                                            if( f.friendNumber == friend.friendNumber){
+                                                                                index = i;
+                                                                            }
+                                                                        });
+                                                                        $(main).data("merged").splice(index,1);
+                                                                        var homeList = $("#{cat}-list".supplant({'cat':friend.catId.split('_')[0]}));
+                                                                        var newLi = $('<li></li>').attr('onclick', 'select(this)');
+                                                                        var span = $('<span></span>').data({
+                                                                            friendNumber: friend.friendNumber,
+                                                                            catId: friend.catId,
+                                                                            name: friend.name,
+                                                                            hash: friend.hash
+                                                                        })
+                                                                        .attr("id", friend.friendNumber+"-merge")
+                                                                        .text(friend.name);
+                                                                        newLi.append(span);
+                                                                        homeList.append(newLi).children("li").tsort();
+                                                                        $(this).parent().remove();
+                                                                        if( $(main).data("merged").length <= 1 ){
+                                                                            $(main).popover("destroy");
+                                                                            $(main).removeClass("fat").removeClass("selected").removeData("merged");
+                                                                        }
+                                                                    });
+
+                    $(li).prepend(remove).appendTo(ul);*/
+                }
+            });
+
+            $(currentSpan).addClass("fat");
             $(selected).parent().remove();
             $(currentSpan).on('dblclick', split);
+            $(currentSpan).popover({
+                html: true,
+                trigger: "hover",
+                placement: "bottom", 
+                title: "Also known as...",
+                content:  ul,
+                delay: 300
+            });
+
             disembark( $(currentSpan).parent(), "#merged" );
         }
         else {
@@ -64,6 +117,7 @@ var merger = (function(){
         var merged = $(element).data('merged');
 
         if(merged){
+            merged = merged.splice(1)
             $(merged).each(function (i, obj) {
                 var friendNumber = obj.friendNumber;
                 var name = obj.name;
@@ -82,7 +136,7 @@ var merger = (function(){
                 li.append(span);
                 homeList.append(li);
             });
-            $(event.target).parent().remove();
+            $(event.target).removeClass("fat").removeClass("selected").removeData("merged").popover("destroy");
             $('.merge-list li').tsort();
         }
     }
@@ -112,16 +166,14 @@ var merger = (function(){
             }
         });
     }
+
     //Select all names that can possibly be the same person
     function matchSuspects( name ){
-        var matches = [];
-        name = name.toLowerCase().substring(0,3);
-        $("#merge .merge-list span").each( function( i, obj ){
-            var tmp = $(obj).text().toLowerCase();
-            if ( tmp.search( name ) != -1 ){
-                $(obj).addClass("selected");
-            }
-        });
+        rgName = name.substring(0,3);
+        lcName = name.toLowerCase().substring(0,3);
+        var rgQ = "#merge .merge-list span:contains('{str}')".supplant({"str": rgName});
+        var lcQ = "#merge .merge-list span:contains('{str}')".supplant({"str": lcName});
+        $(rgQ).addClass("selected");
     }
 
     return {

@@ -10,7 +10,8 @@ var Friendly = {
                         'title': 'Family',
                         'show': true,
                         'help': [
-                                    'Please enter the names (using initials if necessary) of your family members who you know personally and would like to continue to have a personal relationship with.'
+                                    'Please enter the names (using initials if necessary) of your family members who you know personally and would like to continue to have a personal relationship with.',
+                                    'Click on a name if you need to remove it from the list.'
                                 ]
                     },
                     'calling': {
@@ -18,7 +19,8 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the voice call log.',
-                                    'Enter the names (using initials if necessary) of everyone you know personally who you have called or received a call from IN THE LAST WEEK.'
+                                    'Enter the names (using initials if necessary) of everyone you know personally who you have called or received a call from IN THE LAST WEEK.',
+                                    'Click on a name if you need to remove it from the list.'
                                 ]
                     },
                     'texting': {
@@ -26,7 +28,8 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the texting (SMS) log.',
-                                    'Enter the names (using initials if necessary) of everyone you know personally who you have sent a text or have received a text from IN THE LAST WEEK.'
+                                    'Enter the names (using initials if necessary) of everyone you know personally who you have sent a text or have received a text from IN THE LAST WEEK.',
+                                    'Click on a name if you need to remove it from the list.'
                                 ]
                     },
                     'facebook': {
@@ -34,19 +37,20 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you\'ve interacted with in the last week.',
-                                    'Otherwise, please enter the names of everyone you have interacted with IN THE LAST WEEK.'
+                                    'Otherwise, please enter the names of everyone you have interacted with IN THE LAST WEEK.',
+                                    'Click on a name if you need to remove it from the list.'
                                 ]
                     },
                     'face2face': {
                         'title': 'Face to Face',
-                        'show': true,
+                        'show': false,
                         'help': [
                                     'Enter the first names and last initial (or nicknames) of everyone you know personally who you have seen FACE-TO-FACE IN THE LAST WEEK who is missing from your current list of islanders.'
                                 ]
                     },
                     'other': {
                         'title': 'Anyone else?',
-                        'show': true,
+                        'show': false,
                         'help': [
                                     'Now look at the list of names one last time to see if there anyone who would not want to forget to bring.',
                                     'Please think of ALL SIGNIFICANT RELATIONSHIPS who might be missing from your island. This includes people who you have NOT interacted with via face-to-face, calling, texting, or Facebook in the last 7 days BUT who you know personally and would like to continue to have a personal relationship with.'
@@ -58,8 +62,8 @@ var Friendly = {
                         'help': [
                                     'Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count.',
                                     'We know that sometimes you communicate with the same person via multiple channels. For example, maybe you text your mother and talk to her on the phone.',
-                                    'Please carefully go over this list and merge any duplicates. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you\'ve highlighted some duplicates, click the "Merge" button at the top of the screen. Your merged friend will appear in the list at the right.',
-                                    'If you make a mistake, simply double-click the merged friend to separate it. Or if you find that you missed a name and need to add it to an already merged friend, simply highlight that name and the merged name and click "Merge."'
+                                    'Please carefully go over this list and merge any duplicates. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you\'ve highlighted some duplicates, click the "Next Friend" button at the top of the screen. Your merged friend will appear bolded below.',
+                                    'If you make a mistake, simply double-click the merged friend to remove the names under it. Or if you forget who you have merged, hover over a bolded name to see everyone inside it.'
                                 ]
                     },
                     'closeness': {
@@ -398,13 +402,18 @@ $("#next-merge").click(function( event ){
             var slide = Reveal.getCurrentSlide();
             var cat = slide.dataset.category;
             var friendList = $(slide).find('.friend-list');
+            var running = $(friendList).find("span").map(function( i,o ){ return o.innerText.toLowerCase(); });
 
             if(friendList.children().length == Friendly.config.maxFriendsPerCategory){
-                alert("Sorry, you've reached the maximum number of friends for this category");
+                error("MAXFRIENDS");
+                $(this).val("");
+            }
+            else if( jQuery.inArray(value.toLowerCase(), running) != -1 ){
+                error("NAMEDUP");
                 $(this).val("");
             }
             else{
-                var name = $(this).val();
+                var name = value;
                 var li = $("<li></li>");
                 var span = $("<span data-category='{cat}'></span>".supplant({'cat':cat})).text(name);
                 $(span).on("click", function(){
@@ -888,6 +897,7 @@ Reveal.addEventListener('lastSeen', function( event ) {
     /* Make sure we are not over running the display array */
     if ( oSettings._iDisplayStart + oSettings._iDisplayLength < oSettings.fnRecordsDisplay() )
     {
+    $(nNext).css("visible", "hidden");
     oSettings.iPagingEnd = oSettings._iDisplayStart + oSettings._iDisplayLength;
     }
 
@@ -944,12 +954,10 @@ Reveal.addEventListener('lastSeen', function( event ) {
         "bSort":false,
         'bFilter':false,
         "bLengthChange":false,
-        "fnDrawCallback": function(){
+        "fnDrawCallback": function( oSettings ){
+            $("#lastSeenTable_paginate button").addClass("btn btn-primary");
             if( Friendly.friends.length <= 10 ){
                 $("#lastSeenTable_paginate").css("display", "none")
-            }
-            else{
-                $("#lastSeenTable_paginate button").addClass("btn btn-primary");
             }
         }
     });
@@ -1185,6 +1193,9 @@ function selectCircle( clr, circle ){
 function error( type ) {
     var mess;
     switch( type ){
+        case "MAXFRIENDS":
+            mess="Sorry, you've reached the maximum number of friends for this category";
+            break;
         case "STRENGTH":
             mess="Please bring all of your friends into the circle";
             break;
@@ -1214,6 +1225,9 @@ function error( type ) {
             break;
         case "NOSPLITCURRENT":
             mess="You can't split somone who is still merging!";
+            break;
+        case "NAMEDUP":
+            mess="You aleady have that name in this category";
             break;
     }
     $('#error').text(mess);
