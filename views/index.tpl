@@ -356,7 +356,7 @@
     <script src="assets/js/jquery.tinysort.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/reveal.js"></script>
-    <script src="assets/js/d3.v2.js"></script>
+    <script src="assets/js/d3.v3.min.js"></script>
     <script src="assets/friendly/friendly.js"></script>
     <script src="assets/friendly/strength.js"></script>
     <script src="assets/js/jquery.dataTables.min.js"></script>

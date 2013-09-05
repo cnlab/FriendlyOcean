@@ -733,8 +733,8 @@ $('#next-arrow').click(function( event ){
                             break;
                     }
                 });
-                myNetwork.init(network);
-                myNetwork.draw();
+                myNetwork.init( network );
+                myNetwork.start();
                 var log = {
                     "friends": Friendly.friends,
                     "links": Friendly.links,

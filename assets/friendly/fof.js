@@ -346,7 +346,6 @@ var fof = (function(){
         $(allNodes).each( function( i, obj ){
             network.nodes.push({name:obj.name, id:obj.id});
         });
-
     }
     
     return {
