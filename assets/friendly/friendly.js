@@ -86,7 +86,9 @@ var Friendly = {
                         'title': 'Your circles',
                         'show': true,
                         'help': [
-                                    'All right. Let\'s put some people in some circles.'
+                                    'Now that you know who you communicate with and how, let\'s think about some informal circles. For example, maybe one or two people on this list are in a class with you. Or perhaps you play games with a few of them every week. These social cirlces aren\'t restricted by a timeframe, so it\'s not a problem if you\'re weekly book club hasn\'t met in two months.',
+                                    'To create a circle, click on at least 2 names, then type a name for the it into the input field and press enter. To remove a circle, click the \'x\' in its title bar.',
+                                    'To add or remove a person from a circle, first activate the circle by clicking on it, then click on any names in the list above that you wish to add or remove.'
                                 ]
                     },
                     'friendOfFriend': {
@@ -349,7 +351,7 @@ function disembark( element, newParent, moveAll ) {
 var lst;
 
 //Global object for final link network
-var network = {};
+var network = {links: [], nodes: []};
 
 //Extended permissions for Facebook
 var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
@@ -731,13 +733,13 @@ $('#next-arrow').click(function( event ){
                             break;
                     }
                 });
-                myNetwork.init( network );
+                myNetwork.init(network);
                 myNetwork.draw();
                 var log = {
                     "friends": Friendly.friends,
                     "links": Friendly.links,
                     "pID":  pID,
-                    "appID": Friendly.appID,
+                    "appID": Friendly.config.appID,
                     "circles": Friendly.circles
                 }
                 $.post("/log", JSON.stringify(log));

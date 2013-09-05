@@ -6,9 +6,8 @@ var width = 999,
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-600)
-    .gravity(.7)
-    .linkDistance(90)
+    .charge(-400)
+    .linkDistance(400)
     .size([width, height]);
     
 
@@ -16,8 +15,8 @@ var nodes;
 var links;
 
 function init( network ) {
-	nodes = network.nodes;
-	links = network.links;
+    nodes = network.nodes;
+    links = network.links;
 	
     var indices = {};
 

@@ -2,7 +2,7 @@
  * GLOBAL STYLES
  *********************************************/
 body{
-    background: url("../../img/backgrounds/bg_ocean.jpg") no-repeat center center fixed;
+    background: url("../../img/ocean/backgrounds/main_bg.jpg") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

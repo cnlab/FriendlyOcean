@@ -337,13 +337,15 @@ var fof = (function(){
     }
     
     function finalizeLinks(){
-        Friendly.links = network.links = jQuery.map(allLinks, function( obj, i ){
-                             return { source: obj.source.id, target: obj.target.id };
-                         });
         
-        network.nodes = jQuery.map(allNodes, function( obj, i ){
-                             return { name: obj.name, id: obj.id };
-                         });
+        $(allLinks).each( function( i, obj ){
+            Friendly.links.push({source:obj.source.id, target:obj.target.id});
+            network.links.push({source:obj.source.id, target:obj.target.id});
+        });
+
+        $(allNodes).each( function( i, obj ){
+            network.nodes.push({name:obj.name, id:obj.id});
+        });
 
     }
     

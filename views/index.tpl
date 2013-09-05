@@ -51,7 +51,7 @@
             <!--End Facebook SDK for login-->
 
             <div id="help-img">
-                <a data-toggle="modal" href="#help"><img src="assets/img/elements/help.png" /></a>
+                <a data-toggle="modal" href="#help"><img src="assets/img/ocean/elements/help.png" /></a>
             </div>
             <div id="next-arrow"></div>
             <div class="reveal" data-state>
@@ -59,7 +59,7 @@
              <!-- Any section element inside of this container is displayed as a slide -->
              <div class="slides">
 
-                <section id="title" data-background="assets/img/backgrounds/title.png">
+                <section id="title" data-background="assets/img/ocean/backgrounds/title.png">
                     <div class="row">
                         <div class="span5">
                             <h1>Friendly<br/><span class="island-type-caps"></span></h1>
@@ -68,7 +68,7 @@
                     </div>
                 </section>
                 
-                <section id="authorize" data-background="assets/img/backgrounds/auth.png">
+                <section id="authorize" data-background="assets/img/ocean/backgrounds/auth.png">
                     <div class="row slide-header">
                         <h2>Facebook Authorization</h2>
                     </div>
@@ -85,7 +85,7 @@
                     </div>       
                 </section>
                 
-                <section id="congratulations" data-background="assets/img/backgrounds/instr1.png">
+                <section id="congratulations" data-background="assets/img/ocean/backgrounds/instr1.png">
                     <div class="row slide-header">
                         <h2>Congratulations!</h2>
                     </div>
@@ -99,7 +99,7 @@
                     </div>
                 </section>
                 
-                <section id="objective" data-transition="none" data-background="assets/img/backgrounds/instr2.png">
+                <section id="objective" data-transition="none" data-background="assets/img/ocean/backgrounds/instr2.png">
                         <div class="row slide-header">
                             <h2>Your Goal</h2>
                         </div>
@@ -118,7 +118,7 @@
                     </div>                
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr3.png">
+                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr3.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -128,7 +128,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr4.png">
+                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr4.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -138,7 +138,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr5.png">
+                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr5.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -156,7 +156,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr6.png">
+                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr6.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -166,7 +166,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/backgrounds/instr7.png">
+                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr7.png">
                     <div class="row slide-header">
                         <h2>Three more important things</h2>
                     </div>
@@ -183,7 +183,7 @@
                     </div>
                 </section>
                 
-                <section id="family" data-category="family" data-show="help" class="category add-names" data-background="assets/img/backgrounds/family.png">
+                <section id="family" data-category="family" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/family.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Family - <input class="friend-input" name="family-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -195,7 +195,7 @@
                     </div>
                 </section>
                 
-                <section id="calling" data-category="calling" data-show="help" class="category add-names" data-background="assets/img/backgrounds/calling.png">
+                <section id="calling" data-category="calling" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/calling.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -207,7 +207,7 @@
                     </div>
                 </section>
                 
-                <section id="texting" data-category="texting" data-show="help" class="category add-names" data-background="assets/img/backgrounds/texting.png">
+                <section id="texting" data-category="texting" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/texting.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -219,7 +219,7 @@
                     </div>
                 </section>
                 
-                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns" data-background="assets/img/backgrounds/facebook.png">
+                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns" data-background="assets/img/ocean/backgrounds/facebook.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Facebook</h2>
@@ -231,7 +231,7 @@
                     </div>
                 </section>
                 
-                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge no-text-select" data-background="assets/img/backgrounds/merge.png">
+                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge" data-background="assets/img/ocean/backgrounds/merge.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Merge Duplicates and Disembark</h2>
@@ -252,7 +252,7 @@
                     </div>
                 </section>
                 
-                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" class="no-text-select">
+                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" data-background="assets/img/ocean/backgrounds/closeness.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Closeness</h2>
@@ -263,7 +263,7 @@
                     </div>
                 </section>
                 
-                <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help" data-background="assets/img/backgrounds/lastseen.png">
+                <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help" data-background="assets/img/ocean/backgrounds/lastSeen.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>When did you last see everyone?</h2>
@@ -284,7 +284,7 @@
                     </div>
                 </section>
                 
-                <section id="circles" data-category="circles" data-state="circles" data-show="help">
+                <section id="circles" data-category="circles" data-state="circles" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Social Circles</h2>
@@ -304,7 +304,7 @@
                     </div>
                 </section>
                 
-                <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help" class="no-text-select">
+                <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help" data-background="assets/img/ocean/backgrounds/friendOfFriend.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Friends of friends: Who knows <span id="currentFOF"></span>? <button id="next-fof" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
@@ -320,7 +320,7 @@
                     </div>
                 </section>
                 
-                <section id="end" data-category="end" data-state="end" class="no-text-select">
+                <section id="end" data-category="end" data-state="end">
                     <div class="container" id="myNetwork">
                         <div class="row"> 
                             <h2>Welcome to <span class='island-name'></span>!</h2>
@@ -376,7 +376,7 @@
         $(".island-type-plural").text(Friendly.config.islandType+"s");
         $(".island-type-caps").text(Friendly.config.islandType.capitalize());
         $(".arrow-type").text(Friendly.config.arrowType);
-        $("<img></img>").attr('src', 'assets/img/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
+        $("<img></img>").attr('src', 'assets/img/ocean/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
         
         //Check for app in local storage
         if( getApp() ){

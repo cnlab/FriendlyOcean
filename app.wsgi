@@ -87,15 +87,13 @@ def static(file_path):
 	
 @route('/log', method="POST")
 def write_log():
-    try:
+    #try:
         data=json.loads(request.body.read())
         log_file = check_unique("%s_%s" % (data['appID'],data['pID']))
         log = open('logs/%s.json' % log_file, 'w')
         log.write(json.dumps(data))
         log.close()
-        response.status = 200;
-    except:
-        response.status = 500;
+    #except:
 
 def check_unique(fname,suffix=1):
     fname_new=fname
