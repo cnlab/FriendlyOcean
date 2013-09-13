@@ -20,7 +20,7 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the voice call log.',
-                                    'Enter the names of everyone you know personally who you have called or received a call from <span class="underline">in the last week</span>.',
+                                    'Enter the names of everyone you know personally who you have called or received a call from in the last week.',
                                     'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
                                     'Click on a name if you need to remove it from the list.'
                                 ]
@@ -30,7 +30,7 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the texting (SMS) log.',
-                                    'Enter the names of everyone you know personally who you have sent a text or have received a text from <span class="underline">in the last week</span>..',
+                                    'Enter the names of everyone you know personally who you have sent a text or have received a text from in the last week.',
                                     'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
                                     'Click on a name if you need to remove it from the list.'                                
                                     ]
@@ -40,7 +40,7 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you\'ve interacted with in the last week.',
-                                    'Otherwise, please enter the names of everyone you have interacted with <span class="underline">in the last week</span>..',
+                                    'Otherwise, please enter the names of everyone you have interacted with in the last week.',
                                     'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
                                     'Click on a name if you need to remove it from the list.'                                
                                     ]
@@ -73,8 +73,8 @@ var Friendly = {
                         'title': 'Closeness',
                         'show': true,
                         'help': [
-                                    'Here is everyone in your <span class="islandType"></span>. Please rate how emotionally close you are with each person by dragging each name into the circle.',
-                                    'You can rate them from <span class="underline">not at all close</span> (perimeter) to <span class="underline">extremely close</span> (center).'
+                                    'Please rate how emotionally close you are with each person by dragging their name into the circle.',
+                                    'You can rate them from not at all close (perimeter) to extremely close (center).'
                                 ]
                     },
                     'lastSeen': {
@@ -98,7 +98,7 @@ var Friendly = {
                         'title': 'Friends of Friends',
                         'show': true,
                         'help': [
-                                    'Finally, put your friends who know each other together in the same place on the <span  class="islandType"></span>. For each friend select all of the people they know by clicking on their names on the left side. If you make a mistake, you can click the bubble to return them to the other side.'
+                                    'Finally, put your friends who know each other together in the same place. For each friend select all of the people they know by clicking on their names on the left side. If you make a mistake, you can click the bubble to return them to the other side.'
                                 ]
                     },
                     'end': {
