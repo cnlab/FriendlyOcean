@@ -10,7 +10,8 @@ var Friendly = {
                         'title': 'Family',
                         'show': true,
                         'help': [
-                                    'Please enter the names (using initials if necessary) of your family members who you know personally and would like to continue to have a personal relationship with.',
+                                    'Please enter the names of your family members who you know personally and would like to continue to have a personal relationship with.',
+                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
                                     'Click on a name if you need to remove it from the list.'
                                 ]
                     },
@@ -19,7 +20,8 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the voice call log.',
-                                    'Enter the names (using initials if necessary) of everyone you know personally who you have called or received a call from IN THE LAST WEEK.',
+                                    'Enter the names of everyone you know personally who you have called or received a call from <span class="underline">in the last week</span>.',
+                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
                                     'Click on a name if you need to remove it from the list.'
                                 ]
                     },
@@ -28,18 +30,20 @@ var Friendly = {
                         'show': true,
                         'help': [
                                     'Please take out your phone and look at the texting (SMS) log.',
-                                    'Enter the names (using initials if necessary) of everyone you know personally who you have sent a text or have received a text from IN THE LAST WEEK.',
-                                    'Click on a name if you need to remove it from the list.'
-                                ]
+                                    'Enter the names of everyone you know personally who you have sent a text or have received a text from <span class="underline">in the last week</span>..',
+                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
+                                    'Click on a name if you need to remove it from the list.'                                
+                                    ]
                     },
                     'facebook': {
                         'title': 'Facebook',
                         'show': true,
                         'help': [
                                     'If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you\'ve interacted with in the last week.',
-                                    'Otherwise, please enter the names of everyone you have interacted with IN THE LAST WEEK.',
-                                    'Click on a name if you need to remove it from the list.'
-                                ]
+                                    'Otherwise, please enter the names of everyone you have interacted with <span class="underline">in the last week</span>..',
+                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
+                                    'Click on a name if you need to remove it from the list.'                                
+                                    ]
                     },
                     'face2face': {
                         'title': 'Face to Face',
@@ -57,12 +61,11 @@ var Friendly = {
                                 ]
                     },
                     'merge': {
-                        'title': 'Merge',
+                        'title': 'Matching',
                         'show': true,
                         'help': [
-                                    'Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count.',
-                                    'We know that sometimes you communicate with the same person via multiple channels. For example, maybe you text your mother and talk to her on the phone.',
-                                    'Please carefully go over this list and merge any duplicates. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you\'ve highlighted some duplicates, click the "Next Friend" button at the top of the screen. Your merged friend will appear bolded below.',
+                                    'Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count. We know that sometimes you communicate with the same person via multiple channels. For example, maybe you text your mother and talk to her on the phone.',
+                                    'Please carefully go over this list and find any matches. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you\'ve highlighted some duplicates, click the "Next Friend" button at the top of the screen. Your merged friend will appear bolded below.',
                                     'If you make a mistake, simply double-click the merged friend to remove the names under it. Or if you forget who you have merged, hover over a bolded name to see everyone inside it.'
                                 ]
                     },
@@ -70,32 +73,32 @@ var Friendly = {
                         'title': 'Closeness',
                         'show': true,
                         'help': [
-                                    'These are all the relationships who make up your island. Please rate how emotionally close you are with each one by moving their name into the circle to determine how much land they each get.',
-                                    'You can rate them from NOT AT ALL CLOSE (perimeter) to EXTREMEMELY CLOSE (center).'
+                                    'Here is everyone in your <span class="islandType"></span>. Please rate how emotionally close you are with each person by dragging each name into the circle.',
+                                    'You can rate them from <span class="underline">not at all close</span> (perimeter) to <span class="underline">extremely close</span> (center).'
                                 ]
                     },
                     'lastSeen': {
                         'title': 'Last Seen',
                         'show': true,
                         'help': [
-                                    'Okay, you have now brought over the first four boats of contacts to your island. These are the family members you know and the friends you\'ve interacted with in the past week.',
-                                    'Before moving on to the next boat, please indicate the last time you saw each of them face-to-face.'
+                                    'Please respond to the following question for each person.'
                                 ]
                     },
                     'circles': {
-                        'title': 'Your circles',
+                        'title': 'Groups',
                         'show': true,
                         'help': [
-                                    'Now that you know who you communicate with and how, let\'s think about some informal circles. For example, maybe one or two people on this list are in a class with you. Or perhaps you play games with a few of them every week. These social cirlces aren\'t restricted by a timeframe, so it\'s not a problem if you\'re weekly book club hasn\'t met in two months.',
+                                    'Now it\'s time to find groups of friends who all know each other, such as friends from work, school, or a soccer team. Be sure that all group members know each other.',
                                     'To create a circle, click on at least 2 names, then type a name for the it into the input field and press enter. To remove a circle, click the \'x\' in its title bar.',
-                                    'To add or remove a person from a circle, first activate the circle by clicking on it, then click on any names in the list above that you wish to add or remove.'
+                                    'To add or remove a person from a circle, first activate the circle by clicking on it, then click on any names in the list above that you wish to add or remove.',
+                                    'The more groups you can come up with, the more time you\'ll save'
                                 ]
                     },
                     'friendOfFriend': {
                         'title': 'Friends of Friends',
                         'show': true,
                         'help': [
-                                    'Next, put your friends who know each other together in the same place on the island. For each friend bring the people they know to the same side of the island by clicking on their circle. If you make a mistake you can click again to return them to the other side of the island.'
+                                    'Finally, put your friends who know each other together in the same place on the <span  class="islandType"></span>. For each friend select all of the people they know by clicking on their names on the left side. If you make a mistake, you can click the bubble to return them to the other side.'
                                 ]
                     },
                     'end': {
@@ -391,10 +394,12 @@ $("#next-merge").click(function( event ){
         $(next).addClass("current-merge");
         //merger.matchSuspects( next.innerText );
     }else{
-        merger.finalMerge();
-        saveApp();
-        Reveal.next();
-        $("#next-arrow").show();
+        var waitForIt = setInterval(function() { 
+                            merger.finalMerge();
+                            saveApp();
+                            Reveal.next();
+                            $("#next-arrow").show();
+                            clearInterval(waitForIt); }, 500);
     }
 });
 
@@ -682,7 +687,7 @@ $('#next-arrow').click(function( event ){
                 progress: false,
                 history: false,
                 center: false,
-                touch: true,
+                touch: false,
                 overview: false,
                 keyboard: false,
                 rollingLinks: false,
@@ -740,7 +745,8 @@ $('#next-arrow').click(function( event ){
                     "links": Friendly.links,
                     "pID":  pID,
                     "appID": Friendly.config.appID,
-                    "circles": Friendly.circles
+                    "circles": Friendly.circles,
+                    "sns": Friendly.sns
                 }
                 $.post("/log", JSON.stringify(log));
                 $("#help-img").remove();
@@ -1030,7 +1036,6 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
                 //Update application position
                 updateIndex();
                 
-                $(Reveal.getCurrentSlide()).find('input').focus();
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
                 if(category){

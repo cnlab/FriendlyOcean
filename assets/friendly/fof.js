@@ -5,11 +5,12 @@ var fof = (function(){
         lineHover = "#ff7c7c",
         nodeColor = "#e7edfa",
         lineColor = "#c2c2c2",
-        centerColor = "#b8cefa",
+        centerColor = "#006dcc",
         nodeStroke = "#c2c2c2",
         centerStroke = "#ffffff",
         strokeWidth = "1.5px",
-        textColor = "#000000",
+        nodeFontColor = "#000000",
+        centerFontColor = "#ffffff",
         centerFontSize = "30px",
         nodeFontSize = "18px";
 
@@ -61,7 +62,7 @@ var fof = (function(){
                                    d3.select('.center-node').attr({"fill": centerColor});
                                },
                       "mouseover": function(d){
-                                       var id = this.id.split("-").filter(function(b,i){ return b!=center.id });
+                                       var id = this.id.split("-").filter(function(b,i){ return b!=center.id })[0];
                                        d3.select('.center-node').attr({"fill": nodeHover, "stroke": nodeHover});
                                        d3.select("#"+id).attr({"fill": nodeHover});
                                        d3.select(this).attr({"stroke": lineHover});
@@ -116,7 +117,7 @@ var fof = (function(){
       text.enter().append("text")
                   .attr({
                       "text-anchor": "middle",
-                      "fill": textColor,
+                      "fill": function(d){ return d.id == center.id ? centerFontColor : nodeFontColor },
                       "font-size": function(d){ return d.id == center.id ? centerFontSize : nodeFontSize },
                       "baseline": "middle",
                       "id": function(d){ return d.id + "-text"; }

@@ -85,15 +85,18 @@ def index():
 def static(file_path):
     return static_file(file_path, root="assets/")
 	
-@route('/log', method="POST")
+@post('/log')
 def write_log():
-    #try:
+    try:
         data=json.loads(request.body.read())
         log_file = check_unique("%s_%s" % (data['appID'],data['pID']))
         log = open('logs/%s.json' % log_file, 'w')
         log.write(json.dumps(data))
         log.close()
-    #except:
+        request.response = 200
+    except:
+        request.response = 500
+
 
 def check_unique(fname,suffix=1):
     fname_new=fname

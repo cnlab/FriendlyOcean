@@ -12,6 +12,10 @@ div[class*='merge-lists-']{
     border: 1px solid #B7B7B7;
 }
 
+.modal-body p.lead {
+    font-size: 16px;
+}
+
 .slide-header{
     font-size: 20px;
 }
@@ -248,7 +252,7 @@ text {
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;
-    border: 10px solid brown;
+    border: 10px solid #006dcc;
     min-height: 10px;
     margin-bottom: 20px;
 }
@@ -273,7 +277,12 @@ text {
     font-size: 20px;
 }
 
-.selected {
+.current-merge-name{
+        padding: 0px 10px 5px 10px;
+}
+
+.selected,
+.current-merge-name {
     background-color: #FFFF00;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;

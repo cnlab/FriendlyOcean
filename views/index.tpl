@@ -123,7 +123,7 @@
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>Now, you need to bring over some people to join you on <span class='island-name'></span>.</p>
+                        <p>Now, you need to bring over some people to join you.</p>
                         <p>Please read the following instructions carefully before beginning the game...</p>
                     </div>
                 </section>
@@ -133,8 +133,7 @@
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>During the game, you will be asked to enter the first name and initial (or a nickname like “Mom” or “Matt from School”) of your family, friends, and acquaintances who you interact with on a normal basis and know personally.</p>
-                        <p>The reason to enter names with initials (or a nickname) is so that you can keep track of which person is which throughout the game.</p>
+                        <p>During the game, you will be asked to enter the names of your family, friends, and acquaintances who you interact with on a normal basis and know personally.</p>
                     </div>
                 </section>
                 
@@ -143,8 +142,8 @@
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>On <span class='island-name'></span>, each of your personal relationships will each get their own piece of the <span class="island-type"></span>.</p>
-                        <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in six different boats.</p>
+                        <p>On <span class='island-name'></span>, each of your personal relationships will get its own piece of the <span class="island-type"></span>.</p>
+                        <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in four different boats.</p>
                         <div class="span5 offset2">
                             <ol>
                                 <li>Family</li>
@@ -161,8 +160,8 @@
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>After you have transported everyone to <span class='island-name'></span>, you will then decide how much land they get based on how close you are to them.</p>
-                        <p>Finally, you will decide who will live on the same part of the <span class="island-type"></span> as other individuals based on who knows who.</p>
+                        <p>After you have transported everyone to <span class='island-name'></span>, you will then decide how much space they get based on how close you are to them.</p>
+                        <p>Finally, you will decide where each person will be located based upon who knows who.</p>
                     </div>
                 </section>
                 
@@ -234,7 +233,7 @@
                 <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge" data-background="assets/img/ocean/backgrounds/merge.png">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>Merge Duplicates and Disembark</h2>
+                            <h2>Find Matches and Disembark</h2>
                         </div>
                         <div class="row slide-header">
                             <h3>Please highlight each instance of <span class="current-merge-name"></span> on this page.
@@ -287,15 +286,15 @@
                 <section id="circles" data-category="circles" data-state="circles" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>Social Circles</h2>
+                            <h2>Groups</h2>
                         </div>
                         <div class="row"><p>Your Friends</p></div>
                         <div id="names-list" class="row circles-row">
                             <!--Leave this space empty. Data is dynamically generated.-->
                         </div>
                         <div class="row">
-                            <p>Your Circles 
-                                <input id="circle-input" class="input-xlarge" type="text" placeholder="Type a name for a circle and press Enter"/>
+                            <p>Your Groups 
+                                <input id="circle-input" class="input-xlarge" type="text" placeholder="Type a name for a group and press Enter"/>
                             </p>
                         </div>
                         <div id="circles-list" class="row circles-row">
