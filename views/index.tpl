@@ -30,7 +30,7 @@
             // init the FB JS SDK
             FB.init({
               appId      : '184250398371980',
-              channelUrl : '/channel',
+              channelUrl : 'channel',
               cookie     : true,
               status     : true,
               xfbml      : false,

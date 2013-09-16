@@ -371,15 +371,34 @@ $('#help').on('hidden', function(){
 });
 
 $('#next-fof').click(function( event ){
-    var next = fof.nextFriend();
-    if(next){
-        $("#currentFOF").text(next.name);
+    if( fof.links.length < 1 ){
+        if( confirm("Are you sure no one knows {friend}".supplant({ "friend": $("#currentFOF").text() }))){
+            var next = fof.nextFriend();
+            if(next){
+                $("#currentFOF").text(next.name);
+            }
+            else{
+                fof.finalizeLinks();
+                saveApp();
+                Reveal.next();
+            }
+        }
+        else{
+            return;
+        }
     }
     else{
-        fof.finalizeLinks();
-        saveApp();
-        Reveal.next();
+        var next = fof.nextFriend();
+        if(next){
+            $("#currentFOF").text(next.name);
+        }
+        else{
+            fof.finalizeLinks();
+            saveApp();
+            Reveal.next();
+        }
     }
+
 });
 
 $("#next-merge").click(function( event ){
