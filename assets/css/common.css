@@ -1,4 +1,5 @@
-@charset "UTF-8";/*!
+@charset "UTF-8";
+/*!
  * 
  * Common styles across all themes.
  *
@@ -442,4 +443,92 @@ text {
 .popover.bottom .arrow{left:50%;margin-left:-11px;border-top-width:0;border-bottom-color:#999;border-bottom-color:rgba(0, 0, 0, 0.25);top:-11px;}.popover.bottom .arrow:after{top:1px;margin-left:-10px;border-top-width:0;border-bottom-color:#ffffff;}
 .popover.left .arrow{top:50%;right:-11px;margin-top:-11px;border-right-width:0;border-left-color:#999;border-left-color:rgba(0, 0, 0, 0.25);}.popover.left .arrow:after{right:1px;border-right-width:0;border-left-color:#ffffff;bottom:-10px;}
 .popover li, .popover span{float:none;}
-/*.popover li:hover{background:rgba(255, 0, 0, 0.5);};*/
+
+.friendly-progress{
+    width: 70%;
+    height: 30px;
+    margin: 0 auto;
+    opacity: 0;
+}
+
+.friendly-progress-segment{
+    margin: 0;
+    min-height: 100%;
+    display: inline-block;
+    position:relative;
+    color: rgba(0,0,0,.5);
+    background: rgba(255,255,255,.5);
+}
+
+.friendly-progress-segment>span {
+    width: 50%;
+    height: 50%;
+    overflow: hidden;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    padding-left: 40px;
+    font-size: 12px;
+}
+
+.friendly-progress-segment:after {
+    left: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-width: 15px;
+    top: 50%;
+    margin-top: -15px;
+    z-index: 20;
+}
+.friendly-progress-segment:first-child{
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -moz-border-radius-topleft: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.friendly-progress-segment:last-child:after{
+    border-left-color: rgba(255,255,255,.5);
+}
+
+.friendly-progress-current {
+    background: orange;
+    color: #000 ;
+}
+.friendly-progress-current:after {
+    left: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-left-color: orange !important;
+    border-width: 15px;
+    top: 50%;
+    margin-top: -15px;
+    z-index: 20;
+}
+
+.friendly-progress-past {
+    background: rgba(240, 214, 167, 1);
+}
+.friendly-progress-past:after {
+    left: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-left-color: rgba(240, 214, 167, 1) !important;
+    border-width: 15px;
+    top: 50%;
+    margin-top: -15px;
+    z-index: 20;
+}

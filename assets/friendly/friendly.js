@@ -127,9 +127,33 @@ var Friendly = {
     
     links: [],
     
-    circles: []
+    circles: [],
+
+    //Own own progress bar segment names
+    //Slides must have a data-progress attribute matching one of these
+    progressSegments: ["Intro", "Adding", "Matching", "Spacing", "Grouping", "Connecting"]
     
 }
+
+//Create Progress bar
+var makeBar = (function(){
+    var segmentsNames = Friendly.progressSegments;
+    var bar = $("<div />").addClass("friendly-progress").appendTo(".reveal");
+    $(segmentsNames).each( function( i, name ){
+        
+        var div = $("<div />").addClass(function(){
+            return i === 0 ? "friendly-progress-segment friendly-progress-current" : "friendly-progress-segment";
+        })
+        .addClass(name)
+        .css("width", function(){
+            return ((Math.floor(bar.width()/segmentsNames.length))/bar.width()) * 100 + "%";
+        }).appendTo(bar);
+        
+        var span = $("<span />").text(name).appendTo(div);
+    });
+
+})();
+
 
 //Get and set values from Last See Table
 function getLastSeen() {
@@ -209,7 +233,38 @@ function addNames(li){
 function updateIndex(){
     Friendly.slide = Reveal.getIndices().h + 1;
 }
-    
+
+//Update progress bar
+function updateFriendlyProgress( slide ){
+    var prog = slide.dataset.progress;
+    var bar = $(".friendly-progress");
+    var segs = $(".friendly-progress-segment");
+    var names = Friendly.progressSegments;
+
+    //If we're not on the first slide, show the progress bar
+    if( Friendly.slide != 0 ){
+        $(bar).css("opacity", 1);
+    }
+
+    //Find index of name
+    var x = jQuery.inArray(prog, names);
+
+    if( x !== -1 ){
+        //If we found the item, update the bar.
+        
+        $(segs).each( function( i, obj ){
+            if( i < x ){
+                $(obj).removeClass("friendly-progress-current").addClass("friendly-progress-past");
+            }else if( i === x ){
+                $(obj).addClass("friendly-progress-current");
+            }
+        });
+    }else{
+        //Otherwise, something broke so hide the bar.
+        $(bar).css("opacity", 0);
+    }
+}
+
 //Define Friend object
 function Friend(name, id, hash){
     this.name = name;
@@ -372,7 +427,7 @@ $('#help').on('hidden', function(){
 
 $('#next-fof').click(function( event ){
     if( fof.links.length < 1 ){
-        if( confirm("Are you sure no one knows {friend}".supplant({ "friend": $("#currentFOF").text() }))){
+        if( confirm("Are you sure no one knows {friend}?".supplant({ "friend": $("#currentFOF").text() }))){
             var next = fof.nextFriend();
             if(next){
                 $("#currentFOF").text(next.name);
@@ -418,7 +473,7 @@ $("#next-merge").click(function( event ){
                             saveApp();
                             Reveal.next();
                             $("#next-arrow").show();
-                            clearInterval(waitForIt); }, 500);
+                            clearInterval(waitForIt); }, 800);
     }
 });
 
@@ -670,6 +725,13 @@ $('#next-arrow').click(function( event ){
             }
             break;
         case 'circles':
+            
+            if( $(".circle").length < 1 ){
+                if( !confirm("Are you sure you don't want to make any groups?") ){
+                    return;
+                }
+            }
+
             $('.circle').each( function( i, obj ){
                 var name = $(this).children('p').text();
                 var members = [];
@@ -679,6 +741,7 @@ $('#next-arrow').click(function( event ){
                 var circle = { name: name, members: members };
                 Friendly.circles.push(circle);
             });
+
             break;
         case 'friendOfFriend':
             var next = fof.nextFriend();
@@ -1054,6 +1117,9 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
 
                 //Update application position
                 updateIndex();
+
+                //Update Progress bar
+                updateFriendlyProgress(event.currentSlide);
                 
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
@@ -1304,8 +1370,4 @@ function createFriendLists( targetElement ) {
             $(div).append(ul).children('li').tsort();
             $(targetElement).append(div);
     });
-}
-
-function disembarkCheck(){
-
 }

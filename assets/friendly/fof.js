@@ -330,6 +330,9 @@ var fof = (function(){
             
             var nf = allNodes[currentNode];
             addCenterFriend(nf);
+            if( currentNode == allNodes.length-1){
+                $("#next-fof").text("Finish");
+            }   
             return nf;
         }
         else{

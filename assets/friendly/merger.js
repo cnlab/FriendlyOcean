@@ -3,6 +3,9 @@ var merger = (function(){
 
     function init( names ){
         currentSpan = names[0];
+        if( $("#merge .lists-row").find("span").length === 1 ){
+            $("#next-merge").text("Finish");
+        }
         return currentSpan;
     }
 
@@ -10,6 +13,9 @@ var merger = (function(){
         var span = $("#merge .lists-row").find("span").first()[0];
         if ( span ){
             currentSpan = span;
+            if( $("#merge .lists-row").find("span").length === 1 ){
+                $("#next-merge").text("Finish");
+            }
             return currentSpan;
         }else{
             return false;

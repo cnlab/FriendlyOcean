@@ -68,7 +68,7 @@
                     </div>
                 </section>
                 
-                <section id="authorize" data-background="assets/img/ocean/backgrounds/auth.png">
+                <section id="authorize" data-background="assets/img/ocean/backgrounds/auth.png" data-progress="Intro">
                     <div class="row slide-header">
                         <h2>Facebook Authorization</h2>
                     </div>
@@ -85,7 +85,7 @@
                     </div>       
                 </section>
                 
-                <section id="congratulations" data-background="assets/img/ocean/backgrounds/instr1.png">
+                <section id="congratulations" class="instructions" data-progress="Intro" data-background="assets/img/ocean/backgrounds/instr1.png">
                     <div class="row slide-header">
                         <h2>Congratulations!</h2>
                     </div>
@@ -99,7 +99,7 @@
                     </div>
                 </section>
                 
-                <section id="objective" data-transition="none" data-background="assets/img/ocean/backgrounds/instr2.png">
+                <section id="objective" class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr2.png">
                         <div class="row slide-header">
                             <h2>Your Goal</h2>
                         </div>
@@ -118,7 +118,7 @@
                     </div>                
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr3.png">
+                <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr3.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -128,7 +128,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr4.png">
+                <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr4.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -137,7 +137,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr5.png">
+                <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr5.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -155,7 +155,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr6.png">
+                <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr6.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
@@ -165,7 +165,7 @@
                     </div>
                 </section>
                 
-                <section class="instructions" data-transition="none" data-background="assets/img/ocean/backgrounds/instr7.png">
+                <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr7.png">
                     <div class="row slide-header">
                         <h2>Three more important things</h2>
                     </div>
@@ -182,7 +182,7 @@
                     </div>
                 </section>
                 
-                <section id="family" data-category="family" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/family.png">
+                <section id="family" data-category="family" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/family.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Family - <input class="friend-input" name="family-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -194,7 +194,7 @@
                     </div>
                 </section>
                 
-                <section id="calling" data-category="calling" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/calling.png">
+                <section id="calling" data-category="calling" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/calling.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -206,7 +206,7 @@
                     </div>
                 </section>
                 
-                <section id="texting" data-category="texting" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/texting.png">
+                <section id="texting" data-category="texting" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/texting.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
@@ -218,7 +218,7 @@
                     </div>
                 </section>
                 
-                <section id="facebook" data-category="facebook" data-show="help" class="category add-names sns" data-background="assets/img/ocean/backgrounds/facebook.png">
+                <section id="facebook" data-category="facebook" data-progress="Adding" data-show="help" class="category add-names sns" data-background="assets/img/ocean/backgrounds/facebook.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Facebook</h2>
@@ -230,7 +230,7 @@
                     </div>
                 </section>
                 
-                <section id="merge" data-state="merge" data-category="merge" data-show="help" class="merge" data-background="assets/img/ocean/backgrounds/merge.png">
+                <section id="merge" data-state="merge" data-progress="Matching" data-category="merge" data-show="help" class="merge" data-background="assets/img/ocean/backgrounds/merge.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Find Matches and Disembark</h2>
@@ -251,7 +251,7 @@
                     </div>
                 </section>
                 
-                <section id="closeness" data-category="closeness" data-show="help" data-state="strengthInit" data-background="assets/img/ocean/backgrounds/closeness.png">
+                <section id="closeness" data-category="closeness" data-progress="Spacing" data-show="help" data-state="strengthInit" data-background="assets/img/ocean/backgrounds/closeness.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Closeness</h2>
@@ -262,7 +262,7 @@
                     </div>
                 </section>
                 
-                <section id="lastSeen" data-state="lastSeen" data-category="lastSeen" data-show="help" data-background="assets/img/ocean/backgrounds/lastSeen.png">
+                <section id="lastSeen" data-state="lastSeen" data-progress="Spacing" data-category="lastSeen" data-show="help" data-background="assets/img/ocean/backgrounds/lastSeen.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>When did you last see everyone?</h2>
@@ -283,7 +283,7 @@
                     </div>
                 </section>
                 
-                <section id="circles" data-category="circles" data-state="circles" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
+                <section id="circles" data-category="circles" data-state="circles" data-progress="Grouping" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Groups</h2>
@@ -303,7 +303,7 @@
                     </div>
                 </section>
                 
-                <section id="friendOfFriend" data-category="friendOfFriend" data-state="friendOfFriend" data-show="help" data-background="assets/img/ocean/backgrounds/friendOfFriend.png">
+                <section id="friendOfFriend" data-category="friendOfFriend" data-progress="Connecting" data-state="friendOfFriend" data-show="help" data-background="assets/img/ocean/backgrounds/friendOfFriend.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Friends of friends: Who knows <span id="currentFOF"></span>? <button id="next-fof" class="btn btn-primary">Next Friend <i class="icon-forward icon-white"></i></button></h2>
@@ -319,7 +319,7 @@
                     </div>
                 </section>
                 
-                <section id="end" data-category="end" data-state="end">
+                <section id="end" data-category="end" data-state="end" data-progress="End">
                     <div class="container" id="myNetwork">
                         <div class="row"> 
                             <h2>Welcome to <span class='island-name'></span>!</h2>
