@@ -61,10 +61,13 @@
 
                 <section id="title" data-background="assets/img/ocean/backgrounds/title.png">
                     <div class="row">
-                        <div class="span5">
-                            <h1>Friendly<br/><span class="island-type-caps"></span></h1>
-                            <p>Click the <span class="arrow-type"></span> to begin!</p>
-                        </div>
+                        <h1>Friendly</h1>
+                    </div>
+                    <div class="row">
+                        <h1 class="island-type-caps"></span></h1>
+                    </div>
+                    <div class="row">
+                        <p>Click the <span class="arrow-type"></span> to begin!</p>
                     </div>
                 </section>
                 
@@ -75,11 +78,11 @@
                     <div class="row">
                             <p>This application would like to access your Facebook account in order to grab the names of friends you've interacted with in the past week. Once you complete the game, you will be logged out of Facebook and your friend's names will be anonymized. Alternatively, you can enter them manually... but that's just more work for you.</p> 
                     </div>
-                    <div class="span12">
+                    <div class="row auth-btns">
                         <div class="btn-group" data-toggle="buttons-radio">
                             <ul class="inline">
-                                <li><button type="button" class="btn btn-large btn-success" onclick="yesSNS();">Log in</button></li>
-                                <li><button type="button" class="btn" onclick="noSNS();">No thanks</button></li>
+                                <li><button id="auth-yes" type="button" class="btn btn-large btn-success" onclick="yesSNS();">Log in</button></li>
+                                <li><button id="auth-no" type="button" class="btn" onclick="noSNS();">No thanks</button></li>
                             </ul>
                         </div>
                     </div>       
@@ -169,7 +172,7 @@
                     <div class="row slide-header">
                         <h2>Three more important things</h2>
                     </div>
-                    <div class="row fragment">
+                    <div class="row">
                         <p><strong>1&#41; Privacy</strong></p>
                         <p>After you have finished the game, we will remove <span class="underline">all</span> of your friends’ names/nicknames automatically so that your social network is <span class="underline">completely anonymous</span>.</p>
                     </div>
@@ -319,7 +322,7 @@
                     </div>
                 </section>
                 
-                <section id="end" data-category="end" data-state="end" data-progress="End">
+                <section id="end" data-category="end" data-state="end" data-progress="End" data-background="assets/img/ocean/backgrounds/end.png">
                     <div class="container" id="myNetwork">
                         <div class="row"> 
                             <h2>Welcome to <span class='island-name'></span>!</h2>

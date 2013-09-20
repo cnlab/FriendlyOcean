@@ -170,10 +170,11 @@ function getLastSeen() {
 }
 
 //Validate Last Seen Table
-function validateLastSeen() {
+function validateLastSeen( click ) {
   
-  //Get all rows via DataTables api
-  var rows = $("#lastSeenTable tbody tr");
+  var sourceID = click.currentTarget.id;
+
+  var rows = lst.$("tbody tr");
   
   var missingCnt=0;
   
@@ -415,7 +416,7 @@ var network = {links: [], nodes: []};
 var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
 
 //Icons for final network visualization
-var icons = ["starfish.png", "hut.png", "statue.png", "tree.png"];
+var icons = ['anemone.png', 'blue_stripe_small.png', 'blue_stripes.png', 'blue_yellow.png', 'blue_yellow_grouper.png', 'green_angel.png', 'green_grouper.png', 'green_guppy.png', 'green_star.png', 'grn_grump.png', 'long_snout_left.png', 'long_snout_right.png', 'org_starfish.png', 'pkgr_fin.png', 'poiple_spike.png', 'puffer.png', 'purple_nurple.png', 'sardine.png', 'small_pink.png', 'starfish.png', 'sunfish.png', 'eel.png'];
 
 //Colors for circles
 var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);
@@ -525,7 +526,7 @@ $("#next-merge").click(function( event ){
 
         //Grab current slide
         var currentSlide = Reveal.getCurrentSlide();
-        var span = $(currentSlide).find('.span12')[0];
+        var span = $(currentSlide).find('.auth-btns')[0];
         
         //Login to FB using SDK
         FB.login(
@@ -574,7 +575,7 @@ $("#next-merge").click(function( event ){
 function noSNS(msg){
     var msg = msg || '<h4>No problem! Please click the <span class="arrow-type"></span> to continue.</h4>';
     var currentSlide = Reveal.getCurrentSlide();
-    var span = $(currentSlide).find('.span12')[0];
+    var span = $(currentSlide).find('.auth-btns')[0];
     $(span).html(msg);
     var slide = $('#facebook');
     var input = $('<input class="friend-input" name="{category}-friend-input" type="text" placeholder="Type a name and press Enter"/>'.supplant({'category': $(slide).data('category')}));
@@ -717,7 +718,7 @@ $('#next-arrow').click(function( event ){
             }
             break;
         case 'lastSeen':
-            if ( !validateLastSeen() ) {
+            if ( !validateLastSeen( event ) ) {
                 return;
             }
             else {
@@ -794,8 +795,8 @@ $('#next-arrow').click(function( event ){
         $('.friend-list').each(function(i,obj){
                     var cat = $(this).closest('section').data('category');
                     while(d < number){
-                        var li = $("<li></li>").text(names[c]);
-                        var span = $("<span class='delete' data-category='{cat}'></span>".supplant({'cat':cat}));
+                        var li = $("<li></li>");
+                        var span = $("<span data-category='{cat}'></span>".supplant({'cat':cat})).text(names[c]);
                         $(span).on("click", function(){
                             $(this).parent().remove();
                         });
@@ -807,6 +808,7 @@ $('#next-arrow').click(function( event ){
                     $(this).children('li').tsort();
                     d = 0;
                 });
+
     }
     
     //End debug code
@@ -905,6 +907,9 @@ Reveal.addEventListener('friendOfFriend', function( event ) {
             });
 
 Reveal.addEventListener('lastSeen', function( event ) {
+    
+    $("#next-arrow").hide();
+
     //Build lastSeen table
     buildLastSeen();
     
@@ -952,10 +957,9 @@ Reveal.addEventListener('lastSeen', function( event ) {
                 oSettings.iPagingEnd = oSettings._iDisplayStart - oSettings._iDisplayLength;
 
                 /* Correct for underrun */
-                if ( oSettings.iPagingEnd < 0 )
-                {
+                if ( oSettings.iPagingEnd < 0 ){
                   oSettings.iPagingEnd = 0;
-              }
+                }
 
               var iTween = $.fn.dataTableExt.oPagination.iTweenTime;
               var innerLoop = function () {
@@ -971,38 +975,37 @@ Reveal.addEventListener('lastSeen', function( event ) {
             innerLoop();
         } );
 
-    $(nNext).click( function() {
-    /* Disallow paging event during a current paging event */
-    if ( typeof oSettings.iPagingLoopStart != 'undefined' && oSettings.iPagingLoopStart != -1 )
-    {
-    return;
-    }
-    else if ( !validateLastSeen() )
-    {
-    return;
-    }
+    $(nNext).click( function( event ) {
+        /* Disallow paging event during a current paging event */
+        if ( typeof oSettings.iPagingLoopStart != 'undefined' && oSettings.iPagingLoopStart != -1 )
+        {
+            return;
+        }
+        else if ( !validateLastSeen( event ) )
+        {
+            return;
+        }
 
-    oSettings.iPagingLoopStart = oSettings._iDisplayStart;
+        oSettings.iPagingLoopStart = oSettings._iDisplayStart;
 
-    /* Make sure we are not over running the display array */
-    if ( oSettings._iDisplayStart + oSettings._iDisplayLength < oSettings.fnRecordsDisplay() )
-    {
-    $(nNext).css("visible", "hidden");
-    oSettings.iPagingEnd = oSettings._iDisplayStart + oSettings._iDisplayLength;
-    }
+        /* Make sure we are not over running the display array */
+        if ( oSettings._iDisplayStart + oSettings._iDisplayLength < oSettings.fnRecordsDisplay() )
+        {
+            oSettings.iPagingEnd = oSettings._iDisplayStart + oSettings._iDisplayLength;
+        }
 
-    var iTween = $.fn.dataTableExt.oPagination.iTweenTime;
-    var innerLoop = function () {
-    if ( oSettings.iPagingLoopStart < oSettings.iPagingEnd ) {
-    oSettings.iPagingLoopStart++;
-    oSettings._iDisplayStart = oSettings.iPagingLoopStart;
-    fnCallbackDraw( oSettings );
-    setTimeout( function() { innerLoop(); }, iTween );
-    } else {
-    oSettings.iPagingLoopStart = -1;
-    }
-    };
-    innerLoop();
+        var iTween = $.fn.dataTableExt.oPagination.iTweenTime;
+        var innerLoop = function () {
+            if ( oSettings.iPagingLoopStart < oSettings.iPagingEnd ) {
+                oSettings.iPagingLoopStart++;
+                oSettings._iDisplayStart = oSettings.iPagingLoopStart;
+                fnCallbackDraw( oSettings );
+                setTimeout( function() { innerLoop(); }, iTween );
+            } else {
+                oSettings.iPagingLoopStart = -1;
+            }
+        };
+        innerLoop();
     } );
 
     /* Take the brutal approach to cancelling text selection */
@@ -1010,28 +1013,30 @@ Reveal.addEventListener('lastSeen', function( event ) {
     $(nNext).bind( 'selectstart', function () { return false; } );
     },
 
-    "fnUpdate": function ( oSettings, fnCallbackDraw )
-    {
-    if ( !oSettings.aanFeatures.p )
-    {
-    return;
-    }
+    "fnUpdate": function ( oSettings, fnCallbackDraw ){
+        if ( !oSettings.aanFeatures.p )
+        {
+        return;
+        }
 
-    /* Loop over each instance of the pager */
-    var an = oSettings.aanFeatures.p;
-    for ( var i=0, iLen=an.length ; i<iLen ; i++ )
-    {
-    if ( an[i].childNodes.length !== 0 )
-    {
-    an[i].childNodes[0].className = 
-    ( oSettings._iDisplayStart === 0 ) ? 
-    oSettings.oClasses.sPagePrevDisabled : oSettings.oClasses.sPagePrevEnabled;
+        /* Loop over each instance of the pager */
+        var an = oSettings.aanFeatures.p;
+        for ( var i=0, iLen=an.length ; i<iLen ; i++ ){
+            if ( an[i].childNodes.length !== 0 ) {
+                if( oSettings._iDisplayStart === 0 ){
+                    an[i].childNodes[0].className = oSettings.oClasses.sPagePrevDisabled;
+                }else{
+                    an[i].childNodes[0].className = oSettings.oClasses.sPagePrevEnabled;
+                }
 
-    an[i].childNodes[1].className = 
-    ( oSettings.fnDisplayEnd() == oSettings.fnRecordsDisplay() ) ? 
-    oSettings.oClasses.sPageNextDisabled : oSettings.oClasses.sPageNextEnabled;
-    }
-    }
+                if( oSettings.fnDisplayEnd() == oSettings.fnRecordsDisplay() ){
+                    an[i].childNodes[1].className = oSettings.oClasses.sPageNextDisabled;
+                    $("#next-arrow").show();
+                }else{
+                    an[i].childNodes[1].className = oSettings.oClasses.sPageNextEnabled;
+                }
+            }
+        }
     }
     }
 
@@ -1286,7 +1291,7 @@ function error( type ) {
     var mess;
     switch( type ){
         case "MAXFRIENDS":
-            mess="Sorry, you've reached the maximum number of friends for this category";
+            mess="You've reached the maximum number of friends for this category";
             break;
         case "STRENGTH":
             mess="Please bring all of your friends into the circle";
@@ -1303,20 +1308,11 @@ function error( type ) {
         case "CIRCLESNAMES":
             mess="A group needs at least 2 people.";
             break;
-        case 'FOF':
-            mess="FOF ERROR";
-            break;
         case "ISLANDNAME":
             mess="Please enter a name.";
             break;
-        case "NAMES":
-            mess="Are you sure you don't want to enter any names?";
-            break;
         case "LASTSEEN":
             mess="Please select missing values.";
-            break;
-        case "NOSPLITCURRENT":
-            mess="You can't split somone who is still merging!";
             break;
         case "NAMEDUP":
             mess="You aleady have that name in this category";

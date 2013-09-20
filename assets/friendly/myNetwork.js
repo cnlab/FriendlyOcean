@@ -78,16 +78,16 @@ var myNetwork = (function(){
             
             node.append("svg:image")
                 .attr("xlink:href", function(){ return "assets/img/ocean/elements/" + icons[Math.floor(Math.random() * icons.length)]; })
-                .attr("x", "-8px")
-                .attr("y", "-8px")
-                .attr("width", "25px")
-                .attr("height", "25px");
+                .attr("x", "-30px")
+                .attr("y", "-30px")
+                .attr("width", "60px")
+                .attr("height", "60px");
 
             node.append("svg:text")
                 .attr("class", "text")
-                .attr("dx", 12)
-                .attr("dy", ".35em")
-                .attr("font-size", "14px")
+                .attr("dx", "-12px")
+                .attr("dy", "-20px")
+                .attr("font-size", "18px")
                 .text(function(d) { return d.name; });
 
             force.start();
