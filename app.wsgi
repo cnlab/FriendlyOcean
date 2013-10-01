@@ -10,6 +10,7 @@ from cork.backends import MongoDBBackend
 import logging
 
 import tps
+from default_config import config
 
 logging.basicConfig(format='localhost - - [%(asctime)s] %(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -39,12 +40,45 @@ def postd():
 def post_get(name, default=''):
     return bottle.request.POST.get(name, default).strip()
 
+@route('/configure')
+@route('/configure/')
+def configure():
+    return template('config.tpl')
+
+@route('/get_config')
+@route('/get_config/')
+def get_config():
+    for slide in config['categories']:
+        config['categories'][slide]['help'] = "||".join(config['categories'][slide]['help'])
+    for slide in config['components']:
+        config['components'][slide]['help'] = "||".join(config['components'][slide]['help'])
+    return config
+
+@route("/load_config")
+def load_config():
+    appID = request.query.appID
+    return config
+
+@post('/configure')
+@post('/configure/')
+def do_config():
+
+    d = postd().dict
+    print json.dumps(d, indent=2)
+    upload = request.files.get('surveys')
+    response.status = 200
+
+@route('/surveys_example.json')
+def get_survey_example():
+    f = json.loads(open("assets/friendly/surveys_example.json", "rU").read())
+    return static_file("surveys_example.json", root="./assets/friendly")
+
 @post('/get_interactions')
 def get_interaction():
     access_token = post_get('access_token')
     tps.stored_access_token = access_token
     
-    week = datetime.timedelta(weeks=10)
+    week = datetime.timedelta(weeks=1)
     start_date = datetime.datetime.today() - week
     response = {}
     
@@ -64,22 +98,18 @@ def channel():
 
 @route('/')
 def index():
+
     if request.query.pID:
         pID = request.query.pID
     else:
         pID = "anon"
 
-    if request.query.appID:
-        appID = request.query.appID
-    else:
-        appID = "cnl"
-
     if request.query.theme:
-        theme = request.query.theme
-    else:
-        theme = "ocean"
+        themes = ["ocean", "island", "space"]
+        if request.query.theme in themes:
+            config['theme'] = request.query.theme
 
-    return template('index', pID=pID, appID=appID, theme=theme)
+    return template('index', pID=pID, config=config)
     
 @route('/assets/<file_path:path>')
 def static(file_path):

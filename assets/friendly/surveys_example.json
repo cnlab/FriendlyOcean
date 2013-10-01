@@ -1,0 +1,27 @@
+{
+    "surveys":[
+            {
+            "question": "When was the last time you saw each person?",
+            "instructions": "Please answer the following question for each person.",
+            "responses": [
+                                {
+                                    "long": "Within the last week",
+                                    "value": "week"
+                                    },
+                                {
+                                    "long": "More than a week ago but within the last month",
+                                    "value": "month"
+                                    },
+                                {
+                                    "long": "More than a month ago but within the last year",
+                                    "value": "year"
+                                    },
+                                {
+                                    "long": "More than a year ago",
+                                    "value": "overayear"
+                                }
+
+                            ]
+            }
+        ]
+}

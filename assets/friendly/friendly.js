@@ -1,116 +1,5 @@
 var Friendly = {
-	
-	config :{
-                islandType: "ocean",
-                arrowType: "starfish",
-                appID : null,
-                maxFriendsPerCategory: 20,
-                categories: {
-                    'family': {
-                        'title': 'Family',
-                        'show': true,
-                        'help': [
-                                    'Please enter the names of your family members who you know personally and would like to continue to have a personal relationship with.',
-                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
-                                    'Click on a name if you need to remove it from the list.'
-                                ]
-                    },
-                    'calling': {
-                        'title': 'Calling',
-                        'show': true,
-                        'help': [
-                                    'Please take out your phone and look at the voice call log.',
-                                    'Enter the names of everyone you know personally who you have called or received a call from in the last week.',
-                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
-                                    'Click on a name if you need to remove it from the list.'
-                                ]
-                    },
-                    'texting': {
-                        'title': 'Texting',
-                        'show': true,
-                        'help': [
-                                    'Please take out your phone and look at the texting (SMS) log.',
-                                    'Enter the names of everyone you know personally who you have sent a text or have received a text from in the last week.',
-                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
-                                    'Click on a name if you need to remove it from the list.'                                
-                                    ]
-                    },
-                    'facebook': {
-                        'title': 'Facebook',
-                        'show': true,
-                        'help': [
-                                    'If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you\'ve interacted with in the last week.',
-                                    'Otherwise, please enter the names of everyone you have interacted with in the last week.',
-                                    'If two or more people in your life have the same name, be sure to add a last initial so you don\'t get them mixed up.',
-                                    'Click on a name if you need to remove it from the list.'                                
-                                    ]
-                    },
-                    'face2face': {
-                        'title': 'Face to Face',
-                        'show': false,
-                        'help': [
-                                    'Enter the first names and last initial (or nicknames) of everyone you know personally who you have seen FACE-TO-FACE IN THE LAST WEEK who is missing from your current list of islanders.'
-                                ]
-                    },
-                    'other': {
-                        'title': 'Anyone else?',
-                        'show': false,
-                        'help': [
-                                    'Now look at the list of names one last time to see if there anyone who would not want to forget to bring.',
-                                    'Please think of ALL SIGNIFICANT RELATIONSHIPS who might be missing from your island. This includes people who you have NOT interacted with via face-to-face, calling, texting, or Facebook in the last 7 days BUT who you know personally and would like to continue to have a personal relationship with.'
-                                ]
-                    },
-                    'merge': {
-                        'title': 'Matching',
-                        'show': true,
-                        'help': [
-                                    'Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count. We know that sometimes you communicate with the same person via multiple channels. For example, maybe you text your mother and talk to her on the phone.',
-                                    'Please carefully go over this list and find any matches. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you\'ve highlighted some duplicates, click the "Next Friend" button at the top of the screen. Your merged friend will appear bolded below.',
-                                    'If you make a mistake, simply double-click the merged friend to remove the names under it. Or if you forget who you have merged, hover over a bolded name to see everyone inside it.'
-                                ]
-                    },
-                    'closeness': {
-                        'title': 'Closeness',
-                        'show': true,
-                        'help': [
-                                    'Please rate how emotionally close you are with each person by dragging their name into the circle.',
-                                    'You can rate them from not at all close (perimeter) to extremely close (center).'
-                                ]
-                    },
-                    'lastSeen': {
-                        'title': 'Last Seen',
-                        'show': true,
-                        'help': [
-                                    'Please respond to the following question for each person.'
-                                ]
-                    },
-                    'circles': {
-                        'title': 'Groups',
-                        'show': true,
-                        'help': [
-                                    'Now it\'s time to find groups of friends who all know each other, such as friends from work, school, or a soccer team. Be sure that all group members know each other.',
-                                    'To create a circle, click on at least 2 names, then type a name for the it into the input field and press enter. To remove a circle, click the \'x\' in its title bar.',
-                                    'To add or remove a person from a circle, first activate the circle by clicking on it, then click on any names in the list above that you wish to add or remove.',
-                                    'The more groups you can come up with, the more time you\'ll save'
-                                ]
-                    },
-                    'friendOfFriend': {
-                        'title': 'Friends of Friends',
-                        'show': true,
-                        'help': [
-                                    'Finally, put your friends who know each other together in the same place. For each friend select all of the people they know by clicking on their names on the left side. If you make a mistake, you can click the bubble to return them to the other side.'
-                                ]
-                    },
-                    'end': {
-                        'title': 'The End',
-                        'show': true,
-                        'help': [
-                                    'You\'re all done!'
-                                ]
-                    }
-                }
-            },
-	
+
     //Island name
     islandName: null,
 
@@ -155,33 +44,44 @@ var makeBar = (function(){
 })();
 
 
-//Get and set values from Last See Table
-function getLastSeen() {
-    var inputs = lst ? lst.$('input:checked') : $('input:checked');
+//Get and set values from surveys
+function getSurveyAnswers() {
+    var slide = Reveal.getCurrentSlide();
+    var tab = $(slide).find("table").dataTable();
+    var inputs = tab ? tab.$('input:checked') : $('input:checked');
+    var key = $(slide).attr("id");
     $(inputs).each(function( i, obj ) {
         var value = $(obj).val();
         var fnum = obj.name.split("_")[1];
         var friend = jQuery.grep(Friendly.friends, function ( f ) {
             return f.friendNumber == fnum;
         })[0];
-        
-        friend.lastSeen = value;
+
+        friend[key] = value;
     });
 }
 
-//Validate Last Seen Table
-function validateLastSeen( click ) {
+//Validate Survey Table
+function validateSurvey( click ) {
   
   var sourceID = click.currentTarget.id;
+  
+  var slide = Reveal.getCurrentSlide();
+  var tab = $(slide).find("table").dataTable();
 
-  var rows = lst.$("tbody tr");
+  var rows = tab.$("tbody tr");
   
   var missingCnt=0;
   
   $(rows).each(function( i, obj ) {
     var inputs = $(obj).find('input');
-    var isSelected = inputs[0].checked || inputs[1].checked || inputs[2].checked || inputs[3].checked;
-    
+    var isSelected;
+    $( inputs ).each(function( x, input ){
+        if( input.checked ){
+            isSelected = input.checked;
+        }
+    });
+
     if (isSelected) {
       $(obj).removeClass('error');
     } 
@@ -195,24 +95,36 @@ function validateLastSeen( click ) {
     return true;
   } 
   else {
-    error("LASTSEEN");
+    error("SURVEY");
     return false;
   }
 }
 
-//Build lastSeen table
-function buildLastSeen() {
-    var table = $('#lastSeenTable');
+//Build survey table
+function buildSurveys( table ) {
+    
     var friends = Friendly.friends.sort(function( a, b ){
         var aName = a.name.toLowerCase();
         var bName = b.name.toLowerCase(); 
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
     });
-
+        
+    var responses = Friendly.config.components.survey.surveys[ parseInt( $(table).closest("section").data("surveyindex") ) ].responses;
+    
     $(friends).each(function( i, obj ) {
-            var tr = $('<tr data-fid="{fnum}"><td>{name}</td><td><input value="week" name="seen_{fnum}" type="radio" /></td><td><input value="month" name="seen_{fnum}" type="radio" /></td><td><input value="year" name="seen_{fnum}" type="radio" /></td><td><input value="overayear" name="seen_{fnum}" type="radio" /></td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
+            var tr = $('<tr data-fid="{fnum}"><td>{name}</td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
+
+            $(responses).each( function( x, resp ){
+                var input = $("<input type='radio' value='{value}' name='seen_{fnum}' />".supplant({"value": resp.value, "fnum":obj.friendNumber}));
+                var td = $("<td></td>").append(input);
+                $(tr).append(td);
+            });
+
             $(table).append(tr);
      });
+
+ return "#" + $(table).attr("id");
+
 }
 
 //Add names from friend-list to application object
@@ -379,7 +291,7 @@ function buildLinks(array, n) {
     return combs;
 }
 
-//Animate rehoming of elements on merge page
+//Animate rehoming of elements on matching page
 function disembark( element, newParent, moveAll ) {
     element = $(element); //Allow passing in either a JQuery object or selector
     newParent = $(newParent); //Allow passing in either a JQuery object or selector
@@ -407,7 +319,6 @@ function disembark( element, newParent, moveAll ) {
 }
 
 //Global variable for DataTable
-var lst;
 
 //Global object for final link network
 var network = {links: [], nodes: []};
@@ -416,7 +327,7 @@ var network = {links: [], nodes: []};
 var fbPermissions = {scope: "user_about_me,friends_about_me,user_activities,friends_activities,user_birthday,friends_birthday,user_education_history,friends_education_history,user_events,friends_events,user_groups,friends_groups,user_hometown,friends_hometown,user_interests,friends_interests,user_likes,friends_likes,user_location,friends_location,user_notes,friends_notes,user_photo_video_tags,friends_photo_video_tags,user_photos,friends_photos,user_relationships,friends_relationships,user_status,friends_status,user_videos,friends_videos,read_friendlists,read_requests,read_stream,user_checkins,friends_checkins,read_mailbox"}
 
 //Icons for final network visualization
-var icons = ['anemone.png', 'blue_stripe_small.png', 'blue_stripes.png', 'blue_yellow.png', 'blue_yellow_grouper.png', 'green_angel.png', 'green_grouper.png', 'green_guppy.png', 'green_star.png', 'grn_grump.png', 'long_snout_left.png', 'long_snout_right.png', 'org_starfish.png', 'pkgr_fin.png', 'poiple_spike.png', 'puffer.png', 'purple_nurple.png', 'sardine.png', 'small_pink.png', 'starfish.png', 'sunfish.png', 'eel.png'];
+var icons = ['anemone.png', 'blue_stripe_small.png', 'blue_stripes.png', 'blue_yellow.png', 'blue_yellow_grouper.png', 'green_angel.png', 'green_grouper.png', 'green_guppy.png', 'green_star.png', 'grn_grump.png', 'long_snout_left.png', 'long_snout_right.png', 'org_starfish.png', 'pkgr_fin.png', 'poiple_spike.png', 'puffer.png', 'purple_nurple.png', 'sardine.png', 'small_pink.png', 'starfish.png', 'sunfish.png'];
 
 //Colors for circles
 var circleColors = $.shuffle(["rgba(217,65,65,1)", "rgba(219,110,66,1)", "rgba(221,155,66,1)", "rgba(222,202,67,1)", "rgba(200,224,67,1)", "rgba(156,226,68,1)", "rgba(111,228,68,1)", "rgba(69,230,73,1)", "rgba(70,232,121,1)", "rgba(70,234,169,1)", "rgba(71,236,218,1)", "rgba(71,208,238,1)", "rgba(72,161,240,1)", "rgba(72,113,242,1)", "rgba(81,73,244,1)", "rgba(132,74,245,1)", "rgba(183,74,247,1)", "rgba(235,75,249,1)", "rgba(251,75,215,1)", "rgba(253,76,166,1)"]);
@@ -660,7 +571,7 @@ $('#circle-input')
 $('#next-arrow').click(function( event ){
     var currentSlide = Reveal.getCurrentSlide();
 
-    switch( currentSlide.id ){
+    switch( currentSlide.dataset.category ){
         case 'objective':
             if ( $('input[name="island-name"]').val().trim().length > 0 ) {
                 var islandName = $('input[name="island-name"]').val().trim();
@@ -709,7 +620,7 @@ $('#next-arrow').click(function( event ){
                 Friendly.friends = friends;
             }
             break;
-        case 'merge':
+        case 'matching':
             if( confirm("Are you sure you've found all of the duplicates?") ){
                 finalMerge();
             }
@@ -717,12 +628,12 @@ $('#next-arrow').click(function( event ){
                 return;
             }
             break;
-        case 'lastSeen':
-            if ( !validateLastSeen( event ) ) {
+        case 'survey':
+            if ( !validateSurvey( event ) ) {
                 return;
             }
             else {
-                getLastSeen();
+                getSurveyAnswers();
             }
             break;
         case 'circles':
@@ -820,6 +731,8 @@ $('#next-arrow').click(function( event ){
                         case "not_authorized":
                             FB.logout();
                             break;
+                        default:
+                            break;
                     }
                 });
                 myNetwork.init( network );
@@ -906,13 +819,7 @@ Reveal.addEventListener('friendOfFriend', function( event ) {
                 fof.addCenterFriend(firstFriend);
             });
 
-Reveal.addEventListener('lastSeen', function( event ) {
-    
-    $("#next-arrow").hide();
-
-    //Build lastSeen table
-    buildLastSeen();
-    
+Reveal.addEventListener('survey', function( event ) {
     //Settings for DataTables custom pagination
     /* Time between each scrolling frame */
     $.fn.dataTableExt.oPagination.iTweenTime = 100;
@@ -981,7 +888,7 @@ Reveal.addEventListener('lastSeen', function( event ) {
         {
             return;
         }
-        else if ( !validateLastSeen( event ) )
+        else if ( !validateSurvey( event ) )
         {
             return;
         }
@@ -1040,64 +947,78 @@ Reveal.addEventListener('lastSeen', function( event ) {
     }
     }
 
-    //Run DataTable.js on lastSeenTable
-     lst = $('#lastSeenTable').dataTable( {
-        "bInfo":false,
-        "bDestroy":true,
-        "iDisplayLength": 10,
-        "sPaginationType":"scrolling",
-        "bSort":false,
-        'bFilter':false,
-        "bLengthChange":false,
-        "fnDrawCallback": function( oSettings ){
-            $("#lastSeenTable_paginate button").addClass("btn btn-primary");
-            if( Friendly.friends.length <= 10 ){
-                $("#lastSeenTable_paginate").css("display", "none")
-            }
+    //Hide the next button
+    $("#next-arrow").hide();
+
+    //Find tables and build them, if necessary
+    var tables = $("section.survey").find("table");
+    $( tables ).each( function( i, table ){
+
+        if( ! $.fn.DataTable.fnIsDataTable( table ) ){
+            
+            var tableID = buildSurveys( table );
+
+            //Run DataTable.js on surveys
+             var lst = $( tableID ).dataTable( {
+                "bInfo":false,
+                "bDestroy":true,
+                "iDisplayLength": 15,
+                "sPaginationType":"scrolling",
+                "bSort":false,
+                'bFilter':false,
+                "bLengthChange":false,
+                "fnDrawCallback": function( oSettings ){
+                    $( tableID + "_paginate button").addClass("btn btn-primary");
+                    if( Friendly.friends.length <= 15 ){
+                        $( tableID + "_paginate").css("display", "none")
+                    }
+                }
+            });
+
+            lst.$("input[type='radio']").click(function(e){
+                e.stopPropagation();
+                $(this).closest("tr").removeClass("error");
+            });
+            
+            lst.$("td:not(:first-child)").on({
+                "mouseover": function(e){
+                    var pos = lst.fnGetPosition( this );
+                    var h = $( tableID +" th")[pos[2]];
+                    var c = $(lst.fnGetNodes(pos[0])).children()[0];
+
+                    $(this).css("background", "rgba(255, 144, 3, 0.5)");
+                    $(c).css("background", "rgba(255, 144, 3, 0.5)");
+                    $(h).css("background", "rgba(255, 144, 3, 0.5)");
+                },
+                "mouseout": function(e){
+                    var pos = lst.fnGetPosition( this );
+                    var h = $( tableID + " th")[pos[2]];
+                    var c = $(lst.fnGetNodes(pos[0])).children()[0];
+
+                    $(this).css("background", "");
+                    $(h).css("background", "");
+                    $(c).css("background", "");
+                },
+                "click": function(e){
+                    $(this).children("input").click();
+                }
+            });      
         }
-    });
 
-    lst.$("input[type='radio']").click(function(e){
-        e.stopPropagation();
-        $(this).closest("tr").removeClass("error");
-    });
-    
-    lst.$("td:not(:first-child)").on({
-        "mouseover": function(e){
-            var pos = lst.fnGetPosition( this );
-            var h = $("#lastSeenTable th")[pos[2]];
-            var c = $(lst.fnGetNodes(pos[0])).children()[0];
-
-            $(this).css("background", "rgba(255, 144, 3, 0.5)");
-            $(c).css("background", "rgba(255, 144, 3, 0.5)");
-            $(h).css("background", "rgba(255, 144, 3, 0.5)");
-        },
-        "mouseout": function(e){
-            var pos = lst.fnGetPosition( this );
-            var h = $("#lastSeenTable th")[pos[2]];
-            var c = $(lst.fnGetNodes(pos[0])).children()[0];
-
-            $(this).css("background", "");
-            $(h).css("background", "");
-            $(c).css("background", "");
-        },
-        "click": function(e){
-            $(this).children("input").click();
-        }
-    });       
+    }); 
 });
 
-Reveal.addEventListener('merge', function( event ) {
+Reveal.addEventListener('matching', function( event ) {
 
     //Hide next arrow so they're forced to touch each person
     $("#next-arrow").hide();
 
     //Build friend lists
-    createFriendLists( $('#merge .lists-row') );
+    createFriendLists( $('#matching .lists-row') );
 
-    var spans = $("#merge .lists-row").find("span");
+    var spans = $("#matching .lists-row").find("span");
     var firstFriend = merger.init( spans );
-    $("#merge .current-merge-name").text( firstFriend.innerText );
+    $("#matching .current-merge-name").text( firstFriend.innerText );
     
     $(firstFriend).parent().css("pointer-events", "none");
     $(firstFriend).addClass("current-merge");
@@ -1129,10 +1050,17 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
                 if(category){
-                    $('#help #modal-label').text("Instructions - {category}".supplant({'category': Friendly.config.categories[category].title}));
                     var mb = $('#help').find('.modal-body');
                     $(mb).children().remove();
-                    var helpList = Friendly.config.categories[category].help;
+                    
+                    if( Friendly.config.categories[category] ){
+                        var helpList = Friendly.config.categories[category].help;
+                    }else if( Friendly.config.components[category] ){
+                        var helpList = Friendly.config.components[category].help;
+                    }else{
+                        var helpList = [];
+                    }
+
                     $(helpList).each(function(i,obj){
                         var p = $("<p class='lead'></p>");
                         $(p).text(obj);
@@ -1311,7 +1239,7 @@ function error( type ) {
         case "ISLANDNAME":
             mess="Please enter a name.";
             break;
-        case "LASTSEEN":
+        case "SURVEY":
             mess="Please select missing values.";
             break;
         case "NAMEDUP":

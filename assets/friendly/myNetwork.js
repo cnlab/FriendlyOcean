@@ -13,9 +13,9 @@ var myNetwork = (function(){
             .size([width, height])
             .nodes(nodes)
             .links(links)
-            .charge(-100)
-            .gravity(.3)
-            .linkDistance(300)
+            .charge(-400)
+            .gravity(.2)
+            .linkDistance(400)
             .on("tick", tick);
 
         var svg = d3.select("#myNetwork").append("svg")

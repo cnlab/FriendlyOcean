@@ -13,7 +13,7 @@
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/reveal.css">
-  <link rel="stylesheet" href="assets/css/theme/{{ theme }}.css" id="theme">
+  <link rel="stylesheet" href="assets/css/theme/{{ config['theme'] }}.css" id="theme">
   <link rel="stylesheet" href="assets/css/common.css">
     <!--[if lt IE 9]>
         <script src="assets/js/html5shiv.js"></script>
@@ -71,7 +71,8 @@
                     </div>
                 </section>
                 
-                <section id="authorize" data-background="assets/img/ocean/backgrounds/auth.png" data-progress="Intro">
+                %if 'facebook' in config['categories']:
+                <section id="authorize" data-category="authorize" data-background="assets/img/ocean/backgrounds/auth.png" data-progress="Intro">
                     <div class="row slide-header">
                         <h2>Facebook Authorization</h2>
                     </div>
@@ -87,6 +88,7 @@
                         </div>
                     </div>       
                 </section>
+                %end
                 
                 <section id="congratulations" class="instructions" data-progress="Intro" data-background="assets/img/ocean/backgrounds/instr1.png">
                     <div class="row slide-header">
@@ -102,7 +104,7 @@
                     </div>
                 </section>
                 
-                <section id="objective" class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr2.png">
+                <section id="objective" class="instructions" data-category="objective" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr2.png">
                         <div class="row slide-header">
                             <h2>Your Goal</h2>
                         </div>
@@ -149,10 +151,9 @@
                         <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in four different boats.</p>
                         <div class="span5 offset2">
                             <ol>
-                                <li>Family</li>
-                                <li>Calling</li>
-                                <li>Texting</li>
-                                <li>Facebook</li>
+                                %for cat in config['categories']:
+                                <li>{{ cat.title() }}</li>
+                                %end
                             </ol>
                         </div>
                     </div>
@@ -185,10 +186,15 @@
                     </div>
                 </section>
                 
-                <section id="family" data-category="family" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/family.png">
+                %for section in config['categories']:
+                <section id="{{ section }}" data-category="{{ section }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section }}.png">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>Family - <input class="friend-input" name="family-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
+                            <h2>{{ config['categories'][section]['title'] }}
+                                %if section is not 'facebook':
+                                 - <input class="friend-input" name="{{ section }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
+                                %end
+                            </h2>
                         </div>
                         <div class="row">
                             <ul class="friend-list">
@@ -196,44 +202,10 @@
                         </div>
                     </div>
                 </section>
-                
-                <section id="calling" data-category="calling" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/calling.png">
-                    <div class="container">
-                        <div class="row slide-header">
-                            <h2>Calling - <input class="friend-input" name="calling-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
-                        </div>
-                        <div class="row">
-                            <ul class="friend-list">
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-                
-                <section id="texting" data-category="texting" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/texting.png">
-                    <div class="container">
-                        <div class="row slide-header">
-                            <h2>Texting - <input class="friend-input" name="texting-friend-input" type="text" placeholder="Type a name and press Enter"/></h2>
-                        </div>
-                        <div class="row">
-                            <ul class="friend-list">
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-                
-                <section id="facebook" data-category="facebook" data-progress="Adding" data-show="help" class="category add-names sns" data-background="assets/img/ocean/backgrounds/facebook.png">
-                    <div class="container">
-                        <div class="row slide-header">
-                            <h2>Facebook</h2>
-                        </div>
-                        <div class="row list-row">
-                            <ul class="friend-list">
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-                
-                <section id="merge" data-state="merge" data-progress="Matching" data-category="merge" data-show="help" class="merge" data-background="assets/img/ocean/backgrounds/merge.png">
+                %end
+
+                %if 'matching' in config['components']:
+                <section id="matching" data-state="matching" data-progress="Matching" data-category="matching" data-show="help" class="maching" data-background="assets/img/ocean/backgrounds/matching.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Find Matches and Disembark</h2>
@@ -253,7 +225,9 @@
                         </div>
                     </div>
                 </section>
-                
+                %end
+
+                %if 'closeness' in config['components']:
                 <section id="closeness" data-category="closeness" data-progress="Spacing" data-show="help" data-state="strengthInit" data-background="assets/img/ocean/backgrounds/closeness.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -264,20 +238,22 @@
                         </div>
                     </div>
                 </section>
-                
-                <section id="lastSeen" data-state="lastSeen" data-progress="Spacing" data-category="lastSeen" data-show="help" data-background="assets/img/ocean/backgrounds/lastSeen.png">
+                %end
+
+                %if 'survey' in config['components']:
+                %for i, obj in enumerate( config['components']['survey']['surveys'] ):
+                <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Spacing" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>When did you last see everyone?</h2>
+                            <h2>{{ obj['question'] }}</h2>
                         </div>
-                        <table id="lastSeenTable" class="table table-striped">
+                        <table id="{{ obj['key'] }}-table" class="table table-striped survey-table">
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Within the last week</th>
-                                    <th>More than a week ago but within the last month</th>
-                                    <th>More than a month ago but within the last year</th>
-                                    <th>More than a year ago</th>
+                                    %for option in obj['responses']:
+                                    <th>{{ option['text'] }}</th>
+                                    %end
                                 </tr>
                             </thead>
                             <tbody>
@@ -285,7 +261,10 @@
                         </table>
                     </div>
                 </section>
-                
+                %end
+                %end
+
+                %if 'circles' in config['components']:
                 <section id="circles" data-category="circles" data-state="circles" data-progress="Grouping" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -305,7 +284,9 @@
                         </div>                        
                     </div>
                 </section>
-                
+                %end
+
+                %if 'friendOfFriend' in config['components']:
                 <section id="friendOfFriend" data-category="friendOfFriend" data-progress="Connecting" data-state="friendOfFriend" data-show="help" data-background="assets/img/ocean/backgrounds/friendOfFriend.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -321,7 +302,8 @@
                         </div>
                     </div>
                 </section>
-                
+                %end
+
                 <section id="end" data-category="end" data-state="end" data-progress="End" data-background="assets/img/ocean/backgrounds/end.png">
                     <div class="container" id="myNetwork">
                         <div class="row"> 
@@ -354,7 +336,7 @@
     <div id="error"></div>
 
     <!--Javascripts-->
-    <script src="assets/js/jquery-1.10.1.min.js"></script>
+    <script src="assets/js/jquery-1.10.2.min.js"></script>
     <script src="assets/js/jquery.tinysort.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/reveal.js"></script>
@@ -367,31 +349,34 @@
     <script src="assets/friendly/myNetwork.js"></script>
 
     <script type="text/javascript">
-        //Do these things on load
-
-        //Set some global variables
-        var pID = "{{ pID }}";
-        Friendly.config.appID = "{{ appID }}";
-
-        $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.islandType.capitalize()}));
-        $(".island-type").text(Friendly.config.islandType);
-        $(".island-type-plural").text(Friendly.config.islandType+"s");
-        $(".island-type-caps").text(Friendly.config.islandType.capitalize());
-        $(".arrow-type").text(Friendly.config.arrowType);
-        $("<img></img>").attr('src', 'assets/img/ocean/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
         
-        //Check for app in local storage
-        if( getApp() ){
-            Friendly = getApp();
-            if( Friendly.config.categories.facebook.show && Friendly.sns && Friendly.fbFriends.friends.length > 0 ){
-                fillFBList(Friendly.fbFriends.friends);
-            }else if( Friendly.config.categories.facebook.show ){
-                noSNS();
+        var pID = "{{ pID }}";
+        
+        //Load the app
+        jQuery.getJSON("/load_config", {appID: "{{ config['appID'] }}"}, function( response ){
+            
+            Friendly.config = response;
+
+            $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.theme.capitalize()}));
+            $(".island-type").text(Friendly.config.theme);
+            $(".island-type-plural").text(Friendly.config.theme+"s");
+            $(".island-type-caps").text(Friendly.config.theme.capitalize());
+            $(".arrow-type").text(Friendly.config.arrowType);
+            $("<img></img>").attr('src', 'assets/img/ocean/elements/{type}.png'.supplant({"type": Friendly.config.arrowType})).appendTo("#next-arrow");
+            
+            //Check for app in local storage
+            if( getApp() ){
+                Friendly = getApp();
+                if( Friendly.config.categories.facebook && Friendly.sns && Friendly.fbFriends.friends.length > 0 ){
+                    fillFBList(Friendly.fbFriends.friends);
+                }else if( Friendly.config.categories.facebook.show ){
+                    noSNS();
+                }
+                Reveal.slide(Friendly.slide);
+                $('#help-img').css('display', 'block');
+                $(".island-name").text(Friendly.islandName);
             }
-            Reveal.slide(Friendly.slide);
-            $('#help-img').css('display', 'block');
-            $(".island-name").text(Friendly.islandName);
-        }
+        });
 
     </script>
 </body>

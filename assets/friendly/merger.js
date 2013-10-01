@@ -3,17 +3,17 @@ var merger = (function(){
 
     function init( names ){
         currentSpan = names[0];
-        if( $("#merge .lists-row").find("span").length === 1 ){
+        if( $("#matching .lists-row").find("span").length === 1 ){
             $("#next-merge").text("Finish");
         }
         return currentSpan;
     }
 
     function nextFriend(){        
-        var span = $("#merge .lists-row").find("span").first()[0];
+        var span = $("#matching .lists-row").find("span").first()[0];
         if ( span ){
             currentSpan = span;
-            if( $("#merge .lists-row").find("span").length === 1 ){
+            if( $("#matching .lists-row").find("span").length === 1 ){
                 $("#next-merge").text("Finish");
             }
             return currentSpan;
@@ -143,8 +143,8 @@ var merger = (function(){
     function matchSuspects( name ){
         rgName = name.substring(0,3);
         lcName = name.toLowerCase().substring(0,3);
-        var rgQ = "#merge .merge-list span:contains('{str}')".supplant({"str": rgName});
-        var lcQ = "#merge .merge-list span:contains('{str}')".supplant({"str": lcName});
+        var rgQ = "#matching .merge-list span:contains('{str}')".supplant({"str": rgName});
+        var lcQ = "#matching .merge-list span:contains('{str}')".supplant({"str": lcName});
         $(rgQ).addClass("selected");
     }
 
