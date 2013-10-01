@@ -18,7 +18,7 @@ var Friendly = {
     
     circles: [],
 
-    //Own own progress bar segment names
+    //Our own progress bar segment names
     //Slides must have a data-progress attribute matching one of these
     progressSegments: ["Intro", "Adding", "Matching", "Spacing", "Grouping", "Connecting"]
     
@@ -108,8 +108,8 @@ function buildSurveys( table ) {
         var bName = b.name.toLowerCase(); 
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
     });
-        
-    var responses = Friendly.config.components.survey.surveys[ parseInt( $(table).closest("section").data("surveyindex") ) ].responses;
+    var id = $(table).attr("id");  
+    var responses = surveys[ id.split('-')[0] ].responses;
     
     $(friends).each(function( i, obj ) {
             var tr = $('<tr data-fid="{fnum}"><td>{name}</td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
@@ -123,7 +123,7 @@ function buildSurveys( table ) {
             $(table).append(tr);
      });
 
- return "#" + $(table).attr("id");
+ return "#" + id;
 
 }
 
@@ -206,6 +206,41 @@ function addLink(source, target){
         Friendly.links.push(link);
     }
     
+}
+
+function getLinksFrom( string ){
+    switch(string){
+        case 'circles':
+
+            //Generate links from circle data
+            $(Friendly.circles).each( function( i, obj ){
+                var combos = buildLinks(obj.members, 2);
+                $(combos).each( function( n, c ){
+                    addLink(c[0], c[1]);
+                });
+            });
+            break;
+        
+        case 'facebook':
+        
+            //Generate links from Facebook data
+            $(Friendly.fbFriends.fb_fof).each(function( i, obj ){
+                var s = obj[0];
+                var t = obj[1];
+                var arr = [];
+                $(Friendly.friends).each(function( a, b ){
+                    $(b.category).each(function( c, d ){
+                        if( d == s || d == t){
+                            arr.push(b.friendNumber);
+                        }
+                    });
+                });
+                addLink( arr[0], arr[1] );
+            });
+
+        default:
+            break;
+    }
 }
 
 //Save application object to localStorage
@@ -593,8 +628,6 @@ $('#next-arrow').click(function( event ){
         case 'calling':
         case 'texting':
         case 'facebook':
-        case 'face2face':
-        case 'other':
             var li = $( currentSlide ).find('.friend-list li');
             if( li.length < 1 ){
                 if( !confirm("Are you sure you don't want to add any names?") ){
@@ -653,6 +686,8 @@ $('#next-arrow').click(function( event ){
                 var circle = { name: name, members: members };
                 Friendly.circles.push(circle);
             });
+
+            getLinksFrom( 'circles' );
 
             break;
         case 'friendOfFriend':
@@ -735,10 +770,29 @@ $('#next-arrow').click(function( event ){
                             break;
                     }
                 });
+
+                //If app is not using FOF, we still need to get  links from FB
+                //Also need to populate network
+                if( $("section#friendOfFriend").length === 0 ){
+                    getLinksFrom( 'facebook' );
+                
+                    $(Friendly.links).each( function( i, obj ){
+                        network.links.push({source:obj.source, target:obj.target});
+                    });
+
+                    $(Friendly.friends).each( function( i, obj ){
+                        network.nodes.push({name:obj.name, id:obj.friendNumber});
+                    });
+
+                }
+
                 myNetwork.init( network );
                 myNetwork.start();
                 var log = {
-                    "friends": Friendly.friends,
+                    "friends": jQuery.map( Friendly.friends, function( obj, i ){
+                        obj.name = "Friend " + (obj.friendNumber);
+                        return obj;
+                    }),
                     "links": Friendly.links,
                     "pID":  pID,
                     "appID": Friendly.config.appID,
@@ -791,33 +845,12 @@ Reveal.addEventListener('friendOfFriend', function( event ) {
     var slide = $('#friendOfFriend');
     var row = $(slide).find('.row')[0];
 
-                //Generate links from circle data
-                $(Friendly.circles).each( function( i, obj ){
-                    var combos = buildLinks(obj.members, 2);
-                    $(combos).each( function( n, c ){
-                        addLink(c[0], c[1]);
-                    });
-                });
-                
-                //Generate links from Facebook data
-                $(Friendly.fbFriends.fb_fof).each(function( i, obj ){
-                    var s = obj[0];
-                    var t = obj[1];
-                    var arr = [];
-                    $(Friendly.friends).each(function( a, b ){
-                        $(b.category).each(function( c, d ){
-                            if( d == s || d == t){
-                                arr.push(b.friendNumber);
-                            }
-                        });
-                    });
-                    addLink( arr[0], arr[1] );
-                });
+    getLinksFrom( 'facebook' );
 
-                var firstFriend=fof.init(Friendly.friends, Friendly.links);
-                $("#currentFOF").text(firstFriend.name);
-                fof.addCenterFriend(firstFriend);
-            });
+    var firstFriend=fof.init(Friendly.friends, Friendly.links);
+    $("#currentFOF").text(firstFriend.name);
+    fof.addCenterFriend(firstFriend);
+});
 
 Reveal.addEventListener('survey', function( event ) {
     //Settings for DataTables custom pagination
@@ -1053,13 +1086,7 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
                     var mb = $('#help').find('.modal-body');
                     $(mb).children().remove();
                     
-                    if( Friendly.config.categories[category] ){
-                        var helpList = Friendly.config.categories[category].help;
-                    }else if( Friendly.config.components[category] ){
-                        var helpList = Friendly.config.components[category].help;
-                    }else{
-                        var helpList = [];
-                    }
+                    var helpList = instructions[category] ? instructions[category] : [];
 
                     $(helpList).each(function(i,obj){
                         var p = $("<p class='lead'></p>");

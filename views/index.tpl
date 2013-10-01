@@ -71,7 +71,8 @@
                     </div>
                 </section>
                 
-                %if 'facebook' in config['categories']:
+                %for i, section in enumerate(config['categories']):
+                %if section['id'] is 'facebook':
                 <section id="authorize" data-category="authorize" data-background="assets/img/ocean/backgrounds/auth.png" data-progress="Intro">
                     <div class="row slide-header">
                         <h2>Facebook Authorization</h2>
@@ -88,6 +89,7 @@
                         </div>
                     </div>       
                 </section>
+                %end
                 %end
                 
                 <section id="congratulations" class="instructions" data-progress="Intro" data-background="assets/img/ocean/backgrounds/instr1.png">
@@ -152,7 +154,7 @@
                         <div class="span5 offset2">
                             <ol>
                                 %for cat in config['categories']:
-                                <li>{{ cat.title() }}</li>
+                                <li>{{ cat['id'].title() }}</li>
                                 %end
                             </ol>
                         </div>
@@ -186,13 +188,13 @@
                     </div>
                 </section>
                 
-                %for section in config['categories']:
-                <section id="{{ section }}" data-category="{{ section }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section }}.png">
+                %for i, section in enumerate(config['categories']):
+                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
                     <div class="container">
                         <div class="row slide-header">
-                            <h2>{{ config['categories'][section]['title'] }}
-                                %if section is not 'facebook':
-                                 - <input class="friend-input" name="{{ section }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
+                            <h2>{{ section['title'] }}
+                                %if section['id'] is not 'facebook':
+                                 - <input class="friend-input" name="{{ section['id'] }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
                                 %end
                             </h2>
                         </div>
@@ -204,8 +206,9 @@
                 </section>
                 %end
 
-                %if 'matching' in config['components']:
-                <section id="matching" data-state="matching" data-progress="Matching" data-category="matching" data-show="help" class="maching" data-background="assets/img/ocean/backgrounds/matching.png">
+                %for n, section in enumerate(config['components']):
+                %if section['id'] is 'matching':
+                <section id="matching" data-state="matching" data-progress="Matching" data-category="matching" data-show="help" class="matching" data-background="assets/img/ocean/backgrounds/matching.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>Find Matches and Disembark</h2>
@@ -225,9 +228,8 @@
                         </div>
                     </div>
                 </section>
-                %end
 
-                %if 'closeness' in config['components']:
+                %elif section['id'] is 'closeness':
                 <section id="closeness" data-category="closeness" data-progress="Spacing" data-show="help" data-state="strengthInit" data-background="assets/img/ocean/backgrounds/closeness.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -238,10 +240,9 @@
                         </div>
                     </div>
                 </section>
-                %end
 
-                %if 'survey' in config['components']:
-                %for i, obj in enumerate( config['components']['survey']['surveys'] ):
+                %elif section['id'] is 'survey':
+                %for i, obj in enumerate( section['surveys'] ):
                 <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Spacing" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -262,9 +263,8 @@
                     </div>
                 </section>
                 %end
-                %end
 
-                %if 'circles' in config['components']:
+                %elif section['id'] is 'circles':
                 <section id="circles" data-category="circles" data-state="circles" data-progress="Grouping" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -284,9 +284,8 @@
                         </div>                        
                     </div>
                 </section>
-                %end
 
-                %if 'friendOfFriend' in config['components']:
+                %elif section['id'] is 'friendOfFriend':
                 <section id="friendOfFriend" data-category="friendOfFriend" data-progress="Connecting" data-state="friendOfFriend" data-show="help" data-background="assets/img/ocean/backgrounds/friendOfFriend.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -302,6 +301,7 @@
                         </div>
                     </div>
                 </section>
+                %end
                 %end
 
                 <section id="end" data-category="end" data-state="end" data-progress="End" data-background="assets/img/ocean/backgrounds/end.png">
@@ -350,11 +350,19 @@
 
     <script type="text/javascript">
         
+        //Participant ID. Pulled from pID URL parameter. Otherwise defaults to "anon"
         var pID = "{{ pID }}";
-        
+
+        //instructions object to map instructions:   {section: [help]}
+        var instructions = {};
+
+        //surveys object to map surveys and responses: { id: [responses]}
+        var surveys = {};
+
         //Load the app
         jQuery.getJSON("/load_config", {appID: "{{ config['appID'] }}"}, function( response ){
             
+            //Set config to Friendly object
             Friendly.config = response;
 
             $(document).attr('title', 'Friendly {type}'.supplant({"type": Friendly.config.theme.capitalize()}));
@@ -367,14 +375,50 @@
             //Check for app in local storage
             if( getApp() ){
                 Friendly = getApp();
-                if( Friendly.config.categories.facebook && Friendly.sns && Friendly.fbFriends.friends.length > 0 ){
+                if( Friendly.fbFriends.friends && Friendly.fbFriends.friends.length > 0 ){
                     fillFBList(Friendly.fbFriends.friends);
-                }else if( Friendly.config.categories.facebook.show ){
+                }else{
                     noSNS();
                 }
+                //Populate the instructions object and the surveys object
+                $(Friendly.config.categories).each(function( i, obj ){
+                    instructions[obj.id] = obj.help;
+                });
+                
+                $(Friendly.config.components).each(function( i, obj ){
+                    instructions[obj.id] = obj.help;
+                    if( obj.id === 'survey' ){
+                        $( obj.surveys ).each(function( x, surv ){
+                            surveys[surv.key] = {
+                                questions: surv.questions,
+                                key: surv.key,
+                                responses: surv.responses
+                            };
+                        });
+                    }
+                });
                 Reveal.slide(Friendly.slide);
                 $('#help-img').css('display', 'block');
                 $(".island-name").text(Friendly.islandName);
+            }else{
+
+                //Populate the instructions object and the surveys object
+                $(Friendly.config.categories).each(function( i, obj ){
+                    instructions[obj.id] = obj.help;
+                });
+                
+                $(Friendly.config.components).each(function( i, obj ){
+                    instructions[obj.id] = obj.help;
+                    if( obj.id === 'survey' ){
+                        $( obj.surveys ).each(function( x, surv ){
+                            surveys[surv.key] = {
+                                questions: surv.questions,
+                                key: surv.key,
+                                responses: surv.responses
+                            };
+                        });
+                    }
+                });
             }
         });
 

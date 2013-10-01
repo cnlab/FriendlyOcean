@@ -10,7 +10,10 @@ from cork.backends import MongoDBBackend
 import logging
 
 import tps
-from default_config import config
+try:
+    from config import config
+except:
+    from default_config import config
 
 logging.basicConfig(format='localhost - - [%(asctime)s] %(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
