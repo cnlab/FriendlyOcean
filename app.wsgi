@@ -48,7 +48,7 @@ def post_get(name, default=''):
 
 def import_config_for(appID):
     module = __import__(appID, fromlist=["config"])
-    return eval(getattr(module, "config"))
+    return getattr(module, "config")
 
 @route('/configure')
 def configure():
@@ -80,6 +80,7 @@ def do_config():
     if upload:
         try:
             survey_dict = json.loads(upload.file.read())
+            print survey_dict
         except:
             response.status = 500
             return '<p>There was a problem parsing your JSON file.<p><p>Please make sure you submit a well-formed JSON file. Check out the <a href="assets/friendly/surveys_example.json" target="_blank">example</a> or the <a href="assets/friendly/surveys_template.json" target="_blank">template</a>.'
@@ -119,7 +120,12 @@ def do_config():
         comps = d["components"][0].split(",")
         for comp in comps:
             if comp == "survey" and upload:
-                cData["components"].append(survey_dict["surveys"])
+                cData["components"].append({
+                                           "id": comp,
+                                           "title": "Describe",
+                                           "help": ["Please respond to the following question for each person."],
+                                           "surveys": survey_dict["surveys"]
+                                           })
             else:
                 for each in def_config["components"]:
                     if each["id"] == comp:
@@ -127,7 +133,6 @@ def do_config():
     else:
         cData["components"] = def_config["components"]
 
-    
     #Save config file
     config_filename = "%s.py" % appID
 

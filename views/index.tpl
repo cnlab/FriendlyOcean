@@ -253,7 +253,7 @@
                                 <tr>
                                     <th></th>
                                     %for option in obj['responses']:
-                                    <th>{{ option['text'] }}</th>
+                                    <th>{{ option['long'] }}</th>
                                     %end
                                 </tr>
                             </thead>
