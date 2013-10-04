@@ -18,14 +18,15 @@ var Friendly = {
     
     circles: [],
 
-    //Our own progress bar segment names
-    //Slides must have a data-progress attribute matching one of these
-    progressSegments: ["Intro", "Adding", "Matching", "Spacing", "Grouping", "Connecting"]
+    //Array is filled when page loads
+    //Slides must have a data-progress attribute matching one of the following:
+    // "Intro", "Adding", "Matching", "Spacing", "Grouping", "Connecting"
+    progressSegments: []
     
 }
 
 //Create Progress bar
-var makeBar = (function(){
+var makeBar = function(){
     var segmentsNames = Friendly.progressSegments;
     var bar = $("<div />").addClass("friendly-progress").appendTo(".reveal");
     $(segmentsNames).each( function( i, name ){
@@ -41,7 +42,7 @@ var makeBar = (function(){
         var span = $("<span />").text(name).appendTo(div);
     });
 
-})();
+};
 
 
 //Get and set values from surveys
@@ -760,6 +761,8 @@ $('#next-arrow').click(function( event ){
     //End debug code
             
             Reveal.addEventListener('end', function( event ){
+                $("#help-img").remove();
+                $("#next-arrow").remove();
                 FB.getLoginStatus( function( response ){
                     switch (response.status){
                         case "connected":
@@ -800,7 +803,6 @@ $('#next-arrow').click(function( event ){
                     "sns": Friendly.sns
                 }
                 $.post("/log", JSON.stringify(log));
-                $("#help-img").remove();
                 deleteApp();
             });
 

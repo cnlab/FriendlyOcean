@@ -304,7 +304,7 @@
                 %end
                 %end
 
-                <section id="end" data-category="end" data-state="end" data-progress="End" data-background="assets/img/ocean/backgrounds/end.png">
+                <section id="end" data-category="end" data-state="end" data-background="assets/img/ocean/backgrounds/end.png">
                     <div class="container" id="myNetwork">
                         <div class="row"> 
                             <h2>Welcome to <span class='island-name'></span>!</h2>
@@ -358,6 +358,17 @@
 
         //surveys object to map surveys and responses: { id: [responses]}
         var surveys = {};
+
+        //Build the progress bar
+        $("section").each(function( i, obj ){
+            var prop = $(obj).data("progress");
+            if(prop){
+                if( jQuery.inArray(prop, Friendly.progressSegments) === -1 ){
+                    Friendly.progressSegments.push(prop);
+                }
+            }
+        });
+        makeBar();
 
         //Load the app
         jQuery.getJSON("/load_config", {appID: "{{ config['appID'] }}"}, function( response ){

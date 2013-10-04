@@ -1,42 +1,156 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-    <title>Friendly Island Config</title>
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+        <title>Friendly Island Config</title>
 
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <script type="text/javascript" src="assets/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>  
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/bootstrap-fileupload.min.css">
+        <link rel="stylesheet" href="assets/css/vex.css" />
+        <link rel="stylesheet" href="assets/css/vex-theme-wireframe.css" />
 
-    <style>
-        .control-group{
-            margin-left: 20px;
-        }
-        .modal-body .lead{
-            font-size: 16px;
-        }
-    </style>  
-    </head>
-    <body>
-        <div class="container">
-            <div class="page-header">
-                <h1>Friendly Island Configuration Page</h1>
-            </div>
-            <div class="row">
+        <style>
+            ul[id$="categories"]{
+                min-height: 215px;
+            }
+            ul[id$="components"]{
+                min-height: 270px;
+            }
+            ul[id^="selected"]{
+                background: rgba(108, 161, 116, 0.7);
+                -webkit-box-shadow:  0px 0px 0px 4px #6c9773;
+                box-shadow:  0px 0px 0px 4px #6c9773;
+            }
+            ul[id^="available"]{
+                background: rgba(241, 241, 241, 1);
+                -webkit-box-shadow:  0px 0px 0px 4px rgba(170, 170, 170, 1);
+                box-shadow:  0px 0px 0px 4px rgba(170, 170, 170, 1);
+            }
+            ul[id^="selected"]>li,
+            ul[id^="available"]>li{
+                border-radius: 4px;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                color: #f1f1f1;
+                font-family: Arial, Helvetica, Sans-Serif;
+                text-shadow: 1px 1px 1px #666;
+                font-size: 18px;
+                clear: both;
+                padding: 8px 0;
+                text-align: center;
+                -moz-box-shadow: 0 1px 3px #111;
+                -webkit-box-shadow: 0 1px 3px #111;
+                box-shadow: 0 1px 3px #111;
+                cursor: pointer;
+            }
+            ul[id^="available"]>li,
+            ul[id^="selected"]>li:hover{
+                border: 1px solid #929fa5;
+                background: #acb6bb; /* old browsers */
+                background: -moz-linear-gradient(top, #acb6bb 0%, #85959c 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#acb6bb), color-stop(100%,#85959c)); /* webkit */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#acb6bb', endColorstr='#85959c',GradientType=0 ); /* ie */
+            }
+            ul[id^="selected"]>li,
+            ul[id^="available"]>li:hover{
+                border: 1px solid #d39410;
+                background: #e9a412; /* old browsers */
+                background: -moz-linear-gradient(top, #e9a412 0%, #d39410 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e9a412), color-stop(100%,#d39410)); /* webkit */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e9a412', endColorstr='#d39410',GradientType=0 ); /* ie */
+            } 
+            ul{
+                list-style: none;
+                margin: 10px auto 50px auto;
+                border-radius: 10px;
+                padding: 40px;
+            }
+            ul>li:not(:last-child){
+                margin: 0px 0px 20px 0px;
+            }
+            .button-div{
+                text-align:center;
+                margin: 20px 0px 40px 0px;
+                border-top: 1px solid #cccccc;
+                padding: 20px 0px;
+            }
+            #survey-upload{
+                display:none;
+            }
 
-                <div class="span7">
-                    <form action="/configure" method="POST" enctype="multipart/form-data">
+        </style>  
+        </head>
+        <body>
+            <div class="container">
+                <div class="page-header">
+                    <h1>Friendly Island Configuration Page</h1>
+                </div>
+
+                <div class="row">
+                    <div class="span12">
+                    <h2>Instructions</h2>
+                    <p>Woo!</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span12">
+                        <h3>Categories</h3>
+                        <p>The items on the left are the available categories. Please click each category to add it to or remove it from the list on the right. You can reorder your list of selected categories by dragging them or by clicking the "Random" link.</p>
+                        <p><strong>Note: </strong>If you select 2 or more categories, the "Matching" component is included automatically to avoid duplication across categories.</p>
+                        <div class="span3 offset2">
+                            <h4>Available Categories</h4>
+                            <ul id="available-categories">
+                                <li id="family">Family</li>
+                                <li id="calling">Calling</li>
+                                <li id="texting">Texting</li>
+                                <li id="facebook">Facebook</li>
+                            </ul>
+                        </div>
+
+                        <div class="span3 offset1">
+                            <h4>Selected Categories <small>(<a href="#" id="randomize">Random</a>)</small></h4>
+                            <ul id="selected-categories">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span12">
+                        <h3>Components</h3>
+                        <p>The items on the left are the available components. Please click each component to add it to or remove it from the list on the right. These items cannot be reorderd at this time.</p>
+                        <div class="span3 offset2">
+                            <h4>Available Components</h4>
+                            <ul id="available-components">
+                                <li id="matching" data-order="1">Matching</li>
+                                <li id="closeness" data-order="2">Closeness</li>
+                                <li id="survey" data-order="3">Survey</li>
+                                <li id="circles" data-order="4">Circles</li>
+                                <li id="friendOfFriend" data-order="5">Linking</li>
+                            </ul>
+                        </div>
+                        <div class="span3 offset1">
+                            <h4>Selected Components</h4>
+                            <ul id="selected-components">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span4">
+                        <h3>
+                            Choose a theme
+                        </h3>
                         
-                        <h4>
-                            Please select a theme
-                        </h4>
                         <div class="control-group">
                             <div class="controls">
                                 <label class="radio">
-                                    <input type="radio" name="theme" id="radio-ocean" value="ocean">
+                                    <input type="radio" name="theme" id="radio-ocean" value="ocean" checked>
                                     Ocean
                                 </label>
                                 <label class="radio">
@@ -49,218 +163,191 @@
                                 </label>
                             </div>
                         </div>
-
-                        <h4>
-                            Please select which categories you would like to include. Think of these as channels of communication.
-                        </h4>
-                        <div class="control-group categories">
-                            <div class="controls">
-                                
-                                <label class="checkbox">
-                                    <input type="checkbox" name="family" id="check-family" data-toggle="collapse" data-target="#instructions-family" value=1>
-                                    Family
-                                </label>
-                                <div class="control-group collapse instructions" id="instructions-family">
-                                    <label class="control-label" for="textarea">These are default instructions for the Family category. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-family" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                                <label class="checkbox">
-                                    <input type="checkbox" name="calling" id="check-calling" data-toggle="collapse" data-target="#instructions-calling" value=1>
-                                    Calling
-                                </label>
-                                <div class="control-group collapse instructions" id="instructions-calling">
-                                    <label class="control-label" for="textarea">These are default instructions for the Calling category. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-calling" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                                <label class="checkbox">
-                                    <input type="checkbox" name="texting" id="check-texting" data-toggle="collapse" data-target="#instructions-texting"value=1>
-                                    Texting
-                                </label>
-                                <div class="control-group collapse instructions" id="instructions-texting">
-                                    <label class="control-label" for="textarea">These are default instructions for the Texting category. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-texting" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                                <label class="checkbox">
-                                    <input type="checkbox" name="facebook" id="check-facebook" data-toggle="collapse" data-target="#instructions-facebook" value=1>
-                                    Facebook
-                                </label>
-                                <div class="control-group collapse instructions" id="instructions-facebook">
-                                    <label class="control-label" for="textarea">These are default instructions for the Facebook category. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-facebook" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <h4>
-                            Please indicate how many friends you would like per category
-                        </h4>
+                    </div>
+                    
+                    <div class="span4">
+                        <h3>
+                            Max friends per category
+                        </h3>
+                        <p>Defaults to 20</p>
                         <div class="control-group">
                             <input class="span1" min="1" type="number" name="maxFriendsPerCategory" id="maxFriendsPerCategory">
                         </div>
+                    </div>
 
-                        <h4>
-                            Please select which other components you would like to use
-                        </h4>
-                        <div class="control-group components">
-                            <label class="checkbox">
-                                <input type="checkbox" name="matching" id="check-matching" data-toggle="collapse" data-target="#instructions-matching" value=1>
-                                Matching
-                            </label>
-                                <div class="control-group collapse instructions" id="instructions-matching">
-                                    <label class="control-label" for="textarea">These are default instructions for the Matching component. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-matching" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="closeness" id="check-closeness" data-toggle="collapse" data-target="#instructions-closeness" value=1>
-                                Closeness
-                            </label>
-                                <div class="control-group collapse instructions" id="instructions-closeness">
-                                    <label class="control-label" for="textarea">These are default instructions for the Closeness component. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-closeness" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="circles" id="check-circles" data-toggle="collapse" data-target="#instructions-circles" value=1>
-                                Social Circles
-                            </label>
-                                <div class="control-group collapse instructions" id="instructions-circles">
-                                    <label class="control-label" for="textarea">These are default instructions for the Social Circles component. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" name="instructions-circles" class="span6"></textarea>
-                                    </div>
-                                </div>
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="friendOfFriend" id="check-friendOfFriend" data-toggle="collapse" data-target="#instructions-friendOfFriend" value=1>
-                                Friend Linking
-                            </label>
-                                <div class="control-group collapse instructions" id="instructions-friendOfFriend">
-                                    <label class="control-label" for="textarea">These are default instructions for the Friend Linking component. You can change them by editing the text below. Note that a new paragraph is denoted by using a double pipe like so: ||</label>
-                                    <label class="control-label" for="textarea">(<a href="#" class="preview-help">Preview Help</a>)</label>
-                                    <div class="controls">
-                                        <textarea rows="10" class="span6" name="instructions-friendOfFriend"></textarea>
-                                    </div>
-                                </div>
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="survey" id="check-survey" value=1 data-target="#survey-upload" data-toggle="collapse">
-                                Surveying
-                            </label>
-                                <div class="control-group collapse instructions" id="survey-upload">
-                                    <label class="control-label" for="filebutton">Upload a JSON file containing an object for each survey question you have. <a href="/surveys_example.json" target="_blank" id="survey-example">See an example</a></label>
-                                    <div class="controls">
-                                        <input id="surveys" name="surveys" class="input-file" type="file">
-                                    </div>
-                                </div>
-
+                    <div class="span4" id="survey-upload">
+                        <h3>
+                            Upload Surveys
+                        </h3>
+                        <p>Please upload a JSON file containing an object for each survey. ( <a href="assets/friendly/surveys_example.json" target="_blank">example</a> | <a href="assets/friendly/surveys_template.json" target="_blank">template</a> )
+                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                            <span class="btn btn-file">
+                                <span class="fileupload-new">Select file</span>
+                                <span class="fileupload-exists">Change</span><input type="file" name="survey-file">
+                            </span>
+                            <span class="fileupload-preview"></span>
+                            <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
                         </div>
-<button class="btn btn-primary btn-large" type="submit">Submit</button>
-                    </form>
-                </div>
-
-                <div class="span4">
-                    <div class="well">
-                        <h4>Instructions</h4>
-                        <p>Use the form on the left to customize a version of the Friendly Island app. Check the boxes for each category and component you would like to include.</p>
-                        <p>When you click the submit button, a zip file containg your <code>config.py</code> file, your appID, and some instructions on accessing your data will be downloaded. Place the <code>config.py</code> file in the root directory of the app (the same folder where you find <code>default_config.py</code>), overwriting any other instance of <code>config.py</code>.</p>
-                        <p>Do not edit or modify <code>default_config.py</code> because it is the base class that <code>config.py</code> extends. If you want to save the original <code>config.py</code> file that ships with this app, simply rename it to something like <code>orig_config.py</code>.</p>
-                    </div>
-                    <div class="alert alert-error" style="display:none;">
-                        <strong>Warning!</strong> It is recommended that you include the matching component when using 2 or more channels in order to prevent duplication.
                     </div>
                 </div>
-            </div>
-    </div>
-
-    <!--Begin help preview modal-->
-
-    <div id="help" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help" aria-hidden="true">
-        <div class="modal-header">
-            <h2 id="modal-label">Instructions</h2>
+                <div class="row">
+                    <div class="button-div">
+                        <button type="button" class="btn btn-primary btn-large" id="submit">Submit</button>
+                    </div>
+                </div>
         </div>
-        <div class="modal-body">
-            <p class="lead">Woo! You found the help!</p>
+
+        <!--Error div-->
+        <div id="dialog" title="Oops!" style="display:none;">
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-info btn-large" data-dismiss="modal" aria-hidden="true">OK</button>
-        </div>
-    </div>
+        
+        <!--Other people's things-->
+        <script type="text/javascript" src="assets/js/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="assets/js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="assets/js/jquery.tinysort.min.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="assets/js/bootstrap-fileupload.min.js"></script>
+        <script type="text/javascript" src="assets/js/vex.combined.min.js"></script>
+        <script>vex.defaultOptions.className = 'vex-theme-wireframe';</script>
+        
+        <!--Our thing-->
+        <script type="text/javascript">
+            
+            //Initialized dragging and dropping on the Available Categories list
+            $( "#selected-categories" ).sortable();
 
-    <!--/End help preview modal-->
+            //Bind random sorting to element
+            $("a#randomize").click(function( e ){
+                e.stopPropagation();
+                e.preventDefault();
+                if( $("#selected-categories>li").length === 0 ){
+                    $("#available-categories>li").each(function( i, obj ){
+                        $(this).appendTo("#selected-categories");
+                    });
+                }
+                $("#selected-categories>li").tsort( {order:'rand'} );
+            });
 
+            //Bind clicking to the li elements and send them to the right list
+            $( "li" ).click(function( e ){
+                e.stopPropagation();
+                var currentHome = $(this).parent().attr("id");
+                switch( currentHome ){
+                    case "available-categories":
+                        $(this).appendTo("#selected-categories");
+                        var cats = jQuery.map( $("#selected-categories>li"), function( obj, i ){
+                            return obj.id;
+                        });
+                        var comps = jQuery.map( $("#selected-components>li"), function( obj, i ){
+                            return obj.id;
+                        });
+                        if( cats.length >= 2 &&  jQuery.inArray('matching', comps) === -1 ){
+                            $("#matching").click();
+                        }
+                        break;
+                    case "available-components":
+                        if( this.id === "survey" ){
+                            $("#survey-upload").toggle();
+                        }
+                        $(this).appendTo("#selected-components");
+                        $("#selected-components>li").tsort( {data:"order"} );                  
+                        break;
+                    case "selected-categories":
+                        $(this).appendTo("#available-categories");
+                        var cats = jQuery.map( $("#selected-categories>li"), function( obj, i ){
+                            return obj.id;
+                        });
+                        var comps = jQuery.map( $("#selected-components>li"), function( obj, i ){
+                            return obj.id;
+                        });
+                        if( cats.length < 2 &&  jQuery.inArray('matching', comps) > -1 ){
+                            $("#matching").click();
+                        }                  
+                        break;
+                    case "selected-components":
+                        if( this.id === "matching" && $("#selected-categories>li").length >=2 ){
+                            if( ! confirm("You have at least 2 categories selected. Are you sure you want to remove the \"Matching\" component?") ){
+                                return;
+                            }
+                        }else if( this.id === "survey" ){
+                            $("#survey-upload").toggle();
+                        }                        
+                        $(this).appendTo("#available-components");
+                        $("#available-components>li").tsort( {data:"order"} );
+                        break;
+                    default:
+                        break;
+                }
+            });
 
-    <script type="text/javascript">
+            //Remove error from Survey div
+            $("#survey-upload").click(function( e ){
+                $(this).removeClass("alert-error");
+            });
 
-        //Load default config from server
-        jQuery.getJSON ("/get_config", function( config ){
+            //Control click event of "Submit" button
+            $("#submit").click(function( e ){
+                e.stopPropagation();
+                e.preventDefault();
 
-            //Check radio button for theme
-            $("#radio-" + config.theme).attr("checked", "checked");
+                //Create and fill own FormData object to pass to the server because we aren't using a form
+                var data = new FormData();                
 
-            //Fill out instructions
-            for( obj in config.categories){
-                $("textarea[name='instructions-" + obj + "']").val(config['categories'][obj]['help'])
-            };
-            for( obj in config.components){
-                $("textarea[name='instructions-" + obj + "']").val(config['components'][obj]['help'])
-            };
+                //Get Categories
+                var cats = jQuery.map( $("#selected-categories>li"), function( obj, i ){
+                    return obj.id;
+                });
 
-            //Set Max friends
-            $("#max-friends").val(config.maxFriendsPerCategory);
+                //Get Components
+                var comps = jQuery.map( $("#selected-components>li"), function( obj, i ){
+                    return obj.id;
+                });
 
-        });
+                //Get Theme
+                var theme = $("input[name='theme']:checked").attr("value");
 
-        //Bind preview links to help modal
-        $("a.preview-help").click( function( e ){
-            e.stopPropagation();
-            e.preventDefault();
-            var instr = $(this).parent().next().children("textarea").val().split("||");
-            var mb = $("#help").find(".modal-body");
-            $(mb).children().remove();
-            $(instr).each( function( i, obj ){
-                var p = $("<p class='lead'></p>");
-                $(p).text(obj);
-                $(mb).append(p);
-           });
-            $("#help").modal("show");
-        });
+                //Get Max Per Category
+                var max = $("#maxFriendsPerCategory").val();
 
-        //Require matching if 2 or more catergories are selected
-        $(".categories input[type='checkbox']").change( function( e ){
-            if( $(".categories input[type='checkbox']:checked").length >= 2 && !$("#instructions-matching").hasClass("in") ){
-                $("#check-matching").click();
-                $(".alert").toggle();
-            }else if( $(".categories input[type='checkbox']:checked").length < 2 && $("#instructions-matching").hasClass("in") ){
-                $("#check-matching").click();
-                $(".alert").toggle();
-            }
-        });
+                //Get Survey and make a weak check to make sure they uploaded a JSON file if any
+                //Server will do a better job...
+                if( jQuery.inArray("survey", comps) !== -1 ){
+                    var inp = $("input[name='survey-file']")[0];
+                    var filename = inp.files ? inp.files.length === 0 ? false : inp.files[0].name.split(".") : false;
+                    if( ! filename ){
+                        vex.dialog.alert('Please upload a .JSON file for your survey or remove the "Survey" component from your lists');
+                        return;
+                    }else if ( filename[ filename.length-1 ] !== "json" ) {
+                        vex.dialog.alert("It seems you did not upload a .JSON file");
+                        $("#survey-upload").addClass("alert-error");
+                        return;
+                    }else{
+                        var file = $("input[name='survey-file']").prop("files")[0];
+                        data.append("file", file);
+                    }
+                }
 
+                data.append("categories", cats);
+                data.append("components", comps);
+                data.append("theme", theme);
+                data.append("max", max);
+                
+                //Send request
+                $.ajax({
+                    url: "configure",
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function( resp ){
+                        $("body").html(resp);
+                    },
+                    error: function( resp ){
+                        vex.dialog.alert(resp.responseText);
+                    }
+                });
+            });
 
-    </script>
-    </body>
-</html>
+        </script>
+        </body>
+    </html>
