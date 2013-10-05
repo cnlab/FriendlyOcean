@@ -135,11 +135,11 @@ class MongoDBBackend(Backend):
         """Initialize MongoDB Backend"""
         connection = MongoClient(host=hostname, port=port)
         db = connection[db_name]
-        self.users = MongoMultiValueTable('users', 'login', db.users)
-        self.pending_registrations = MongoMultiValueTable(
-            'pending_registrations',
-            'pending_registration',
-            db.pending_registrations
+        self.users = MongoMultiValueTable('users', 'username', db.users)
+        self.apps = MongoMultiValueTable(
+            'apps',
+            '_id',
+            db.apps
         )
         self.roles = MongoSingleValueTable('roles', 'role', db.roles)
 
@@ -148,7 +148,7 @@ class MongoDBBackend(Backend):
 
     def _initialize_storage(self):
         """Create MongoDB indexes."""
-        for c in (self.users, self.roles, self.pending_registrations):
+        for c in (self.users, self.roles, self.apps):
             c.create_index()
 
     def save_users(self):
@@ -157,5 +157,5 @@ class MongoDBBackend(Backend):
     def save_roles(self):
         pass
 
-    def save_pending_registrations(self):
+    def save_apps(self):
         pass

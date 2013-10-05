@@ -16,7 +16,7 @@ class Backend(object):
     """Base Backend class - to be subclassed by real backends."""
     save_users = ni
     save_roles = ni
-    save_pending_registrations = ni
+    save_apps = ni
 
 class Table(object):
     """Base Table class - to be subclassed by real backends."""

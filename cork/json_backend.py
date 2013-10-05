@@ -22,7 +22,7 @@ class JsonBackend(object):
     """JSON file-based storage backend."""
 
     def __init__(self, directory, users_fname='users',
-            roles_fname='roles', pending_reg_fname='register', initialize=False):
+            apps_fname='apps', roles_fname='roles', initialize=False):
         """Data storage class. Handles JSON files
 
         :param users_fname: users file name (without .json)
@@ -41,8 +41,8 @@ class JsonBackend(object):
         self.roles = {}
         self._roles_fname = roles_fname
         self._mtimes = {}
-        self._pending_reg_fname = pending_reg_fname
-        self.pending_registrations = {}
+        self._apps_fname = apps_fname
+        self.apps = {}
         if initialize:
             self._initialize_storage()
         self._refresh()  # load users and roles
@@ -51,13 +51,13 @@ class JsonBackend(object):
         """Create empty JSON files"""
         self._savejson(self._users_fname, {})
         self._savejson(self._roles_fname, {})
-        self._savejson(self._pending_reg_fname, {})
+        self._savejson(self._apps_fname, {})
 
     def _refresh(self):
         """Load users and roles from JSON files, if needed"""
         self._loadjson(self._users_fname, self.users)
         self._loadjson(self._roles_fname, self.roles)
-        self._loadjson(self._pending_reg_fname, self.pending_registrations)
+        self._loadjson(self._apps_fname, self.apps)
 
     def _loadjson(self, fname, dest):
         """Load JSON file located under self._directory, if needed
@@ -110,6 +110,6 @@ class JsonBackend(object):
         """Save roles in a JSON file"""
         self._savejson(self._roles_fname, self.roles)
 
-    def save_pending_registrations(self):
+    def save_apps(self):
         """Save pending registrations in a JSON file"""
-        self._savejson(self._pending_reg_fname, self.pending_registrations)
+        self._savejson(self._apps_fname, self.apps)

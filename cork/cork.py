@@ -53,9 +53,8 @@ class AuthException(AAAException):
 
 class Cork(object):
 
-    def __init__(self, directory=None, backend=None, email_sender=None,
-        initialize=False, session_domain=None, smtp_server=None,
-        smtp_url='localhost'):
+    def __init__(self, directory=None, backend=None,
+        initialize=False, session_domain=None):
         """Auth/Authorization/Accounting class
 
         :param directory: configuration directory
@@ -64,10 +63,9 @@ class Cork(object):
         :type users_fname: str.
         :param roles_fname: roles filename (without .json), defaults to 'roles'
         :type roles_fname: str.
+        :param apps_fname: apps filename (without .json), defaults to 'apps'
+        :type apps_fname: str.        
         """
-        if smtp_server:
-            smtp_url = smtp_server
-        self.mailer = Mailer(email_sender, smtp_url)
         self.password_reset_timeout = 3600 * 24
         self.session_domain = session_domain
         self.preferred_hashing_algorithm = 'PBKDF2'
@@ -75,11 +73,30 @@ class Cork(object):
         # Setup JsonBackend by default for backward compatibility.
         if backend is None:
             self._store = JsonBackend(directory, users_fname='users',
-                roles_fname='roles', pending_reg_fname='register',
+                roles_fname='roles', apps_fname='apps',
                 initialize=initialize)
 
         else:
             self._store = backend
+
+    def save_app(self, app):
+        """
+        Save app dict to mongo database
+        """
+        apps = self._store.apps
+        apps[app['appID']] = app
+        self._store.save_apps()
+
+    def load_app(self, appID):
+        """
+        Load app dict from mongodb
+        """
+        if appID not in self._store.apps:
+            raise AAAException("Unable to load config for %s" % appID)
+        
+        app = self._store.apps[appID]
+        
+        return app
 
     def login(self, username, password, success_redirect=None,
         fail_redirect=None):
@@ -113,7 +130,7 @@ class Cork(object):
 
         return False
 
-    def logout(self, success_redirect='/login', fail_redirect='/login'):
+    def logout(self, success_redirect=None, fail_redirect=None):
         """Log the user out, remove cookie
 
         :param success_redirect: redirect the user after logging out
@@ -247,8 +264,8 @@ class Cork(object):
         for role in sorted(self._store.roles):
             yield (role, self._store.roles[role])
 
-    def create_user(self, username, role, password, email_addr=None,
-        description=None):
+    def create_user(self, username, first_name, last_name, role, password, email_addr=None,
+        organization='', apps=[]):
         """Create a new user account.
         This method is available to users with level>=100
 
@@ -270,16 +287,22 @@ class Cork(object):
                 " to create users.")
 
         if username in self._store.users:
-            raise AAAException("User is already existing.")
+            raise AAAException("User already exists.")
         if role not in self._store.roles:
             raise AAAException("Nonexistent user role.")
-        tstamp = str(datetime.utcnow())
+        creation_date = str(datetime.utcnow())
+
+        # store pending registration
         self._store.users[username] = {
+            'username': username,
+            'first_name': first_name,
+            'last_name': last_name,
+            'organization': organization,
             'role': role,
             'hash': self._hash(username, password),
             'email_addr': email_addr,
-            'desc': description,
-            'creation_date': tstamp
+            'creation_date': creation_date,
+            'apps': apps
         }
         self._store.save_users()
 
@@ -300,12 +323,12 @@ class Cork(object):
     def list_users(self):
         """List users.
 
-        :return: (username, role, email_addr, description) generator (sorted by
+        :return: (username, role, email_addr) generator (sorted by
         username)
         """
         for un in sorted(self._store.users):
             d = self._store.users[un]
-            yield (un, d['role'], d['email_addr'], d['desc'])
+            yield (un, d['role'], d['email_addr'])
 
     @property
     def current_user(self):
@@ -348,16 +371,17 @@ class Cork(object):
             return User(username, self)
         return None
 
-    def register(self, username, password, email_addr, role='user',
-        max_level=50, subject="Signup confirmation",
-        email_template='views/registration_email.tpl',
-        description=None):
+    def register(self, username, first_name, last_name, password, email_addr, organization='', role='user',
+        max_level=50, apps=[]):
         """Register a new user account. An email with a registration validation
         is sent to the user.
-        WARNING: this method is available to unauthenticated users
 
         :param username: username
         :type username: str.
+        :param first_name: first_name
+        :type first_name: str.
+        :param last_name: last_name
+        :type last_name: str.
         :param password: cleartext password
         :type password: str.
         :param role: role (optional), defaults to 'user'
@@ -366,12 +390,8 @@ class Cork(object):
         :type max_level: int.
         :param email_addr: email address
         :type email_addr: str.
-        :param subject: email subject
-        :type subject: str.
-        :param email_template: email template filename
-        :type email_template: str.
-        :param description: description (free form)
-        :type description: str.
+        :param apps: list of appIDs
+        :type apps: array.
         :raises: AssertError or AAAException on errors
         """
         assert username, "Username must be provided."
@@ -384,112 +404,23 @@ class Cork(object):
         if self._store.roles[role] > max_level:
             raise AAAException("Unauthorized role")
 
-        registration_code = uuid.uuid4().hex
         creation_date = str(datetime.utcnow())
 
-        # send registration email
-        email_text = bottle.template(email_template,
-            username=username,
-            email_addr=email_addr,
-            role=role,
-            creation_date=creation_date,
-            registration_code=registration_code
-        )
-        self.mailer.send_email(email_addr, subject, email_text)
-
         # store pending registration
-        self._store.pending_registrations[registration_code] = {
+        self._store.users[username] = {
             'username': username,
+            'first_name': first_name,
+            'last_name': last_name,
+            'organization': organization,
             'role': role,
             'hash': self._hash(username, password),
             'email_addr': email_addr,
-            'desc': description,
             'creation_date': creation_date,
-        }
-        self._store.save_pending_registrations()
-
-    def validate_registration(self, registration_code):
-        """Validate pending account registration, create a new account if
-        successful.
-
-        :param registration_code: registration code
-        :type registration_code: str.
-        """
-        try:
-            data = self._store.pending_registrations.pop(registration_code)
-        except KeyError:
-            raise AuthException("Invalid registration code.")
-
-        username = data['username']
-        if username in self._store.users:
-            raise AAAException("User is already existing.")
-
-        # the user data is moved from pending_registrations to _users
-        self._store.users[username] = {
-            'role': data['role'],
-            'hash': data['hash'],
-            'email_addr': data['email_addr'],
-            'desc': data['desc'],
-            'creation_date': data['creation_date']
+            'apps': apps
         }
         self._store.save_users()
 
-    def send_password_reset_email(self, username=None, email_addr=None,
-        subject="Password reset confirmation",
-        email_template='views/password_reset_email'):
-        """Email the user with a link to reset his/her password
-        If only one parameter is passed, fetch the other from the users
-        database. If both are passed they will be matched against the users
-        database as a security check.
-
-        :param username: username
-        :type username: str.
-        :param email_addr: email address
-        :type email_addr: str.
-        :param subject: email subject
-        :type subject: str.
-        :param email_template: email template filename
-        :type email_template: str.
-        :raises: AAAException on missing username or email_addr,
-            AuthException on incorrect username/email_addr pair
-        """
-        if username is None:
-            if email_addr is None:
-                raise AAAException("At least `username` or `email_addr` must" \
-                    " be specified.")
-
-            # only email_addr is specified: fetch the username
-            for k, v in self._store.users.iteritems():
-                if v['email_addr'] == email_addr:
-                    username = k
-                    break
-                raise AAAException("Email address not found.")
-
-        else:  # username is provided
-            if username not in self._store.users:
-                raise AAAException("Nonexistent user.")
-            if email_addr is None:
-                email_addr = self._store.users[username].get('email_addr', None)
-                if not email_addr:
-                    raise AAAException("Email address not available.")
-            else:
-                # both username and email_addr are provided: check them
-                stored_email_addr = self._store.users[username]['email_addr']
-                if email_addr != stored_email_addr:
-                    raise AuthException("Username/email address pair not found.")
-
-        # generate a reset_code token
-        reset_code = self._reset_code(username, email_addr)
-
-        # send reset email
-        email_text = bottle.template(email_template,
-            username=username,
-            email_addr=email_addr,
-            reset_code=reset_code
-        )
-        self.mailer.send_email(email_addr, subject, email_text)
-
-    def reset_password(self, reset_code, password):
+    def reset_password(self, username, password):
         """Validate reset_code and update the account password
         The username is extracted from the reset_code token
 
@@ -499,16 +430,6 @@ class Cork(object):
         :type password: str.
         :raises: AuthException for invalid reset tokens, AAAException
         """
-        try:
-            reset_code = b64decode(reset_code)
-            username, email_addr, tstamp, h = reset_code.split(':', 3)
-            tstamp = int(tstamp)
-        except (TypeError, ValueError):
-            raise AuthException("Invalid reset code.")
-        if time() - tstamp > self.password_reset_timeout:
-            raise AuthException("Expired reset code.")
-        if not self._verify_password(username, email_addr, h):
-            raise AuthException("Invalid reset code.")
         user = self.user(username)
         if user is None:
             raise AAAException("Nonexistent user.")
@@ -604,34 +525,6 @@ class Cork(object):
 
         raise RuntimeError("Unknown hashing algorithm: %s" % hash_type)
 
-    def _purge_expired_registrations(self, exp_time=96):
-        """Purge expired registration requests.
-
-        :param exp_time: expiration time (hours)
-        :type exp_time: float.
-        """
-        for uuid, data in self._store.pending_registrations.items():
-            creation = datetime.strptime(data['creation_date'],
-                "%Y-%m-%d %H:%M:%S.%f")
-            now = datetime.utcnow()
-            maxdelta = timedelta(hours=exp_time)
-            if now - creation > maxdelta:
-                self._store.pending_registrations.pop(uuid)
-
-    def _reset_code(self, username, email_addr):
-        """generate a reset_code token
-
-        :param username: username
-        :type username: str.
-        :param email_addr: email address
-        :type email_addr: str.
-        :returns: Base-64 encoded token
-        """
-        h = self._hash(username, email_addr)
-        t = "%d" % time()
-        reset_code = ':'.join((username, email_addr, t, h))
-        return b64encode(reset_code)
-
 
 class User(object):
 
@@ -650,9 +543,11 @@ class User(object):
         self.username = username
         user_data = self._cork._store.users[username]
         self.role = user_data['role']
-        self.description = user_data['desc']
         self.email_addr = user_data['email_addr']
         self.level = self._cork._store.roles[self.role]
+        self.apps = user_data['apps']
+        self.first_name = user_data['first_name']
+
 
         if session is not None:
             try:
@@ -703,140 +598,3 @@ class User(object):
             raise AAAException("Nonexistent user.")
         self._cork._store.save_users()
 
-
-class Mailer(object):
-
-    def __init__(self, sender, smtp_url, join_timeout=5):
-        """Send emails asyncronously
-
-        :param sender: Sender email address
-        :type sender: str.
-        :param smtp_server: SMTP server
-        :type smtp_server: str.
-        """
-        self.sender = sender
-        self.join_timeout = join_timeout
-        self._threads = []
-        self._conf = self._parse_smtp_url(smtp_url)
-
-    def _parse_smtp_url(self, url):
-        """Parse SMTP URL"""
-        match = re.match(r"""
-            (                                   # Optional protocol
-                (?P<proto>smtp|starttls|ssl)    # Protocol name
-                ://
-            )?
-            (                                   # Optional user:pass@
-                (?P<user>[^:]*)                 # Match every char except ':'
-                (: (?P<pass>.*) )? @            # Optional :pass
-            )?
-            (?P<fqdn>                           # Required FQDN on IP address
-                ([a-zA-Z0-9_\-]{,255})          # FQDN
-                |(                              # IPv4
-                    ([0-9]{1,3}\.){3}
-                    [0-9]{1,3}
-                 )
-                |(                              # IPv6
-                    \[                          # Square brackets
-                        ([0-9a-f]{,4}:){1,8}
-                        [0-9a-f]{,4}
-                    \]
-                )
-            )
-            (                                   # Optional :port
-                :
-                (?P<port>[0-9]{,5})             # Up to 5-digits port
-            )?
-            [/]?
-            $
-        """, url, re.VERBOSE)
-
-        if not match:
-            raise RuntimeError("SMTP URL seems incorrect")
-
-        d = match.groupdict()
-        if d['proto'] is None:
-            d['proto'] = 'smtp'
-
-        if d['port'] is None:
-            d['port'] = 25
-        else:
-            d['port'] = int(d['port'])
-
-        if not 0 < d['port'] < 65536:
-            raise RuntimeError("Incorrect SMTP port")
-
-        return d
-
-    def send_email(self, email_addr, subject, email_text):
-        """Send an email
-
-        :param email_addr: email address
-        :type email_addr: str.
-        :param subject: subject
-        :type subject: str.
-        :param email_text: email text
-        :type email_text: str.
-        :raises: AAAException if smtp_server and/or sender are not set
-        """
-        if not (self._conf['fqdn'] and self.sender):
-            raise AAAException("SMTP server or sender not set")
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = subject
-        msg['From'] = self.sender
-        msg['To'] = email_addr
-        part = MIMEText(email_text, 'html')
-        msg.attach(part)
-
-        log.debug("Sending email using %s" % self._conf['fqdn'])
-        thread = Thread(target=self._send, args=(email_addr, msg.as_string()))
-        thread.start()
-        self._threads.append(thread)
-
-    def _send(self, email_addr, msg):  # pragma: no cover
-        """Deliver an email using SMTP
-
-        :param email_addr: recipient
-        :type email_addr: str.
-        :param msg: email text
-        :type msg: str.
-        """
-        proto = self._conf['proto']
-        assert proto in ('smtp', 'starttls', 'ssl'), \
-            "Incorrect protocol: %s" % proto
-
-        try:
-            if proto == 'ssl':
-                log.debug("Setting up SSL")
-                session = SMTP_SSL(self._conf['fqdn'])
-            else:
-                session = SMTP(self._conf['fqdn'])
-
-            if proto == 'starttls':
-                log.debug('Sending EHLO and STARTTLS')
-                session.ehlo()
-                session.starttls()
-                session.ehlo()
-
-            if self._conf['user'] is not None:
-                log.debug('Performing login')
-                session.login(self._conf['user'], self._conf['pass'])
-
-            log.debug('Sending')
-            session.sendmail(self.sender, email_addr, msg)
-            session.quit()
-            log.info('Email sent')
-
-        except Exception as e:
-            log.error("Error sending email: %s" % e, exc_info=True)
-
-    def join(self):
-        """Flush email queue by waiting the completion of the existing threads
-
-        :returns: None
-        """
-        return [t.join(self.join_timeout) for t in self._threads]
-
-    def __del__(self):
-        """Class destructor: wait for threads to terminate within a timeout"""
-        self.join()

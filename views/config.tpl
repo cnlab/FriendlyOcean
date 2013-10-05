@@ -339,9 +339,9 @@
                     data: data,
                     processData: false,
                     contentType: false,
-                    success: function( resp ){
+                    /*success: function( resp ){
                         $("body").html(resp);
-                    },
+                    },*/
                     error: function( resp ){
                         vex.dialog.alert(resp.responseText);
                     }

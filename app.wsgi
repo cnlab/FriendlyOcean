@@ -50,6 +50,7 @@ def import_config_for(appID):
     module = __import__(appID, fromlist=["config"])
     return getattr(module, "config")
 
+
 @route('/configure')
 def configure():
     return template('config.tpl')
@@ -58,7 +59,7 @@ def configure():
 def load_config():
     appID = request.query.appID
     try:
-        config = import_config_for(appID)
+        config = aaa.load_app(appID)
     except:
         config = def_config
     return config
@@ -136,12 +137,15 @@ def do_config():
     #Save config file
     config_filename = "%s.py" % appID
 
-    with open(app_path + config_filename, "w") as out:
-        out.writelines([
-                       "#!/usr/bin/env python",
-                       "\n",
-                       "config = %s" % str(cData)
-                       ])
+    #Save config file to .py file
+    # with open(app_path + config_filename, "w") as out:
+    #     out.writelines([
+    #                    "#!/usr/bin/env python",
+    #                    "\n",
+    #                    "config = %s" % str(cData)
+    #                    ])
+
+    aaa.save_app(cData)
 
     response.status = 200
     return template('config_success', appID=appID)
@@ -175,9 +179,9 @@ def index():
     if request.query.appID:
         appID = request.query.appID
         try:
-            config = import_config_for(appID)
+            config = aaa.load_app(appID)
         except:
-            print "Unable to import config file for  %s" % appID
+            print "Unable to load config for %s" % appID
             config = def_config
     else:
         config = def_config
