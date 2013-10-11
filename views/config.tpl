@@ -191,6 +191,30 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="span4" id="id-div">
+                        <h3>
+                            App ID <small>optional</small>
+                        </h3>
+                        <p>Do you have a unique ID in mind for this configuration? If not, we'll generate one for you.</p>
+                        <div class="control-group">
+                            <div class="controls">
+                                <input class="span2" type="text" name="appID" id="appID">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5">
+                        <h3>
+                            Description <small>optional</small>
+                        </h3>
+                        <p>A brief description to remind you about this configuration.</p>
+                        <div class="control-group">
+                            <div class="controls">
+                                <textarea name="description" id="description" rows="5" class="span5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="button-div">
                         <button type="button" class="btn btn-primary btn-large" id="submit">Submit</button>
                     </div>
@@ -209,7 +233,7 @@
         <script type="text/javascript" src="assets/js/bootstrap-fileupload.min.js"></script>
         <script type="text/javascript" src="assets/js/vex.combined.min.js"></script>
         <script>vex.defaultOptions.className = 'vex-theme-wireframe';</script>
-        
+    
         <!--Our thing-->
         <script type="text/javascript">
             
@@ -284,6 +308,9 @@
             $("#survey-upload").click(function( e ){
                 $(this).removeClass("alert-error");
             });
+            $("#id-div").click(function( e ){
+                $(this).removeClass("alert-error");
+            });
 
             //Control click event of "Submit" button
             $("#submit").click(function( e ){
@@ -327,24 +354,46 @@
                     }
                 }
 
+                //Get appID
+                var appID = $("#appID").val();
+
+                //Get description
+                var description = $("#description").val();
+
                 data.append("categories", cats);
                 data.append("components", comps);
                 data.append("theme", theme);
                 data.append("max", max);
-                
-                //Send request
+                data.append("appID", appID);
+                data.append("description", description);
+
+                //Check for appID in db
                 $.ajax({
-                    url: "configure",
+                    url: "validate",
                     type: "POST",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    /*success: function( resp ){
-                        $("body").html(resp);
-                    },*/
+                    data: {"appID": appID},
+                    success: function( resp ){
+                        //Send config to server
+                        $.ajax({
+                            url: "configure",
+                            type: "POST",
+                            data: data,
+                            processData: false,
+                            contentType: false,
+                            success: function( resp ){
+                                $("body").html(resp);
+                            },
+                            error: function( resp ){
+                                vex.dialog.alert(resp.responseText);
+                            }
+                        });
+
+                    },
                     error: function( resp ){
-                        vex.dialog.alert(resp.responseText);
+                        vex.dialog.alert("That appID already exists.");
+                        $("#id-div").addClass("alert-error");
                     }
+
                 });
             });
 

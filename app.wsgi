@@ -20,14 +20,14 @@ logging.basicConfig(format='localhost - - [%(asctime)s] %(message)s', level=logg
 log = logging.getLogger(__name__)
 bottle.debug(False)
 
-arrows = {"ocean": "starfish", "island": "coconut", "space": "asteroid"}
+arrows = {"ocean": "turtle", "island": "coconut", "space": "asteroid"}
 
 session_opts = {
     'session.type': 'cookie',
     'session.validate_key': True,
     'session.cookie_expires': True,
     'session.timeout': 3600 * 24,  # 1 day
-    'session.encrypt_key': 'secret',
+    'session.encrypt_key': 'couchhorse',
     'session.auto': True
 }
 
@@ -50,10 +50,88 @@ def import_config_for(appID):
     module = __import__(appID, fromlist=["config"])
     return getattr(module, "config")
 
+@route('/logout')
+def logout():
+    aaa.logout(success_redirect='/login')
 
-@route('/configure')
-def configure():
-    return template('config.tpl')
+@route("/login")
+def login():
+    auth = request.query.auth
+    if auth == "0":
+        return template("login", error="Incorrect Username or Password!")
+    elif auth == "1":
+        return template("login", error="Please login to continue.")
+    else:
+        return template("login")
+
+@post("/login")
+def do_login():
+    auth = request.query.auth
+    d = postd().dict
+    if auth == "1":
+        success_redirect = "/configure"
+        fail_redirect = "/login?auth=1"
+    else:
+        success_redirect = "/profile"
+        fail_redirect = "/login?auth=0"
+
+    aaa.login(d["username"][0], d["password"][0], success_redirect=success_redirect, fail_redirect=fail_redirect)
+
+@route("/profile")
+def show_profile():
+    aaa.require(fail_redirect="/")
+    return template("profile", user=aaa.current_user, apps=aaa.list_apps(user=aaa.current_user))
+
+@post("/delete_app")
+def delete_app():
+    appID = post_get('appID')
+    msg = {}
+    if appID is not "":
+        try:
+            aaa.delete_app(appID)
+            msg['text'] = "App %s has been deleted" % appID
+            msg['type'] = "success"
+        except:
+            msg['text'] = "Sorry, app %s could not be deleted." % appID
+            msg['type'] = "error"
+    else:
+        msg['text'] = "Invalid app ID."
+        msg['type'] = "error"
+
+    return template("profile_apps_table", apps=aaa.list_apps(user=aaa.current_user), msg=msg)
+
+@post("/validate")
+def validate():
+    username = post_get('username')
+    appID = post_get('appID')
+    if username is not "":
+        if aaa.user(username):
+            return "false"
+        return "true"
+    if appID is not "":
+        if not aaa.check_apps_for(appID):
+            response.status = 500
+
+@route("/register")
+def register():
+    if not aaa.user_is_anonymous:
+        return template("profile", user=aaa.current_user)
+    return template("register")
+
+@post("/register")
+def do_register():
+    d = postd().dict
+    if len(d["organization"][0]) > 0:
+        org = d["organization"][0]
+    else:
+        org = ""
+    try:
+        aaa.register(d["username"][0], d["first_name"][0], d["last_name"][0], d["password"][0], d["email_addr"][0], org)
+    except:
+        response.status = 500
+        return "Sorry, there was an error during registration. Please contact communication.neuroscience@gmail.com or try again later."
+    
+    aaa.login(d["username"][0], d["password"][0], success_redirect="/profile")
 
 @route("/load_config")
 def load_config():
@@ -64,16 +142,21 @@ def load_config():
         config = def_config
     return config
 
+@route('/configure')
+def configure():
+    aaa.require(fail_redirect="/login?auth=1")
+    return template('config.tpl')
+
 @post('/configure')
 def do_config():
 
     #Create config dictionary
     cData = {}
     
-    #Create appID
+    #Create appID, might be overwritten later
     x = hashlib.sha1()
     x.update(datetime.datetime.now().strftime("%c"))
-    appID = x.hexdigest()[:10]
+    appID = x.hexdigest()[:10].lower()
 
     #Get data
     d = postd().dict
@@ -81,7 +164,6 @@ def do_config():
     if upload:
         try:
             survey_dict = json.loads(upload.file.read())
-            print survey_dict
         except:
             response.status = 500
             return '<p>There was a problem parsing your JSON file.<p><p>Please make sure you submit a well-formed JSON file. Check out the <a href="assets/friendly/surveys_example.json" target="_blank">example</a> or the <a href="assets/friendly/surveys_template.json" target="_blank">template</a>.'
@@ -101,11 +183,16 @@ def do_config():
         cData['maxFriendsPerCategory'] = 20
 
     #Set appID
+    if len(d['appID'][0]) > 0:
+        appID = d['appID'][0].lower()
     cData["appID"] = appID
+
+    #Set description
+    cData["description"] = d["description"][0]
 
     #Set categories or default
     cData["categories"] = []
-    if len(d['categories'][0]) > 0:
+    if d['categories'][0] is not "":
         cats = d["categories"][0].split(",")
         for cat in cats:
             for each in def_config["categories"]:
@@ -115,7 +202,7 @@ def do_config():
         cData["categories"] = def_config["categories"]
 
     #Set components or default
-    if len(d['components'][0]) > 0:
+    if len(d['components'][0]) is not 0:
         cData["components"] = []
 
         comps = d["components"][0].split(",")
@@ -145,10 +232,13 @@ def do_config():
     #                    "config = %s" % str(cData)
     #                    ])
 
-    aaa.save_app(cData)
-
-    response.status = 200
-    return template('config_success', appID=appID)
+    try:
+        aaa.save_app(cData)
+        response.status = 200
+    except:
+        response.status = 500
+        return "<p>We were unable to save your app. Please try again later.</p>"
+    return template("config_success", appID=appID)
 
 @post('/get_interactions')
 def get_interaction():

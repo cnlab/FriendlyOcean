@@ -72,7 +72,7 @@
                 </section>
                 
                 %for i, section in enumerate(config['categories']):
-                %if section['id'] is 'facebook':
+                %if section['id'] == 'facebook':
                 <section id="authorize" data-category="authorize" data-background="assets/img/ocean/backgrounds/auth.png" data-progress="Intro">
                     <div class="row slide-header">
                         <h2>Facebook Authorization</h2>
@@ -207,7 +207,7 @@
                 %end
 
                 %for n, section in enumerate(config['components']):
-                %if section['id'] is 'matching':
+                %if section['id'] == 'matching':
                 <section id="matching" data-state="matching" data-progress="Matching" data-category="matching" data-show="help" class="matching" data-background="assets/img/ocean/backgrounds/matching.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -229,7 +229,7 @@
                     </div>
                 </section>
 
-                %elif section['id'] is 'closeness':
+                %elif section['id'] == 'closeness':
                 <section id="closeness" data-category="closeness" data-progress="Spacing" data-show="help" data-state="strengthInit" data-background="assets/img/ocean/backgrounds/closeness.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -241,7 +241,7 @@
                     </div>
                 </section>
 
-                %elif section['id'] is 'survey':
+                %elif section['id'] == 'survey':
                 %for i, obj in enumerate( section['surveys'] ):
                 <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Spacing" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
                     <div class="container">
@@ -264,7 +264,7 @@
                 </section>
                 %end
 
-                %elif section['id'] is 'circles':
+                %elif section['id'] == 'circles':
                 <section id="circles" data-category="circles" data-state="circles" data-progress="Grouping" data-show="help" data-background="assets/img/ocean/backgrounds/circles.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -285,7 +285,7 @@
                     </div>
                 </section>
 
-                %elif section['id'] is 'friendOfFriend':
+                %elif section['id'] == 'friendOfFriend':
                 <section id="friendOfFriend" data-category="friendOfFriend" data-progress="Connecting" data-state="friendOfFriend" data-show="help" data-background="assets/img/ocean/backgrounds/friendOfFriend.png">
                     <div class="container">
                         <div class="row slide-header">
@@ -371,7 +371,7 @@
         makeBar();
 
         //Load the app
-        jQuery.getJSON("/load_config", {appID: "{{ config['appID'] }}"}, function( response ){
+        jQuery.getJSON("load_config", {appID: "{{ config['appID'] }}"}, function( response ){
             
             //Set config to Friendly object
             Friendly.config = response;

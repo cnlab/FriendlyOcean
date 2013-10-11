@@ -79,13 +79,40 @@ class Cork(object):
         else:
             self._store = backend
 
+    def delete_app(self, appID):
+        """
+        Delete app from user and database
+        """
+        user = self.current_user
+        try:
+            user.update(delApp=appID)
+        except:
+            raise AAAException("Unable to delete %s" % appID)
+        
+        try:
+            self._store.apps.pop(appID)
+            self._store.save_apps()
+        except:
+            raise AAAException("Unable to delete %s" % appID)
+
+
+
     def save_app(self, app):
         """
         Save app dict to mongo database
         """
         apps = self._store.apps
         apps[app['appID']] = app
-        self._store.save_apps()
+
+        user = self.current_user
+        if user is None:
+            raise AAAException("Nonexistent user.")
+
+        try:
+            user.update(addApp=app['appID'])
+            self._store.save_apps()
+        except:
+            raise AAAException("Unable to save app")
 
     def load_app(self, appID):
         """
@@ -97,6 +124,26 @@ class Cork(object):
         app = self._store.apps[appID]
         
         return app
+
+    def check_apps_for(self, appID):
+        """
+        Check appID against database
+        """
+        if appID in self._store.apps:
+            return False
+        return True
+
+    def list_apps(self, user=None):
+        if user is not None:
+            apps = []
+            if user.apps:
+                for appID in user.apps.split(","):
+                    if appID in self._store.apps:
+                        apps.append(self._store.apps[appID])
+        else:
+            apps = self._store.apps
+
+        return apps
 
     def login(self, username, password, success_redirect=None,
         fail_redirect=None):
@@ -371,8 +418,8 @@ class Cork(object):
             return User(username, self)
         return None
 
-    def register(self, username, first_name, last_name, password, email_addr, organization='', role='user',
-        max_level=50, apps=[]):
+    def register(self, username, first_name, last_name, password, email_addr, organization, role='user',
+        max_level=50):
         """Register a new user account. An email with a registration validation
         is sent to the user.
 
@@ -390,8 +437,6 @@ class Cork(object):
         :type max_level: int.
         :param email_addr: email address
         :type email_addr: str.
-        :param apps: list of appIDs
-        :type apps: array.
         :raises: AssertError or AAAException on errors
         """
         assert username, "Username must be provided."
@@ -416,7 +461,6 @@ class Cork(object):
             'hash': self._hash(username, password),
             'email_addr': email_addr,
             'creation_date': creation_date,
-            'apps': apps
         }
         self._store.save_users()
 
@@ -545,7 +589,8 @@ class User(object):
         self.role = user_data['role']
         self.email_addr = user_data['email_addr']
         self.level = self._cork._store.roles[self.role]
-        self.apps = user_data['apps']
+        apps = user_data.get('apps', None)
+        self.apps = apps
         self.first_name = user_data['first_name']
 
 
@@ -557,7 +602,7 @@ class User(object):
             except:
                 pass
 
-    def update(self, role=None, pwd=None, email_addr=None):
+    def update(self, role=None, pwd=None, email_addr=None, addApp=None, delApp=None):
         """Update an user account data
 
         :param role: change user role, if specified
@@ -566,6 +611,8 @@ class User(object):
         :type pwd: str.
         :param email_addr: change user email address, if specified
         :type email_addr: str.
+        :param appID: add/remove app to user's list
+        :type appID: str.
         :raises: AAAException on nonexistent user or role.
         """
         username = self.username
@@ -584,6 +631,28 @@ class User(object):
 
         if email_addr is not None:
             self._cork._store.users[username]['email_addr'] = email_addr
+
+        if addApp is not None:
+            apps = self._cork._store.users[username].get("apps", "")
+            if apps is not "":
+                apps = apps.split(",")
+                apps.append(addApp)
+                apps = ",".join(apps)
+            else:
+                apps += addApp
+            self._cork._store.users[username]['apps'] = apps
+
+        if delApp is not None:
+            apps = self._cork._store.users[username].get("apps", "")
+            if apps is not "":
+                apps = apps.split(",")
+                apps.remove(delApp)
+                if len(apps) < 1:
+                    apps = ""
+                else:
+                    apps = ",".join(apps)
+
+                self._cork._store.users[username]['apps'] = apps
 
         self._cork._store.save_users()
 
