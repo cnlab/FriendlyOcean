@@ -122,6 +122,15 @@ def show_profile():
 
     return template("profile", user=aaa.current_user, apps=aaa.list_apps(user=aaa.current_user))
 
+@route("/admin")
+def show_admin():
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
+    aaa.require(role="admin")
+
+    return template("admin", user=aaa.current_user, apps=aaa.list_apps())
+   
 @post("/delete_app")
 def delete_app():
 
