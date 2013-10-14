@@ -13,18 +13,22 @@
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
+                                    <th>Created</th>
                                     <th>App ID</th>
                                     <th>Link</th>
                                     <th>Description</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 %for app in apps:
                                 <tr>
+                                    <td>{{ app['created'] }}</td>
                                     <td>{{ app['appID'] }}</td>
                                     <td><a href="/?appID={{ app['appID'] }}">http://cnlab.info/fidev/?appID={{ app['appID'] }}</a></td>
                                     <td>{{ app['description'] }}</td>
+                                    <td><a href="/my-data?filter={{app['appID']}}">See data</a></td>
                                     <td><a type="button" class="btn btn-danger btn-small" onclick="deleteApp('{{ app['appID'] }}');">Delete</a></td>
                                 </tr>
                                 %end

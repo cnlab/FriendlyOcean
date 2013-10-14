@@ -173,6 +173,8 @@ class Cork(object):
                 return True
 
         if fail_redirect:
+            session = self._beaker_session
+            session['redir_msg'] = "Invalid username or password!"
             bottle.redirect(fail_redirect)
 
         return False
@@ -637,6 +639,9 @@ class User(object):
             if apps is not "":
                 apps = apps.split(",")
                 apps.append(addApp)
+                for app in apps:
+                    if app == "":
+                        apps.remove(app)
                 apps = ",".join(apps)
             else:
                 apps += addApp

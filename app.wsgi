@@ -1,4 +1,4 @@
-import shutil, subprocess, json, sys, os, time, urllib, csv, tempfile, itertools, hashlib, zipfile, importlib
+import shutil, subprocess, json, sys, os, time, urllib, csv, tempfile, itertools, hashlib, zipfile, importlib, StringIO
 import datetime
 from datetime import date
 
@@ -46,9 +46,42 @@ def postd():
 def post_get(name, default=''):
     return bottle.request.POST.get(name, default).strip()
 
+def sesh_redir(msg="Please log in to continue."):
+    """
+    Helper function for setting redirect in the session.
+    """
+    sess = request.environ.get("beaker.session")
+    sess['redir'] = request.path
+    sess['redir_msg'] = msg
+    return sess
+
 def import_config_for(appID):
     module = __import__(appID, fromlist=["config"])
     return getattr(module, "config")
+
+@route("/my-data")
+def show_logs():
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
+
+    user = aaa.current_user
+    logs = os.listdir("logs")
+    apps = {}
+
+    if request.query.filter:
+        app_list = [ app.strip() for app in request.query.filter.split(",") ]
+    else:
+        app_list = user.apps.split(',')
+
+    for appID in app_list:
+        apps[appID] = []
+        for log in logs:
+            if log.startswith(appID) and log.endswith(".json"):
+                apps[appID].append(log)
+
+    return template("my_data", apps=apps)
+
 
 @route('/logout')
 def logout():
@@ -56,34 +89,46 @@ def logout():
 
 @route("/login")
 def login():
+    if not aaa.user_is_anonymous:
+        bottle.redirect("/profile")
     auth = request.query.auth
-    if auth == "0":
-        return template("login", error="Incorrect Username or Password!")
-    elif auth == "1":
-        return template("login", error="Please login to continue.")
+    sess = request.environ.get("beaker.session")
+    if sess.has_key("msg"):
+        msg = sess['redir_msg']
+        return template("login", error=msg)
     else:
         return template("login")
 
 @post("/login")
 def do_login():
     auth = request.query.auth
+    sess = request.environ.get("beaker.session")
     d = postd().dict
-    if auth == "1":
-        success_redirect = "/configure"
-        fail_redirect = "/login?auth=1"
+    if sess.has_key("redir"):
+        success_redirect = sess['redir']
+        fail_redirect = "/login"
     else:
         success_redirect = "/profile"
-        fail_redirect = "/login?auth=0"
+        fail_redirect = "/login"
 
     aaa.login(d["username"][0], d["password"][0], success_redirect=success_redirect, fail_redirect=fail_redirect)
 
 @route("/profile")
 def show_profile():
-    aaa.require(fail_redirect="/")
+
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
+
     return template("profile", user=aaa.current_user, apps=aaa.list_apps(user=aaa.current_user))
 
 @post("/delete_app")
 def delete_app():
+
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
+
     appID = post_get('appID')
     msg = {}
     if appID is not "":
@@ -115,7 +160,7 @@ def validate():
 @route("/register")
 def register():
     if not aaa.user_is_anonymous:
-        return template("profile", user=aaa.current_user)
+        bottle.redirect("/profile")
     return template("register")
 
 @post("/register")
@@ -144,14 +189,20 @@ def load_config():
 
 @route('/configure')
 def configure():
-    aaa.require(fail_redirect="/login?auth=1")
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
     return template('config.tpl')
 
 @post('/configure')
 def do_config():
 
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
+
     #Create config dictionary
-    cData = {}
+    cData = { "created": datetime.datetime.now().strftime("%x") }
     
     #Create appID, might be overwritten later
     x = hashlib.sha1()
@@ -242,6 +293,7 @@ def do_config():
 
 @post('/get_interactions')
 def get_interaction():
+
     access_token = post_get('access_token')
     tps.stored_access_token = access_token
     
@@ -292,7 +344,66 @@ def index():
 @route('/assets/<file_path:path>')
 def static(file_path):
     return static_file(file_path, root="assets/")
-	
+
+@post("/view-file")
+def view_file():
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottl.redirect("/login")
+    logs = os.listdir("logs")
+    file_name = post_get("file")
+    for file in logs:
+        if file_name == file:
+            file_out = json.loads(open("logs/%s" % file_name, "rU").read())
+            file_out = json.dumps(file_out, indent=2)
+            return file_out
+    return "<p>Sorry, %s not found.</p>" % file_name
+
+@route("/download-data")
+def download_data():
+    if aaa.user_is_anonymous:
+        sesh_redir()
+        bottle.redirect("/login")
+
+    user = aaa.current_user
+    if request.query.type and request.query.file:
+        type = request.query.type
+        file = request.query.file
+        if type == "all":
+            
+            if file not in user.apps.split(','):
+                return "<p>Sorry, that app belongs to another user.</p>"
+
+            zfn = "%s-data.zip" % file
+            zpath = "logs/archives/%s" % zfn
+            logs = [ "logs/%s"%log for log in os.listdir("logs") if log.startswith(file) and log.endswith(".json")]
+            if len(logs) == 0:
+                    return "<p>Sorry, no data files were found.</p>"
+            elif not os.path.exists(zpath):
+                zf = zipfile.ZipFile(zpath, "w")
+                for d in logs:
+                    zf.write(d)
+                zf.close()
+            elif os.path.exists(zpath):
+                zf = zipfile.ZipFile(zpath, "a")
+                old_logs = zf.namelist()
+                new_logs = set(logs).difference(old_logs)
+                if len(new_logs) > 0:
+                    for d in set(logs).difference(old_logs):
+                        zf.write(d)
+                zf.close()
+            return static_file(zfn, root="logs/archives/", download=True)
+
+        elif type == "one":
+            return static_file(file, root="logs/", download=True)
+
+        else:
+            response.status = 404
+            return
+    else:
+        response.status = 404
+        return
+
 @post('/log')
 def write_log():
     try:
