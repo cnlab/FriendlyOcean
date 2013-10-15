@@ -93,7 +93,7 @@ def login():
         bottle.redirect("/profile")
     auth = request.query.auth
     sess = request.environ.get("beaker.session")
-    if sess.has_key("msg"):
+    if sess.has_key("redir_msg"):
         msg = sess['redir_msg']
         return template("login", error=msg)
     else:
@@ -127,9 +127,12 @@ def show_admin():
     if aaa.user_is_anonymous:
         sesh_redir()
         bottle.redirect("/login")
-    aaa.require(role="admin")
+    aaa.require(role="admin", fail_redirect="/profile")
+    users = aaa.list_users()
+    apps = aaa.list_apps()
+    data = aaa.list_data()
 
-    return template("admin", user=aaa.current_user, apps=aaa.list_apps())
+    return template("admin", user=aaa.current_user, apps=apps, users=users, data=data)
    
 @post("/delete_app")
 def delete_app():
@@ -212,6 +215,7 @@ def do_config():
 
     #Create config dictionary
     cData = { "created": datetime.datetime.now().strftime("%x") }
+    cData["owner"] = aaa.current_user.username
     
     #Create appID, might be overwritten later
     x = hashlib.sha1()
@@ -283,6 +287,7 @@ def do_config():
 
     #Save config file
     config_filename = "%s.py" % appID
+
 
     #Save config file to .py file
     # with open(app_path + config_filename, "w") as out:

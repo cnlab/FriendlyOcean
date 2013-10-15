@@ -145,6 +145,19 @@ class Cork(object):
 
         return apps
 
+    def list_data(self):
+        logs = os.listdir("logs")
+        data = {}
+        app_list = self.list_apps()
+
+        for appID in app_list:
+            data[appID] = []
+            for log in logs:
+                if log.startswith(appID) and log.endswith(".json"):
+                    data[appID].append(log)
+        
+        return data
+
     def login(self, username, password, success_redirect=None,
         fail_redirect=None):
         """Check login credentials for an existing user.
@@ -267,6 +280,7 @@ class Cork(object):
                 if fail_redirect is None:
                     raise AuthException("Unauthorized access: ")
                 else:
+
                     bottle.redirect(fail_redirect)
 
         return
@@ -341,7 +355,6 @@ class Cork(object):
             raise AAAException("Nonexistent user role.")
         creation_date = str(datetime.utcnow())
 
-        # store pending registration
         self._store.users[username] = {
             'username': username,
             'first_name': first_name,
@@ -377,7 +390,7 @@ class Cork(object):
         """
         for un in sorted(self._store.users):
             d = self._store.users[un]
-            yield (un, d['role'], d['email_addr'])
+            yield d
 
     @property
     def current_user(self):
