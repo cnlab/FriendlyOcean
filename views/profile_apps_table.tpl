@@ -26,9 +26,9 @@
                                 <tr>
                                     <td>{{ app['created'] }}</td>
                                     <td>{{ app['appID'] }}</td>
-                                    <td><a href="/?appID={{ app['appID'] }}">http://cnlab.info/fidev/?appID={{ app['appID'] }}</a></td>
+                                    <td><a href="?appID={{ app['appID'] }}">http://cnlab.info/fidev/?appID={{ app['appID'] }}</a></td>
                                     <td>{{ app['description'] }}</td>
-                                    <td><a href="/my-data?filter={{app['appID']}}">See data</a></td>
+                                    <td><a href="my-data?filter={{app['appID']}}">See data</a></td>
                                     <td><a type="button" class="btn btn-danger btn-small" onclick="deleteApp('{{ app['appID'] }}');">Delete</a></td>
                                 </tr>
                                 %end
