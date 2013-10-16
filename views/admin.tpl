@@ -10,13 +10,22 @@
     <style>
         ul.data-table,
         ul.app-meta{
-            list-style:none;
+            list-style: none;
         }
-        ul.app-meta>li{
+        ul.user-meta{
+            list-style: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 15px;
+        }
+        ul.app-meta>li,
+        ul.user-meta>li{
             display: inline;
         }
-        ul.app-meta>li:not(:first-child){
-            margin-left: 10px;
+        ul.app-meta>li:not(:first-child),
+        ul.user-meta>li:not(:first-child){
+            margin-left: 8px;
         }
         ul.data-table>li{
             margin-bottom: 5px;
@@ -46,9 +55,17 @@
     </style>
     </head>
     <body>
+
+        %include profile_user_meta user=user
+
         <div class="container">
+
+            <div class="page-header">
+                <h1>Hey, {{ user.first_name }}</h1>
+            </div>
+
             <div class="span12 row">
-                <h1>Friendly Admin</h1>
+                <h2>Friendly Admin</h2>
                 <ul class="nav nav-tabs">
                   <li class="active"><a href="#users" data-toggle="tab">Users</a></li>
                   <li><a href="#apps" data-toggle="tab">Apps</a></li>
@@ -59,13 +76,25 @@
                 <div class="span12">
                     <div id="admin-data" class="tab-content">
                         <div class="tab-pane fade active in" id="users">
+                            <div class="span11">
+
                             %include admin_users users=users
+
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="apps">
-                            %include admin_apps apps=apps
+                            <div class="span11">
+                            
+                            %include admin_apps apps=apps, users=users
+                            
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="data">
+                            <div class="span11" id="admin-apps">
+
                             %include admin_data data=data, apps=apps
+                            
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,6 +102,31 @@
         </div>
         <!--Javascripts-->
         <script type="text/javascript" src="assets/js/jquery-1.10.2.min.js"></script>
-        <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>        
+        <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript">
+            //Set behavior for view link
+            $("a.view").click(function( e ){
+                e.preventDefault();
+                e.stopPropagation();
+                $.post("view-file", {"file": this.dataset.file}, function( response ){
+                    $("#viewer").html( response ).collapse("show");
+                });
+            });
+
+            //Clear the view
+            $("#clear-viewer").click( function( e ){
+                e.preventDefault();
+                e.stopPropagation();
+                $("#viewer").on("hidden", function( e) {$(this).html("");}).collapse("hide");
+            });
+
+            function deleteApp(appID){
+                $.post("delete_app", {appID: appID}, function( resp ){
+                    $("#admin-apps").html( resp );
+                });
+            }
+
+        </script>
     </body>
 </html>

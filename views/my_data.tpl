@@ -17,6 +17,19 @@
         ul.data-table>li:not(:first-child):hover{
             background: #ffffff;
         }
+        ul.user-meta{
+            list-style:vnone;
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 15px;
+        }
+        ul.user-meta>li{
+            display: inline;
+        }
+        ul.user-meta>li:not(:first-child){
+            margin-left:8px;
+        }
         .toggles,
         .toggles:hover,
         .toggles:active{
@@ -39,6 +52,9 @@
     </style>
     </head>
     <body>
+
+        %include profile_user_meta user=user
+
         <div class="container">
             <div class="page-header">
                 <h1>My Data</h1>

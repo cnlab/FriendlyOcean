@@ -134,14 +134,15 @@ class Cork(object):
         return True
 
     def list_apps(self, user=None):
+        apps = []
         if user is not None:
-            apps = []
             if user.apps:
                 for appID in user.apps.split(","):
                     if appID in self._store.apps:
                         apps.append(self._store.apps[appID])
         else:
-            apps = self._store.apps
+            for app in self._store.apps:
+                apps.append(self._store.apps[app])
 
         return apps
 
@@ -150,7 +151,8 @@ class Cork(object):
         data = {}
         app_list = self.list_apps()
 
-        for appID in app_list:
+        for app in app_list:
+            appID = app['appID']
             data[appID] = []
             for log in logs:
                 if log.startswith(appID) and log.endswith(".json"):
@@ -388,9 +390,11 @@ class Cork(object):
         :return: (username, role, email_addr) generator (sorted by
         username)
         """
+        users = {}
         for un in sorted(self._store.users):
             d = self._store.users[un]
-            yield d
+            users[un] = d
+        return users
 
     @property
     def current_user(self):

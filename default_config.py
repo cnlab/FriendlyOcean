@@ -10,7 +10,7 @@ config = {
             "id": "family",
             "title": "Family",
             "help": [
-                        "Please enter the names of your family members who you know personally and would like to continue to have a personal relationship with.",
+                        "Please enter the names of your family members who you know personally.",
                         "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.",
                         "Click on a name if you need to remove it from the list."
                     ]

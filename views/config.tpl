@@ -80,10 +80,25 @@
             #survey-upload{
                 display:none;
             }
+            ul.user-meta{
+                list-style: none;
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: 15px;
+                padding: 0px;
+            }
+            ul.user-meta>li{
+                display: inline;
+            }
+            ul.user-meta>li:not(:first-child){
+                margin-left:8px;
+            }
 
         </style>  
         </head>
         <body>
+            %include profile_user_meta user=user
             <div class="container">
                 <div class="page-header">
                     <h1>Friendly Island Configuration Page</h1>

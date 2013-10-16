@@ -1,4 +1,10 @@
-import shutil, subprocess, json, sys, os, time, urllib, csv, tempfile, itertools, hashlib, zipfile, importlib, StringIO
+import os, sys
+
+#Uncomment for deployment
+#os.chdir(os.path.dirname(__file__))
+#sys.path.append('.')
+
+import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile, importlib
 import datetime
 from datetime import date
 
@@ -33,11 +39,9 @@ session_opts = {
 
 backend = MongoDBBackend(db_name='friendly', initialize=False)
 
-#application = bottle.default_app()
-#application = SessionMiddleware(application, session_opts)
+application = bottle.default_app()
+application = SessionMiddleware(application, session_opts)
 
-app = bottle.app()
-app = SessionMiddleware(app, session_opts)
 aaa = Cork(backend=backend)
 
 def postd():
@@ -51,7 +55,7 @@ def sesh_redir(msg="Please log in to continue."):
     Helper function for setting redirect in the session.
     """
     sess = request.environ.get("beaker.session")
-    sess['redir'] = request.path
+    sess['redir'] = request.path.lstrip("/")
     sess['redir_msg'] = msg
     return sess
 
@@ -80,7 +84,7 @@ def show_logs():
             if log.startswith(appID) and log.endswith(".json"):
                 apps[appID].append(log)
 
-    return template("my_data", apps=apps)
+    return template("my_data", apps=apps, user=user)
 
 
 @route('/logout')
@@ -204,7 +208,7 @@ def configure():
     if aaa.user_is_anonymous:
         sesh_redir()
         bottle.redirect("/login")
-    return template('config.tpl')
+    return template('config.tpl', user=aaa.current_user)
 
 @post('/configure')
 def do_config():
@@ -444,7 +448,7 @@ def main():
 
     # Start the Bottle webapp
     bottle.debug(False)
-    bottle.run(app=app, quiet=False, reloader=True)
+    bottle.run(app=application, quiet=False, reloader=True)
 
 if __name__ == "__main__":
     main()

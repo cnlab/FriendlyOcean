@@ -7,18 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <style>
+        ul.user-meta{
+            list-style:vnone;
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 15px;
+        }
+        ul.user-meta>li{
+            display: inline;
+        }
+        ul.user-meta>li:not(:first-child){
+            margin-left: 8px;
+        }
+    </style>
     </head>
     <body>
+        
+        %include profile_user_meta user=user
+
         <div class="container">
             <div class="page-header">
-                <h1>Hey, {{ user.first_name }}
-                    %if user.role == "admin":
-                    <small><a href="admin">Go to admin area</a></small>
-                    %end
-                </h1>
+                <h1>Hey, {{ user.first_name }}</h1>
             </div>
             <div class="row">
-                <div class="span8" id="user-apps">
+                <div class="span12" id="user-apps">
                     %include profile_apps_table apps=apps
                 </div>
             </div>
