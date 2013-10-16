@@ -125,16 +125,6 @@
                     </div>                
                 </section>
                 
-                <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr3.png">
-                    <div class="row slide-header">
-                        <h2>Instructions</h2>
-                    </div>
-                    <div class="row">
-                        <p>Now, you need to bring over some people to join you.</p>
-                        <p>Please read the following instructions carefully before beginning the game...</p>
-                    </div>
-                </section>
-                
                 <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr4.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
@@ -149,8 +139,8 @@
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>On <span class='island-name'></span>, each of your personal relationships will get its own piece of the <span class="island-type"></span>.</p>
-                        <p>In order for your to build the most complete <span class="island-type"></span> civilization, you will bring people over in four different boats.</p>
+                        <p>Each of your personal relationships will get its own piece of your <span class="island-type"></span>.</p>
+                        <p>In order for you to create the most complete <span class="island-type"></span>, you will bring people over in {{ len(config['categories']) }} different groups:</p>
                         <div class="span5 offset2">
                             <ol>
                                 %for cat in config['categories']:
@@ -166,7 +156,7 @@
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>After you have transported everyone to <span class='island-name'></span>, you will then decide how much space they get based on how close you are to them.</p>
+                        <p>After you have moved everyone to <span class='island-name'></span>, you will then decide how much space they get based on how close you are to them.</p>
                         <p>Finally, you will decide where each person will be located based upon who knows who.</p>
                     </div>
                 </section>
@@ -177,7 +167,7 @@
                     </div>
                     <div class="row">
                         <p><strong>1&#41; Privacy</strong></p>
-                        <p>After you have finished the game, we will remove <span class="underline">all</span> of your friends’ names/nicknames automatically so that your social network is <span class="underline">completely anonymous</span>.</p>
+                        <p>After you have finished the game we will do everything we can to make the data as anonymous as possible. You will be automatically logged out of any external services, like Facebook, and we will remove <span class="underline">all</span> of your friends’ names/nicknames.</p>
                     </div>
                     <div class="row fragment" data-show="help-button">
                         <p><strong>2&#41; Help</strong></p>
