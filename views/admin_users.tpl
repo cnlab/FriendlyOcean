@@ -5,8 +5,8 @@
 <table id="users-table" class="table table-striped table-hover">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Username</th>
+            <th>Userame</th>
+            <th>Real Name</th>
             <th>Email</th>
             <th>Organization</th>
             <th>Number of apps</th>
@@ -16,8 +16,8 @@
     <tbody>
     %for user in users:
     <tr>
-        <td>{{ users[user]['first_name'] }} {{ users[user]['last_name'] }}</td>
         <td>{{ users[user]['username'] }}</td>
+        <td>{{ users[user]['first_name'] }} {{ users[user]['last_name'] }}</td>
         <td>{{ users[user]['email_addr'] }}</td>
         <td>{{ users[user]['organization'] }}</td>
         <td>{{ len(users[user]['apps'].split(",")) }}</td>

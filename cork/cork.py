@@ -41,6 +41,20 @@ from backends import JsonBackend
 
 log = getLogger(__name__)
 
+#Helper functions for sorting numbered filenames
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    '''
+    return [ atoi(c) for c in re.split('(\d+)', text) ]
+
+#End sorting functions
 
 class AAAException(Exception):
     """Generic Authentication/Authorization Exception"""
@@ -144,20 +158,29 @@ class Cork(object):
             for app in self._store.apps:
                 apps.append(self._store.apps[app])
 
+        apps.sort(key=lambda x: (x['owner'], x['created']))
+
         return apps
 
     def list_data(self):
         logs = os.listdir("logs")
-        data = {}
+        data = []
         app_list = self.list_apps()
 
         for app in app_list:
+            appdict = {}
             appID = app['appID']
-            data[appID] = []
+            appdict["appID"] = appID
+            appdict['files'] = []
             for log in logs:
                 if log.startswith(appID) and log.endswith(".json"):
-                    data[appID].append(log)
-        
+                    appdict['files'].append(log)
+            appdict['files'].sort(key=natural_keys)
+            appdict['owner'] = app['owner']
+            appdict['created'] = app['created']
+            data.append(appdict)
+
+        data.sort(key=lambda x: (x['owner'], x['created'], x['appID']))
         return data
 
     def login(self, username, password, success_redirect=None,

@@ -488,7 +488,7 @@ $("#next-merge").click(function( event ){
 
                     //Grab the access token and send it to the server
                     var access_token = FB.getAccessToken();
-                    $.post('/get_interactions',
+                    $.post('get_interactions',
                            {access_token:access_token},
                            function(response){
                                 var data = JSON.parse(response);
@@ -802,7 +802,7 @@ $('#next-arrow').click(function( event ){
                     "circles": Friendly.circles,
                     "sns": Friendly.sns
                 }
-                $.post("/log", JSON.stringify(log));
+                $.post("log", JSON.stringify(log));
                 deleteApp();
             });
 

@@ -135,6 +135,11 @@ def show_admin():
     users = aaa.list_users()
     apps = aaa.list_apps()
     data = aaa.list_data()
+    print apps
+    print
+    print data
+    print
+    print users
 
     return template("admin", user=aaa.current_user, apps=apps, users=users, data=data)
    

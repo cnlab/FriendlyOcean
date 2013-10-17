@@ -1,20 +1,16 @@
             <div class="span4 offset" id="apps">
             %for app in data:
                 <div class="span4 app-block">
-                    <h3><a data-toggle="collapse" data-target="#{{app}}-data" class="toggles">{{ app }}</a> ({{ len(data[app]) }})</h3>
+                    <h3><a data-toggle="collapse" data-target="#{{app['appID']}}-data" class="toggles">{{ app['appID'] }}</a> ({{ len(app['files']) }})</h3>
                     <ul class="app-meta">
-                            %for a in apps:
-                            %if a['appID'] == app:
-                            <li><strong>Owner: </strong>{{ a['owner'] }}</li>
+                            <li><strong>Owner: </strong>{{ app['owner'] }}</li>
                             <li>|</li>
-                            <li><strong>Created: </strong>{{ a['created'] }}</li>
-                            %end
-                            %end
+                            <li><strong>Created: </strong>{{ app['created'] }}</li>
                     </ul>
-                    <ul class="data-table collapse" id="{{app}}-data">
-                    %if len(data[app]) > 0:
-                        <li><a class="dl-all" href="download-data?type=all&file={{app}}">download all for {{app}}</a></li>
-                    %for file in data[app]:
+                    <ul class="data-table collapse" id="{{app['appID']}}-data">
+                    %if len(app['files']) > 0:
+                        <li><a class="dl-all" href="download-data?type=all&file={{app['appID']}}">download all for {{app['appID']}}</a></li>
+                    %for file in app['files']:
                         <li>{{ file }} <small><a class="view" href="" data-file="{{file}}">view</a>  |  <a class="dl-one" href="download-data?type=one&file={{file}}">download</a></small></li>
                     %end
                     %else:
