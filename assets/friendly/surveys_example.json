@@ -23,6 +23,25 @@
 
                             ],
             "key": "lastSeen"
+            },
+            {
+            "question": "Which of your friends smokes?",
+            "instructions": "Please indicate which of your friends smokes cigarettes",
+            "responses": [
+                                {
+                                    "long": "Yes",
+                                    "value": "yes"
+                                    },
+                                {
+                                    "long": "No",
+                                    "value": "no"
+                                    },
+                                {
+                                    "long": "I don't know",
+                                    "value": "unk"
+                                    }
+                            ],
+            "key": "smokes"
             }
         ]
 }
