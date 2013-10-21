@@ -2,7 +2,7 @@
 
 config = {
     "theme": "ocean",
-    "arrowType": "starfish",
+    "arrowType": "turtle",
     "appID": "cnl",
     "maxFriendsPerCategory": 20,
     "categories": [

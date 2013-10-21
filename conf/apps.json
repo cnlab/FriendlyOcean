@@ -1,2 +1,1 @@
-{
-}
+{"is this working": {"description": "Test app using family only.", "created": "10/21/13", "arrowType": "turtle", "theme": "ocean", "maxFriendsPerCategory": 3, "components": [{"help": ["Please rate how emotionally close you are with each person by dragging their name into the circle.", "You can rate them from not at all close (perimeter) to extremely close (center)."], "id": "closeness", "title": "Closeness"}], "appID": "is this working", "owner": "jp", "categories": [{"help": ["Please enter the names of your family members who you know personally.", "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", "Click on a name if you need to remove it from the list."], "id": "family", "title": "Family"}]}}

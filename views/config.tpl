@@ -65,8 +65,10 @@
             ul[id^="selected"],
             ul[id^="available"]{
                 margin: 10px auto 50px auto;
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
                 border-radius: 10px;
-                padding: 40px;
+               padding: 40px;
                 list-style: none;
             }
             ul[id^="selected"]>li:not(:last-child),
@@ -95,6 +97,12 @@
             }
             ul.user-meta>li:not(:first-child){
                 margin-left:8px;
+            }
+            div.app-option{
+                padding: 5px;
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+                border-radius: 10px;
             }
 
         </style>  
@@ -202,7 +210,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="span4">
+                    <div class="span3 app-option">
                         <h3>
                             Choose a theme
                         </h3>
@@ -235,7 +243,7 @@
                         </div>
                     </div>
 
-                    <div class="span4" id="survey-upload">
+                    <div class="span4 app-option" id="survey-upload">
                         <h3>
                             Upload Surveys
                         </h3>
@@ -251,18 +259,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="span4" id="id-div">
+                    <div class="span4 app-option" id="id-div">
                         <h3>
                             App ID <small>optional</small>
                         </h3>
-                        <p>Do you have a unique ID in mind for this configuration? If not, we'll generate one for you.</p>
+                        <p>Do you have a unique ID in mind for this configuration? If not, we'll generate one for you. No spaces!</p>
                         <div class="control-group">
                             <div class="controls">
                                 <input class="span2" type="text" name="appID" id="appID">
                             </div>
                         </div>
                     </div>
-                    <div class="span5">
+                    <div class="span5 app-option">
                         <h3>
                             Description <small>optional</small>
                         </h3>
@@ -403,6 +411,7 @@
                     var filename = inp.files ? inp.files.length === 0 ? false : inp.files[0].name.split(".") : false;
                     if( ! filename ){
                         vex.dialog.alert('Please upload a .JSON file for your survey or remove the "Survey" component from your lists');
+                        $("#survey-upload").addClass("alert-error");
                         return;
                     }else if ( filename[ filename.length-1 ] !== "json" ) {
                         vex.dialog.alert("It seems you did not upload a .JSON file");
@@ -450,7 +459,7 @@
 
                     },
                     error: function( resp ){
-                        vex.dialog.alert("That appID already exists.");
+                        vex.dialog.alert( resp.responseText );
                         $("#id-div").addClass("alert-error");
                     }
 

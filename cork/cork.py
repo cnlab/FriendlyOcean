@@ -29,7 +29,6 @@ from time import time
 import bottle
 import os
 import re
-import uuid
 
 try:
     import scrypt
@@ -52,7 +51,7 @@ class AuthException(AAAException):
 
 class Cork(object):
 
-    def __init__(self, directory=None, backend=None,
+    def __init__(self, directory="conf", backend=None,
         initialize=False, session_domain=None):
         """Auth/Authorization/Accounting class
 
@@ -493,6 +492,7 @@ class Cork(object):
             'hash': self._hash(username, password),
             'email_addr': email_addr,
             'creation_date': creation_date,
+            'apps': ''
         }
         self._store.save_users()
 

@@ -37,12 +37,15 @@ session_opts = {
     'session.auto': True
 }
 
-backend = MongoDBBackend(db_name='friendly', initialize=False)
+try:
+    backend = MongoDBBackend(db_name='friendly', initialize=False)
+except:
+    backend = None
+
+aaa = Cork(backend=backend)
 
 application = bottle.default_app()
 application = SessionMiddleware(application, session_opts)
-
-aaa = Cork(backend=backend)
 
 def postd():
     return bottle.request.forms
@@ -59,10 +62,6 @@ def sesh_redir(msg="Please log in to continue."):
     sess['redir_msg'] = msg
     return sess
 
-def import_config_for(appID):
-    module = __import__(appID, fromlist=["config"])
-    return getattr(module, "config")
-
 @route("/my-data")
 def show_logs():
     if aaa.user_is_anonymous:
@@ -77,9 +76,10 @@ def show_logs():
     else:
         app_list = user.apps.split(',')
 
-    for appID in app_list:
-        apps[appID] = [ log for log in os.listdir("logs") if log.startswith(appID) and log.endswith(".json") ]
-        aaa.sort_nicely(apps[appID])
+    if len(apps) > 0:
+        for appID in app_list:
+            apps[appID] = [ log for log in os.listdir("logs") if log.startswith(appID) and log.endswith(".json") ]
+            aaa.sort_nicely(apps[appID])
     return template("my_data", apps=apps, user=user)
 
 
@@ -167,6 +167,10 @@ def validate():
     if appID is not "":
         if not aaa.check_apps_for(appID):
             response.status = 500
+            return "That appID already exists."
+        if len( appID.split() ) > 1:
+            response.status = 500
+            return "Please remove any spaces from the app ID."
 
 @route("/register")
 def register():
@@ -333,6 +337,7 @@ def index():
 
     if request.query.appID:
         appID = request.query.appID
+        print appID
         try:
             config = aaa.load_app(appID)
         except:

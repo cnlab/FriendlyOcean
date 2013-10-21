@@ -62,6 +62,10 @@
                 <h4>Your apps and data files are listed below on the left. Click an app ID to expand or collapse its list of data files.</h4>
             </div>
             <div class="span3 offset1" id="apps">
+            %if len(apps) < 1:
+            <p class="lead">No data or apps yet!</p>
+            <p><a href="configure">Configure an app!</a></p>
+            %else:
             %for app in apps:
                 <div class="span3 app-block">
                     <h3><a data-toggle="collapse" data-target="#{{app}}-data" class="toggles">{{ app }}</a> ({{ len(apps[app]) }})</h3>
@@ -76,6 +80,7 @@
                     %end 
                     </ul>
                 </div>
+            %end
             %end
             </div>
             <div class="span4 offset2">
@@ -102,7 +107,7 @@
             $("#clear-viewer").click( function( e ){
                 e.preventDefault();
                 e.stopPropagation();
-                $("#viewer").on("hidden", function( e) {$(this).html("");}).collapse("hide");
+                $("#viewer").on("hidden", function( e ) {$(this).html("");}).collapse("hide");
             });
 
         </script>       
