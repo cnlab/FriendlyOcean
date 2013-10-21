@@ -1,8 +1,26 @@
+//This is a template to explain the structure of the surveys file.
+//While you can fill in your own information below, you must remove ALL of the comments from this file before uploading it.
+//Any line starting with to two slash marks (like this line) is a comment.
+
+//The app expects a JSON object with the key of "surveys" and a value of a list of objects, each representing a survey question
+
 {
     "surveys":[
             {
+//DO NO EDIT ABOVE THIS LINE
+            
+            //"question" expects a string in quotes.
+            //This is the actual question you want to ask
             "question": "When was the last time you saw each person?",
+
+            //"instructions" expects a string in quotes.
+            //These are any specific instructions you have for the survey question.
             "instructions": "Please answer the following question for each person.",
+
+            //"responses" expects an array of response objects
+            //Each response object has a "long" and a "value" key that both expect a string in quotes or an integer
+            //The "long" key is the text that the participant sees on the form
+            //The "value" key is the value that you want to see in your data log.
             "responses": [
                                 {
                                     "long": "Within the last week",
@@ -22,26 +40,20 @@
                                 }
 
                             ],
+
+            //"key" expects a string in quotes.
+            //Each Friend object in the Friendly Island application will be given an attribute based on each survey question.
+            //This should be a specific, unique key that you want for this question. Make sure it is unique so as to not override other attributes
+            //Disallowed values for the key include:
+                //name
+                //hash
+                //category
+                //friendNumber
+                //strength
+                //strengthLength
             "key": "lastSeen"
-            },
-            {
-            "question": "Which of your friends smokes?",
-            "instructions": "Please indicate which of your friends smokes cigarettes",
-            "responses": [
-                                {
-                                    "long": "Yes",
-                                    "value": "yes"
-                                    },
-                                {
-                                    "long": "No",
-                                    "value": "no"
-                                    },
-                                {
-                                    "long": "I don't know",
-                                    "value": "unk"
-                                    }
-                            ],
-            "key": "smokes"
             }
+
+//DO NOT EDIT BELOW THIS LINE
         ]
 }
