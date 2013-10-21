@@ -70,7 +70,6 @@ def show_logs():
         bottle.redirect("/login")
 
     user = aaa.current_user
-    logs = os.listdir("logs")
     apps = {}
 
     if request.query.filter:
@@ -79,11 +78,8 @@ def show_logs():
         app_list = user.apps.split(',')
 
     for appID in app_list:
-        apps[appID] = []
-        for log in logs:
-            if log.startswith(appID) and log.endswith(".json"):
-                apps[appID].append(log)
-
+        apps[appID] = [ log for log in os.listdir("logs") if log.startswith(appID) and log.endswith(".json") ]
+        aaa.sort_nicely(apps[appID])
     return template("my_data", apps=apps, user=user)
 
 
@@ -135,12 +131,6 @@ def show_admin():
     users = aaa.list_users()
     apps = aaa.list_apps()
     data = aaa.list_data()
-    print apps
-    print
-    print data
-    print
-    print users
-
     return template("admin", user=aaa.current_user, apps=apps, users=users, data=data)
    
 @post("/delete_app")

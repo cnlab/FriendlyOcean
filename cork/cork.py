@@ -41,21 +41,6 @@ from backends import JsonBackend
 
 log = getLogger(__name__)
 
-#Helper functions for sorting numbered filenames
-
-def atoi(text):
-    return int(text) if text.isdigit() else text
-
-def natural_keys(text):
-    '''
-    alist.sort(key=natural_keys) sorts in human order
-    http://nedbatchelder.com/blog/200712/human_sorting.html
-    (See Toothy's implementation in the comments)
-    '''
-    return [ atoi(c) for c in re.split('(\d+)', text) ]
-
-#End sorting functions
-
 class AAAException(Exception):
     """Generic Authentication/Authorization Exception"""
     pass
@@ -109,8 +94,6 @@ class Cork(object):
         except:
             raise AAAException("Unable to delete %s" % appID)
 
-
-
     def save_app(self, app):
         """
         Save app dict to mongo database
@@ -147,6 +130,13 @@ class Cork(object):
             return False
         return True
 
+    def sort_nicely( self, l ): 
+        """ Sort the given list in the way that humans expect. 
+        """ 
+        convert = lambda text: int(text) if text.isdigit() else text 
+        alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
+        l.sort( key=alphanum_key )
+
     def list_apps(self, user=None):
         apps = []
         if user is not None:
@@ -175,7 +165,7 @@ class Cork(object):
             for log in logs:
                 if log.startswith(appID) and log.endswith(".json"):
                     appdict['files'].append(log)
-            appdict['files'].sort(key=natural_keys)
+            self.sort_nicely(appdict['files'])
             appdict['owner'] = app['owner']
             appdict['created'] = app['created']
             data.append(appdict)

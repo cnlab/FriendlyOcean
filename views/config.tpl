@@ -62,13 +62,15 @@
                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e9a412), color-stop(100%,#d39410)); /* webkit */
                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e9a412', endColorstr='#d39410',GradientType=0 ); /* ie */
             } 
-            ul{
-                list-style: none;
+            ul[id^="selected"],
+            ul[id^="available"]{
                 margin: 10px auto 50px auto;
                 border-radius: 10px;
                 padding: 40px;
+                list-style: none;
             }
-            ul>li:not(:last-child){
+            ul[id^="selected"]>li:not(:last-child),
+            ul[id^="available"]>li:not(:last-child){
                 margin: 0px 0px 20px 0px;
             }
             .button-div{
@@ -106,10 +108,51 @@
 
                 <div class="row">
                     <div class="span12">
+                    <h2>Introduction</h2>
+                    <p>Welcome to the Friendly Island App configuration page. Below you will find the instructions and the form needed to configure as many versions of this app as you like! First, a bit about the structure of Friendly Island</p>
+                    <p>Friendly Island asks for the names of people from up to four categories:
+                        <ul>
+                            <li>Family</li>
+                            <li>Calling</li>
+                            <li>Texting</li>
+                            <li>Facebook</li>
+                        </ul>
+                    <p>Family, Calling, and Texting are self-reported, while Facebook can either be self-reported or automatically pulled from the participants Facebook account.</p>
+                    <p> The rest of the app is made up of different components:</p>
+                        <ul style="list-style:none;">
+                            <lI><strong>Matching</strong>
+                                <ul>
+                                    <li>The Matching component is designed to avoid duplication across categories. For example, a person might put their mother in the Family, Texting, and Calling categories. Matching consolidates names into a single Friend object.</li>
+                                </ul>
+                            </li>
+                            <lI><strong>Closeness</strong>
+                                <ul>
+                                    <li>The Closeness component asks the participant to report how emotionally close they are to each person in the friend list.</li>
+                                </ul>
+                            </li>
+                            <lI><strong>Survey</strong>
+                                <ul>
+                                    <li>The Survey component allows for any number of survey questions to be asked about each of a participant's friends. Each question is presented in a table and each friend must have an answer before the participant can move on (i.e. no unchecked boxes allowed!)</li>
+                                    <li>We have a <a href="assets/friendly/surveys_template.json" target="_blank">template</a> and an <a href="assets/friendly/surveys_example.json" target="_blank">example</a> JSON file for you to look at. The template file is structured for two survey questions and the example contains one question with extensive comments.</li>
+                                </ul>
+                            </li>
+                            <lI><strong>Circles</strong>
+                                <ul>
+                                    <li>The Circles component is allows the participants to create informal "groupings" or "social circles" in which to put their friends. Links between group members are assumed and saved in the final data log. If the Linking component is being used, these links are carried over with the intention of reducing some of the linking work.</li>
+                                </ul>
+                            </li>
+                            <lI><strong>Linking</strong>
+                                <ul>
+                                    <li>The Linking component gives the participant a chance to make explicit links (or edges) between friends.</li>
+                                </ul>
+                            </li>
+                        </ul>
                     <h2>Instructions</h2>
                     <p>Use this page to configure a unique version of Friendly Island. If you make no selections, you will still be presented with a successful, "full-stack" configuration of Friendly Island without the "Surveys" component.</p>
                     <p>Upon completion of this page you will be presented with the unique <strong>app ID</strong> for your configuration. This app ID will either be a psuedo-random unique string or a custom one that you provided. Use this app ID whenever you wanted a participant to go through your version as it is the link to retrieving your data.</p>
-                    <p>If you wish to use the surveys component, you will have to explicitly add it and any other components you want to use to the configuration. Adding only the "Survey" component will result in an app that only asks the survey questions you upload. We have a <a href="assets/friendly/surveys_template.json">template</a> and an <a href="assets/friendly/surveys_example.json">example</a> JSON file for you to look at. The template file is structured for two survey questions and the example contains one question with extensive comments.  </p> 
+                    <p>If you wish to use the surveys component, you will have to explicitly add it and any other components you want to use to the configuration. Adding only the "Survey" component will result in an app that only asks the survey questions you upload. We have a <a href="assets/friendly/surveys_template.json" target="_blank">template</a> and an <a href="assets/friendly/surveys_example.json" target="_blank">example</a> JSON file for you to look at. The template file is structured for two survey questions and the example contains one question with extensive comments.</p> 
+                    <p>Each Friendly Island configuration gets a unique ID either from you or the system. This app ID is extremely important because it helps us keep track of your data on the backend. When you have a participant to through Friendly Island, the URL must at least have the <code>appID</code> parameter, otherwise your data will be filed under a general "anonymous" heading. Additionally, you can keep track of each participant by adding the <code>pID</code> parameter to the URL. This is strongly encouraged, but not required. Participants that do not have a pID will get the "anon" pID.</p>
+                    <p></p>
                     </div>
                 </div>
 
@@ -262,10 +305,10 @@
                 e.stopPropagation();
                 e.preventDefault();
                 if( $("#selected-categories>li").length === 0 ){
-                    $("#available-categories>li").each(function( i, obj ){
-                        $(this).appendTo("#selected-categories");
-                    });
+                    $("#available-categories>li").appendTo("#selected-categories");
+                    $("#matching").appendTo("#selected-components");
                 }
+                
                 $("#selected-categories>li").tsort( {order:'rand'} );
             });
 
@@ -283,7 +326,7 @@
                             return obj.id;
                         });
                         if( cats.length >= 2 &&  jQuery.inArray('matching', comps) === -1 ){
-                            $("#matching").click();
+                            $("#matching").appendTo("#selected-components");
                         }
                         break;
                     case "available-components":
@@ -302,7 +345,7 @@
                             return obj.id;
                         });
                         if( cats.length < 2 &&  jQuery.inArray('matching', comps) > -1 ){
-                            $("#matching").click();
+                            $("#matching").appendTo("#selected-components");
                         }                  
                         break;
                     case "selected-components":
