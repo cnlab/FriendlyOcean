@@ -15,10 +15,6 @@ from beaker.middleware import SessionMiddleware
 from cork.backends import MongoDBBackend
 import logging
 
-#Add path for apps
-#app_path = "assets/apps/"
-#sys.path.append(os.path.abspath(app_path))
-
 import tps
 from default_config import config as def_config
 
