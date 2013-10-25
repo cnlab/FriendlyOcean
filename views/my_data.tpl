@@ -57,7 +57,7 @@
 
         <div class="container">
             <div class="page-header">
-                <h1>My Data</h1>
+                <h1>Hey, {{ user.first_name }}</h1>
                 <p><a href="my-data">Clear filter</a></p>
                 <h4>Your apps and data files are listed below on the left. Click an app ID to expand or collapse its list of data files.</h4>
             </div>

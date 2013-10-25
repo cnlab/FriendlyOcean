@@ -5,7 +5,7 @@
 <table id="users-table" class="table table-striped table-hover">
     <thead>
         <tr>
-            <th>Userame</th>
+            <th>Username</th>
             <th>Real Name</th>
             <th>Email</th>
             <th>Organization</th>
@@ -21,7 +21,7 @@
         <td>{{ users[user]['email_addr'] }}</td>
         <td>{{ users[user]['organization'] }}</td>
         <td>{{ len(users[user]['apps'].split(",")) }}</td>
-        <td><a href="#">Reset Password</a></td>
+        <td><a href="#">Edit</a></td>
     </tr>
     %end
     </tbody>

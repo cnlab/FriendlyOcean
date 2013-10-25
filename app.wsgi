@@ -7,6 +7,7 @@ import os, sys
 import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile, importlib
 import datetime
 from datetime import date
+from base64 import b64decode, b64encode
 
 import bottle 
 from bottle import get, post, response, request, run, route, template, static_file, redirect, SimpleTemplate
@@ -72,7 +73,7 @@ def show_logs():
     else:
         app_list = user.apps.split(',')
 
-    if len(apps) > 0:
+    if len(app_list) > 0:
         for appID in app_list:
             apps[appID] = [ log for log in os.listdir("logs") if log.startswith(appID) and log.endswith(".json") ]
             aaa.sort_nicely(apps[appID])
@@ -100,13 +101,13 @@ def do_login():
     auth = request.query.auth
     sess = request.environ.get("beaker.session")
     d = postd().dict
+
     if sess.has_key("redir"):
         success_redirect = sess['redir']
         fail_redirect = "/login"
     else:
         success_redirect = "/profile"
         fail_redirect = "/login"
-
     aaa.login(d["username"][0], d["password"][0], success_redirect=success_redirect, fail_redirect=fail_redirect)
 
 @route("/profile")
@@ -287,15 +288,6 @@ def do_config():
     #Save config file
     config_filename = "%s.py" % appID
 
-
-    #Save config file to .py file
-    # with open(app_path + config_filename, "w") as out:
-    #     out.writelines([
-    #                    "#!/usr/bin/env python",
-    #                    "\n",
-    #                    "config = %s" % str(cData)
-    #                    ])
-
     try:
         aaa.save_app(cData)
         response.status = 200
@@ -333,7 +325,6 @@ def index():
 
     if request.query.appID:
         appID = request.query.appID
-        print appID
         try:
             config = aaa.load_app(appID)
         except:
@@ -363,7 +354,7 @@ def static(file_path):
 def view_file():
     if aaa.user_is_anonymous:
         sesh_redir()
-        bottl.redirect("/login")
+        bottle.redirect("/login")
     logs = os.listdir("logs")
     file_name = post_get("file")
     for file in logs:

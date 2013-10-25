@@ -15,13 +15,13 @@
             <p style="margin-left:20px;">{{ appID }}</p>
 
             <h4>Your app's link</h4>
-            <p style="margin-left:20px;"><a href="?appID={{ appID }}">http://cnlab.info/fidev/?appID={{ appID }}</a></p>
+            <p style="margin-left:20px;"><a href="?appID={{ appID }}">http://friendlyisland.info?appID={{ appID }}</a></p>
 
             <h4>Your profile</h4>
-            <p style="margin-left:20px;"><a href="profile">http://cnlab.info/fidev/profile</a></p>
+            <p style="margin-left:20px;"><a href="profile">http://friendlyisland.info/profile</a></p>
 
             <h4>Your log data <small>Nothing there yet...</small></h4>
-            <p style="margin-left:20px;"><a href="{{appID}}/logs">http://cnlab.info/fidev/{{appID}}/logs</a></p>
+            <p style="margin-left:20px;"><a href="my-data?filter={{appID}}">http://friendlyisland.info/my-data?filter={{appID}}</a></p>
         </div>
     </div>
 </div>

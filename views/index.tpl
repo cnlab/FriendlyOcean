@@ -183,7 +183,7 @@
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ section['title'] }}
-                                %if section['id'] is not 'facebook':
+                                %if section['id'] != 'facebook':
                                  - <input class="friend-input" name="{{ section['id'] }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
                                 %end
                             </h2>
