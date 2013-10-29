@@ -1,10 +1,10 @@
 import os, sys
 
-#Uncomment for deployment
+#Uncomment for deployment using mod_wsgi or Passenger
 #os.chdir(os.path.dirname(__file__))
 #sys.path.append('.')
 
-import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile, importlib
+import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile
 import datetime
 from datetime import date
 from base64 import b64decode, b64encode
