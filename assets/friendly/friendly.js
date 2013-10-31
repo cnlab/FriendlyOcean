@@ -3,6 +3,9 @@ var Friendly = {
     //Island name
     islandName: null,
 
+    //Time tracker for each page
+    timer: {},
+
     //SNS flag
     sns: null,
   
@@ -44,6 +47,22 @@ var makeBar = function(){
 
 };
 
+//Function to update the time
+function updateTimer( category ){
+    var timeNow = Date.now ||
+        function() {
+            return new Date().getTime();
+        };
+
+    if( category !== 'objective' && category !== 'authorize' && category !== 'end' ){
+        if( !Friendly.timer.hasOwnProperty(category) ){
+            Friendly.timer[category] = timeNow();
+        }
+    }
+
+    //Write app to local storage outside of saveApp()
+    window.localStorage.setItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID}), JSON.stringify(Friendly));;
+}
 
 //Get and set values from surveys
 function getSurveyAnswers() {
@@ -145,7 +164,7 @@ function addNames(li){
 //Update application position
 //Reveal function returns current slide (the slide that was just completed), so add 1 to get next slide
 function updateIndex(){
-    Friendly.slide = Reveal.getIndices().h + 1;
+    Friendly.slide = Reveal.getIndices().h;
 }
 
 //Update progress bar
@@ -789,6 +808,7 @@ $('#next-arrow').click(function( event ){
 
                 }
 
+                updateTimer("appEnd");
                 myNetwork.init( network );
                 myNetwork.start();
                 var log = {
@@ -800,7 +820,8 @@ $('#next-arrow').click(function( event ){
                     "pID":  pID,
                     "appID": Friendly.config.appID,
                     "circles": Friendly.circles,
-                    "sns": Friendly.sns
+                    "sns": Friendly.sns,
+                    "timer": Friendly.timer
                 }
                 $.post("log", JSON.stringify(log));
                 deleteApp();
@@ -1080,12 +1101,14 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
                 //Update application position
                 updateIndex();
 
-                //Update Progress bar
-                updateFriendlyProgress(event.currentSlide);
-                
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
+
+                //Update Progress bar
+                updateFriendlyProgress(event.currentSlide);
+
                 if(category){
+                    updateTimer( category );
                     var mb = $('#help').find('.modal-body');
                     $(mb).children().remove();
                     
@@ -1098,7 +1121,7 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
                     });
                 }
                 else{
-
+                    $('#help').find('.modal-body').html("<p>Woo! You found the help!</p>");
                 }
                 
                 if(show){

@@ -403,6 +403,9 @@
                 $(".island-name").text(Friendly.islandName);
             }else{
 
+                //Timestamp the start
+                updateTimer("appStart");
+
                 //Populate the instructions object and the surveys object
                 $(Friendly.config.categories).each(function( i, obj ){
                     instructions[obj.id] = obj.help;
