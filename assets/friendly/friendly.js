@@ -48,16 +48,23 @@ var makeBar = function(){
 };
 
 //Function to update the time
-function updateTimer( category ){
+function updateTimer( category, startOrStop ){
     var timeNow = Date.now ||
         function() {
             return new Date().getTime();
         };
 
+    //We don't care about some of the pages
     if( category !== 'objective' && category !== 'authorize' && category !== 'end' ){
+        
         if( !Friendly.timer.hasOwnProperty(category) ){
-            Friendly.timer[category] = timeNow();
+            Friendly.timer[category] = {};
+            Friendly.timer[category][startOrStop] = timeNow();
         }
+        else if( !Friendly.timer[category].hasOwnProperty(startOrStop) ){
+            Friendly.timer[category][startOrStop] = timeNow();
+        }
+
     }
 
     //Write app to local storage outside of saveApp()
@@ -162,7 +169,6 @@ function addNames(li){
 }
 
 //Update application position
-//Reveal function returns current slide (the slide that was just completed), so add 1 to get next slide
 function updateIndex(){
     Friendly.slide = Reveal.getIndices().h;
 }
@@ -808,7 +814,7 @@ $('#next-arrow').click(function( event ){
 
                 }
 
-                updateTimer("appEnd");
+                updateTimer("app", "end");
                 myNetwork.init( network );
                 myNetwork.start();
                 var log = {
@@ -1103,12 +1109,18 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
 
                 var show = event.currentSlide.dataset.show;
                 var category = event.currentSlide.dataset.category;
+                var prevCategory = Reveal.getSlide(Friendly.slide-1).dataset.category;
+                
+                //Add end timestamp to previous category
+                if( prevCategory ){
+                    updateTimer(prevCategory, "end");
+                }
 
                 //Update Progress bar
                 updateFriendlyProgress(event.currentSlide);
 
                 if(category){
-                    updateTimer( category );
+                    updateTimer( category, "start");
                     var mb = $('#help').find('.modal-body');
                     $(mb).children().remove();
                     

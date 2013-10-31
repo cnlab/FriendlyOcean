@@ -404,7 +404,7 @@
             }else{
 
                 //Timestamp the start
-                updateTimer("appStart");
+                updateTimer("app", "start");
 
                 //Populate the instructions object and the surveys object
                 $(Friendly.config.categories).each(function( i, obj ){
