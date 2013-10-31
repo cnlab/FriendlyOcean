@@ -204,7 +204,10 @@ def configure():
     if aaa.user_is_anonymous:
         sesh_redir()
         bottle.redirect("/login")
-    return template('config.tpl', user=aaa.current_user)
+    categories = [ (cat["id"], cat["title"]) for cat in def_config["categories"] ]
+    components = [ (cat["id"], cat["title"]) for cat in def_config["components"] ]
+    components.insert(2, ("survey", "Survey"))
+    return template('config.tpl', user=aaa.current_user, categories=categories, components=components)
 
 @post('/configure')
 def do_config():
@@ -221,6 +224,11 @@ def do_config():
     x = hashlib.sha1()
     x.update(datetime.datetime.now().strftime("%c"))
     appID = x.hexdigest()[:10].lower()
+
+    #Make sure appID doesn't exist
+    while not aaa.check_apps_for(appID):
+        x.update(datetime.datetime.now().strftime("%c"))
+        appID = x.hexdigest()[:10].lower()
 
     #Get data
     d = postd().dict
@@ -266,7 +274,7 @@ def do_config():
         cData["categories"] = def_config["categories"]
 
     #Set components or default
-    if len(d['components'][0]) is not 0:
+    if len(d['components'][0]) > 0:
         cData["components"] = []
 
         comps = d["components"][0].split(",")
@@ -282,6 +290,7 @@ def do_config():
                 for each in def_config["components"]:
                     if each["id"] == comp:
                         cData["components"].append(each)
+        print cData["components"]
     else:
         cData["components"] = def_config["components"]
 
@@ -343,7 +352,6 @@ def index():
         if request.query.theme in themes:
             config['theme'] = request.query.theme
             config['arrowType'] = arrows[config['theme']]
-
     return template('index', pID=pID, config=config)
     
 @route('/assets/<file_path:path>')

@@ -19,10 +19,11 @@ You can type quit at any time to exit this tool.
 
     What would you like to do?
 
-        1) Add my Facebook App ID
+        1) Change the Facebook App ID
         2) Copy my MongoDB to a JSON DB
         3) Copy my JSON DB to a MongoDB
         4) Copy my app from the CNL server to this computer.
+        5) Setup a Mongo database
         0) Exit
 '''
 
@@ -39,6 +40,9 @@ You can type quit at any time to exit this tool.
             sys.exit()
         elif choice == '4':
             self.CopyFromCNL()
+            sys.exit()
+        elif choice == '5':
+            self.SetupMongo()
             sys.exit()
         elif choice == '0' or choice == 'quit':
             sys.exit()
@@ -84,6 +88,22 @@ You can type quit at any time to exit this tool.
     def JsonToMongo(self):
         '''Backup a JSON DB to a MongoDB instance'''
         print "Copying from JSON to Mongo isn't working yet."
+
+    def SetupMongo(self):
+        '''Setup and initialize Mongo database'''
+        try:
+            import pymongo
+        except:
+            print "\n\tUnable to import pymongo. You need to install the pymongo package before continuing.\n"
+            sys.exit()
+
+        print "\n\tConnecting to the mongo service...\n"
+        try:
+            client = pymongo.MongoClient()
+        except:
+            print "\n\tUnable to connect to the mongod instance at localhost:27017. Is the service running?"
+
+
 
     def CopyFromCNL(self):
         '''Copy down an app fom the CNL servers'''

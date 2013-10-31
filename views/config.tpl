@@ -14,7 +14,7 @@
 
         <style>
             ul[id$="categories"]{
-                min-height: 215px;
+                min-height: 270px;
             }
             ul[id$="components"]{
                 min-height: 270px;
@@ -118,14 +118,15 @@
                     <div class="span12">
                     <h2>Introduction</h2>
                     <p>Welcome to the Friendly Island App configuration page. Below you will find the instructions and the form needed to configure as many versions of this app as you like! First, a bit about the structure of Friendly Island</p>
-                    <p>Friendly Island asks for the names of people from up to four categories:
+                    <p>Friendly Island asks for the names of people from up to five categories:
                         <ul>
                             <li>Family</li>
+                            <li>Friends</li>
                             <li>Calling</li>
                             <li>Texting</li>
                             <li>Facebook</li>
                         </ul>
-                    <p>Family, Calling, and Texting are self-reported, while Facebook can either be self-reported or automatically pulled from the participants Facebook account.</p>
+                    <p>Family, Friends, Calling, and Texting are self-reported, while Facebook can either be self-reported or automatically pulled from the participants Facebook account.</p>
                     <p> The rest of the app is made up of different components:</p>
                         <ul style="list-style:none;">
                             <lI><strong>Matching</strong>
@@ -146,12 +147,12 @@
                             </li>
                             <lI><strong>Circles</strong>
                                 <ul>
-                                    <li>The Circles component is allows the participants to create informal "groupings" or "social circles" in which to put their friends. Links between group members are assumed and saved in the final data log. If the Linking component is being used, these links are carried over with the intention of reducing some of the linking work.</li>
+                                    <li>The Circles component is allows the participants to create informal "groupings" or "social circles" in which to put their friends. Links between group members are assumed and saved in the final data log. If the Friend of Friend component is being used, these links are carried over with the intention of reducing some of the linking work.</li>
                                 </ul>
                             </li>
-                            <lI><strong>Linking</strong>
+                            <lI><strong>Friend of Friend</strong>
                                 <ul>
-                                    <li>The Linking component gives the participant a chance to make explicit links (or edges) between friends.</li>
+                                    <li>The Friend of Friend component gives the participant a chance to make explicit links (or edges) between friends.</li>
                                 </ul>
                             </li>
                         </ul>
@@ -172,10 +173,9 @@
                         <div class="span3 offset2">
                             <h4>Available Categories</h4>
                             <ul id="available-categories">
-                                <li id="family">Family</li>
-                                <li id="calling">Calling</li>
-                                <li id="texting">Texting</li>
-                                <li id="facebook">Facebook</li>
+                                %for cat in categories:
+                                <li id="{{ cat[0] }}">{{ cat[1] }}</li>
+                                %end
                             </ul>
                         </div>
 
@@ -194,11 +194,9 @@
                         <div class="span3 offset2">
                             <h4>Available Components</h4>
                             <ul id="available-components">
-                                <li id="matching" data-order="1">Matching</li>
-                                <li id="closeness" data-order="2">Closeness</li>
-                                <li id="survey" data-order="3">Survey</li>
-                                <li id="circles" data-order="4">Circles</li>
-                                <li id="friendOfFriend" data-order="5">Linking</li>
+                                %for i, comp in enumerate(components):
+                                <li id="{{ comp[0] }}" data-order="{{ i+1 }}">{{ comp[1] }}</li>
+                                %end
                             </ul>
                         </div>
                         <div class="span3 offset1">

@@ -224,7 +224,6 @@ table.survey-table tr td:not(:first-child){
 }
 
 .current-merge {
-    background-color: #FFFF00;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;
@@ -243,8 +242,7 @@ table.survey-table tr td:not(:first-child){
     font-size: 24px;
     text-align: left;
     float: left;
-    width: 20%;
-    margin-left: 30px;
+    width: 18%;
 }
 
 .merge-list {
@@ -298,12 +296,22 @@ table.survey-table tr td:not(:first-child){
         padding: 0px 10px 5px 10px;
 }
 
-.selected,
-.current-merge-name {
+.selected{
     background-color: #FFFF00;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;
+}
+
+.current-merge-name {
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.merge-list span.selected,
+.merge-list span:hover{
+    background:transparent;
 }
 
 .chart {

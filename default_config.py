@@ -16,11 +16,19 @@ config = {
                     ]
         },
         {
+            "id": "friends",
+            "title": "Friends",
+            "help": [
+                        "Please enter the names of your best friends.",
+                        "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.",
+                        "Click on a name if you need to remove it from the list."
+                    ]
+        },
+        {
             "id": "calling",
             "title": "Calling",
             "help": [
-                        "Please take out your phone and look at the voice call log.",
-                        "Enter the names of everyone you know personally who you have called or received a call from in the last week.",
+                        "Please take out your phone and look at the voice call log. Starting with the most recent call and going backwards, enter the names of everyone you know personally who you have called or received a call from in the last week.",
                         "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.",
                         "Click on a name if you need to remove it from the list."
                     ]
@@ -29,8 +37,7 @@ config = {
             "id": "texting",
             "title": "Texting",
             "help": [
-                        "Please take out your phone and look at the texting (SMS) log.",
-                        "Enter the names of everyone you know personally who you have sent a text or have received a text from in the last week.",
+                        "Please take out your phone and look at the texting (SMS) log. Starting with the most recent text and going backwards, enter the names of everyone you know personally who you have texted or received a text from in the last week."
                         "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.",
                         "Click on a name if you need to remove it from the list."                                
                         ]

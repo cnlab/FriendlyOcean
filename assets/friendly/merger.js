@@ -1,7 +1,15 @@
 var merger = (function(){
     var currentSpan;
+    var colors = ["#F07F00", "#FFFF00", "#E000F0", "#FC2731"];
+    var col = colors[0];
+
+    function mColors(){
+        colors.push(this.col);
+        this.col = colors.shift();
+    }
 
     function init( names ){
+        this.mColors();
         currentSpan = names[0];
         if( $("#matching .lists-row").find("span").length === 1 ){
             $("#next-merge").text("Finish");
@@ -9,7 +17,8 @@ var merger = (function(){
         return currentSpan;
     }
 
-    function nextFriend(){        
+    function nextFriend(){
+        this.mColors();
         var span = $("#matching .lists-row").find("span").first()[0];
         if ( span ){
             currentSpan = span;
@@ -63,7 +72,7 @@ var merger = (function(){
                 }
             });
 
-            $(currentSpan).addClass("fat");
+            $(currentSpan).addClass("fat").removeAttr("style");
             $(selected).parent().remove();
             $(currentSpan).on('dblclick', split);
             $(currentSpan).popover({
@@ -78,6 +87,7 @@ var merger = (function(){
             disembark( $(currentSpan).parent(), "#merged" );
         }
         else {
+            $(currentSpan).removeAttr("style");
             disembark( $(currentSpan).parent(), "#merged" );
         }
         
@@ -108,7 +118,7 @@ var merger = (function(){
                 li.append(span);
                 homeList.append(li);
             });
-            $(event.target).removeClass("fat").removeClass("selected").removeData("merged").popover("destroy");
+            $(event.target).removeClass("fat").removeClass("selected").removeAttr("style").removeData("merged").popover("destroy");
             $('.merge-list li').tsort();
         }
     }
@@ -150,6 +160,9 @@ var merger = (function(){
 
     return {
         init: init,
+        col: col,
+        colors: colors,
+        mColors: mColors,
         matchSuspects: matchSuspects,
         nextFriend: nextFriend,
         mergeFriends: mergeFriends,

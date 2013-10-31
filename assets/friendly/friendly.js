@@ -354,8 +354,6 @@ function disembark( element, newParent, moveAll ) {
     });
 }
 
-//Global variable for DataTable
-
 //Global object for final link network
 var network = {links: [], nodes: []};
 
@@ -414,6 +412,7 @@ $("#next-merge").click(function( event ){
         $(next).parent().css("pointer-events", "none");
         $(".current-merge").removeClass("current-merge");
         $(next).addClass("current-merge");
+        $(".current-merge, .current-merge-name").css("background", merger.col);
         //merger.matchSuspects( next.innerText );
     }else{
         var waitForIt = setInterval(function() { 
@@ -421,7 +420,7 @@ $("#next-merge").click(function( event ){
                             saveApp();
                             Reveal.next();
                             $("#next-arrow").show();
-                            clearInterval(waitForIt); }, 800);
+                            clearInterval(waitForIt); }, 600);
     }
 });
 
@@ -626,6 +625,7 @@ $('#next-arrow').click(function( event ){
             }
             break;
         case 'family':
+        case 'friends':
         case 'calling':
         case 'texting':
         case 'facebook':
@@ -1057,6 +1057,7 @@ Reveal.addEventListener('matching', function( event ) {
     
     $(firstFriend).parent().css("pointer-events", "none");
     $(firstFriend).addClass("current-merge");
+    $(".current-merge, .current-merge-name").css("background", merger.col);
     //merger.matchSuspects( firstFriend.innerText );
     });
 
@@ -1283,7 +1284,17 @@ function error( type ) {
 }
 
 function select(e){
-    $(e).children().toggleClass('selected');
+    if( Reveal.getCurrentSlide().id === "matching"){
+        if( $(e).children().hasClass("selected") ){
+            $(e).children().removeClass("selected").removeAttr("style");
+        }
+        else{
+            $(e).children().addClass("selected").css("background", merger.col);
+        }
+    }
+    else{
+        $(e).children().toggleClass('selected');
+    }
 }
 
 function createFriendLists( targetElement ) {
