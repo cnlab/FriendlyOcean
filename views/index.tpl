@@ -18,6 +18,11 @@
     <!--[if lt IE 9]>
         <script src="assets/js/html5shiv.js"></script>
     <![endif]-->
+
+    <script type="text/javascript">
+        //Participant ID. Pulled from pID URL parameter. Otherwise defaults to "anon"
+        var pID = "{{ pID }}";
+    </script>
 </head>
 
 <body class="no-text-select">
@@ -339,9 +344,6 @@
     <script src="assets/friendly/myNetwork.js"></script>
 
     <script type="text/javascript">
-        
-        //Participant ID. Pulled from pID URL parameter. Otherwise defaults to "anon"
-        var pID = "{{ pID }}";
 
         //instructions object to map instructions:   {section: [help]}
         var instructions = {};

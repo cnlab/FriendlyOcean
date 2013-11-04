@@ -68,7 +68,7 @@ function updateTimer( category, startOrStop ){
     }
 
     //Write app to local storage outside of saveApp()
-    window.localStorage.setItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID}), JSON.stringify(Friendly));;
+    window.localStorage.setItem('Friendly-{appID}-{pID}'.supplant({'appID': Friendly.config.appID, 'pID':pID}), JSON.stringify(Friendly));;
 }
 
 //Get and set values from surveys
@@ -272,18 +272,18 @@ function getLinksFrom( string ){
 //Save application object to localStorage
 function saveApp(){
     updateIndex();
-    window.localStorage.setItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID}), JSON.stringify(Friendly));
+    window.localStorage.setItem('Friendly-{appID}-{pID}'.supplant({'appID': Friendly.config.appID, 'pID':pID}), JSON.stringify(Friendly));
 }
 
 //Retrieve application object from localStorage
 function getApp(){
-    var app = 'Friendly-{appID}'.supplant({'appID': Friendly.config.appID});
+    var app = 'Friendly-{appID}-{pID}'.supplant({'appID': Friendly.config.appID, 'pID':pID});
     return JSON.parse(window.localStorage.getItem(app));
 }
 
 //Delete application object from localStorage
 function deleteApp(){
-    window.localStorage.removeItem('Friendly-{appID}'.supplant({'appID': Friendly.config.appID}));
+    window.localStorage.removeItem('Friendly-{appID}-{pID}'.supplant({'appID': Friendly.config.appID, 'pID':pID}));
 }
 
 //Helper function for string formatting
@@ -1024,14 +1024,14 @@ Reveal.addEventListener('survey', function( event ) {
              var lst = $( tableID ).dataTable( {
                 "bInfo":false,
                 "bDestroy":true,
-                "iDisplayLength": 15,
+                "iDisplayLength": 12,
                 "sPaginationType":"scrolling",
                 "bSort":false,
                 'bFilter':false,
                 "bLengthChange":false,
                 "fnDrawCallback": function( oSettings ){
                     $( tableID + "_paginate button").addClass("btn btn-primary");
-                    if( Friendly.friends.length <= 15 ){
+                    if( Friendly.friends.length <= 12 ){
                         $( tableID + "_paginate").css("display", "none")
                     }
                 }
