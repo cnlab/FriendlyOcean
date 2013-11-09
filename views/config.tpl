@@ -104,6 +104,10 @@
                 -moz-border-radius: 10px;
                 border-radius: 10px;
             }
+            select#timeFrameType{
+                width: 80px;
+                margin-left:15px;
+            }
 
         </style>  
         </head>
@@ -230,14 +234,57 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="span4">
+
+                    <div class="span4 app-option">
                         <h3>
-                            Max friends per category
+                            Timeframe <small>default: 1 week</small>
                         </h3>
-                        <p>Defaults to 20</p>
+                        <p>How far back in the past do you want particpants to go?</p>
+                        <div class="control-group">
+                            <div class="controls">
+                                <input class="span1" type="number" min="1" id="timeFrameNum" name="timeFrameNum">
+                                <select class="span2 offset1" id="timeFrameType" name="timeFrameType">
+                                    <option value="days">days</option>
+                                    <option value="weeks">weeks</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span4 app-option">
+                        <h3>
+                            Max friends per category <small>default: 20</small>
+                        </h3>
+                        <p>Multiply this number by the number of categories to determine total number of friends allowed.</p>
                         <div class="control-group">
                             <input class="span1" min="1" type="number" name="maxFriendsPerCategory" id="maxFriendsPerCategory">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    
+                    <div class="span3 app-option" id="id-div">
+                        <h3>
+                            App ID <small>optional</small>
+                        </h3>
+                        <p>Do you have a unique ID in mind for this configuration? If not, we'll generate one for you. No spaces!</p>
+                        <div class="control-group">
+                            <div class="controls">
+                                <input class="span2" type="text" name="appID" id="appID">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span4 app-option">
+                        <h3>
+                            Description <small>optional</small>
+                        </h3>
+                        <p>A brief description to remind you about this configuration.</p>
+                        <div class="control-group">
+                            <div class="controls">
+                                <textarea name="description" id="description" rows="5" class="span4"></textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -255,30 +302,7 @@
                             <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="span4 app-option" id="id-div">
-                        <h3>
-                            App ID <small>optional</small>
-                        </h3>
-                        <p>Do you have a unique ID in mind for this configuration? If not, we'll generate one for you. No spaces!</p>
-                        <div class="control-group">
-                            <div class="controls">
-                                <input class="span2" type="text" name="appID" id="appID">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="span5 app-option">
-                        <h3>
-                            Description <small>optional</small>
-                        </h3>
-                        <p>A brief description to remind you about this configuration.</p>
-                        <div class="control-group">
-                            <div class="controls">
-                                <textarea name="description" id="description" rows="5" class="span5"></textarea>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="row">
                     <div class="button-div">
@@ -383,7 +407,7 @@
                 e.stopPropagation();
                 e.preventDefault();
 
-                //Create and fill own FormData object to pass to the server because we aren't using a form
+                //Create and fill own FormData object to pass to the server because we aren't using a proper form
                 var data = new FormData();                
 
                 //Get Categories
@@ -401,6 +425,11 @@
 
                 //Get Max Per Category
                 var max = $("#maxFriendsPerCategory").val();
+
+                //Ge Timeframe
+
+                var timeFrameNum = $("#timeFrameNumb").val();
+                var timeFrameType = $("#timeFrameType").val();
 
                 //Get Survey and make a weak check to make sure they uploaded a JSON file if any
                 //Server will do a better job...
@@ -433,6 +462,8 @@
                 data.append("max", max);
                 data.append("appID", appID);
                 data.append("description", description);
+                data.append("timeFrameType", timeFrameType);
+                data.append("timeFrameNum", timeFrameNum);
 
                 //Check for appID in db
                 $.ajax({
