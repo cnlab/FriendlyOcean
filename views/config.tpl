@@ -81,7 +81,8 @@
                 border-top: 1px solid #cccccc;
                 padding: 20px 0px;
             }
-            #survey-upload{
+            #survey-upload,
+            #fb-timeframe{
                 display:none;
             }
             ul.user-meta{
@@ -237,6 +238,16 @@
 
                     <div class="span4 app-option">
                         <h3>
+                            Max friends per category <small>default: 20</small>
+                        </h3>
+                        <p>Multiply this number by the number of categories to determine total number of friends allowed.</p>
+                        <div class="control-group">
+                            <input class="span1" min="1" type="number" name="maxFriendsPerCategory" id="maxFriendsPerCategory">
+                        </div>
+                    </div>
+
+                    <div class="span4 app-option" id="fb-timeframe">
+                        <h3>
                             Timeframe <small>default: 1 week</small>
                         </h3>
                         <p>How far back in the past do you want the Facebook API to go?</p>
@@ -248,16 +259,6 @@
                                     <option value="weeks">weeks</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="span4 app-option">
-                        <h3>
-                            Max friends per category <small>default: 20</small>
-                        </h3>
-                        <p>Multiply this number by the number of categories to determine total number of friends allowed.</p>
-                        <div class="control-group">
-                            <input class="span1" min="1" type="number" name="maxFriendsPerCategory" id="maxFriendsPerCategory">
                         </div>
                     </div>
 
@@ -348,6 +349,9 @@
                 var currentHome = $(this).parent().attr("id");
                 switch( currentHome ){
                     case "available-categories":
+                        if( this.id === "facebook"){
+                            $("#fb-timeframe").toggle();
+                        }
                         $(this).appendTo("#selected-categories");
                         var cats = jQuery.map( $("#selected-categories>li"), function( obj, i ){
                             return obj.id;
@@ -367,6 +371,9 @@
                         $("#selected-components>li").tsort( {data:"order"} );                  
                         break;
                     case "selected-categories":
+                        if( this.id === "facebook"){
+                            $("#fb-timeframe").toggle();
+                        }
                         $(this).appendTo("#available-categories");
                         var cats = jQuery.map( $("#selected-categories>li"), function( obj, i ){
                             return obj.id;
@@ -385,7 +392,7 @@
                             }
                         }else if( this.id === "survey" ){
                             $("#survey-upload").toggle();
-                        }                        
+                        }
                         $(this).appendTo("#available-components");
                         $("#available-components>li").tsort( {data:"order"} );
                         break;
@@ -394,7 +401,7 @@
                 }
             });
 
-            //Remove error from Survey div
+            //Remove error  divs
             $("#survey-upload").click(function( e ){
                 $(this).removeClass("alert-error");
             });
