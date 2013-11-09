@@ -316,14 +316,14 @@ def do_config():
 def get_interaction():
 
     access_token = post_get('access_token')
-    tfNum = int(post_get('timeFrameNum'))
-    tfType = post_get('timeFrameType')
+    timeframe_num = int(post_get('timeFrameNum'))
+    timeframe_type = post_get('timeFrameType')
     tps.stored_access_token = access_token
     
-    if tfType == 'days':
-        timeframe = datetime.timedelta(days=tfNum)
+    if timeframe_type == 'days':
+        timeframe = datetime.timedelta(days=timeframe_num)
     else:
-        timeframe = datetime.timedelta(weeks=tfNum)
+        timeframe = datetime.timedelta(weeks=timeframe_num)
     
     start_date = datetime.datetime.today() - timeframe
     response = {}
