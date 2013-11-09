@@ -254,6 +254,14 @@ def do_config():
     except:
         cData['maxFriendsPerCategory'] = 20
 
+    #Set time frame for FB interactions
+    try:
+        cData['timeFrameNum'] = int(d['timeFrameNum'][0])
+        cData['timeFrameType'] = d['timeFrameType'][0]
+    except:
+        cData['timeFrameNum'] = 1
+        cData['timeFrameType'] = "weeks"
+
     #Set appID
     if len(d['appID'][0]) > 0:
         appID = d['appID'][0].lower()
@@ -290,7 +298,6 @@ def do_config():
                 for each in def_config["components"]:
                     if each["id"] == comp:
                         cData["components"].append(each)
-        print cData["components"]
     else:
         cData["components"] = def_config["components"]
 
@@ -309,10 +316,16 @@ def do_config():
 def get_interaction():
 
     access_token = post_get('access_token')
+    tfNum = int(post_get('timeFrameNum'))
+    tfType = post_get('timeFrameType')
     tps.stored_access_token = access_token
     
-    week = datetime.timedelta(weeks=1)
-    start_date = datetime.datetime.today() - week
+    if tfType == 'days':
+        timeframe = datetime.timedelta(days=tfNum)
+    else:
+        timeframe = datetime.timedelta(weeks=tfNum)
+    
+    start_date = datetime.datetime.today() - timeframe
     response = {}
     
     try:
@@ -335,7 +348,7 @@ def index():
     if request.query.appID:
         appID = request.query.appID
         try:
-            config = aaa.load_app(appID)
+            config = aaa.load_app(appID.lower())
         except:
             print "Unable to load config for %s" % appID
             config = def_config

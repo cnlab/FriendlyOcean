@@ -12,6 +12,10 @@ var Friendly = {
     //Current slide index used for reloading app
     slide: 0,
     
+    //Time frame for FB interactions
+    timeFrameNum: 1,
+    timeFrameType: "weeks",
+
     //Running lists of friends, links, and circles
     friends: [],
     
@@ -513,7 +517,11 @@ $("#next-merge").click(function( event ){
                     //Grab the access token and send it to the server
                     var access_token = FB.getAccessToken();
                     $.post('get_interactions',
-                           {access_token:access_token},
+                           {
+                            access_token:access_token,
+                            timeFrameType: Friendly.timeFrameType,
+                            timeFrameNum: Frienly.timeFrameNum
+                            },
                            function(response){
                                 var data = JSON.parse(response);
                                 if( data.response === 'false' ) {

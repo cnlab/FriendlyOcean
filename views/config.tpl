@@ -239,7 +239,7 @@
                         <h3>
                             Timeframe <small>default: 1 week</small>
                         </h3>
-                        <p>How far back in the past do you want particpants to go?</p>
+                        <p>How far back in the past do you want the Facebook API to go?</p>
                         <div class="control-group">
                             <div class="controls">
                                 <input class="span1" type="number" min="1" id="timeFrameNum" name="timeFrameNum">
