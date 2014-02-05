@@ -29,12 +29,12 @@
 
         <!--Facebook SDK for login-->
 
-        <div id="fb-root"></div>
+        <div id='fb-root'></div>
         <script>
         window.fbAsyncInit = function() {
             // init the FB JS SDK
             FB.init({
-              appId      : '184250398371980',
+              appId      : '333451740118555',
               channelUrl : 'channel',
               cookie     : true,
               status     : true,
@@ -83,7 +83,7 @@
                         <h2>Facebook Authorization</h2>
                     </div>
                     <div class="row">
-                            <p>This application would like to access your Facebook account in order to grab the names of friends you've interacted with in the past week. Once you complete the game, you will be logged out of Facebook and your friend's names will be anonymized. <span class="auth-no">Alternatively, you can enter them manually... but that's just more work for you.</span></p> 
+                            <p>This application would like to access your Facebook account in order to grab the names of friends you've interacted with in the past 3 weeks. Once you complete the game, you will be logged out of Facebook and your friends' names will be anonymized. <span class="auth-no">Alternatively, you can enter them manually... but that's just more work for you.</span></p> 
                     </div>
                     <div class="row auth-btns">
                         <div class="btn-group" data-toggle="buttons-radio">
@@ -145,7 +145,7 @@
                     </div>
                     <div class="row">
                         <p>Each of your personal relationships will get its own piece of your <span class="island-type"></span>.</p>
-                        <p>In order for you to create the most complete <span class="island-type"></span>, you will bring people over in {{ len(config['categories']) }} different groups:</p>
+                        <p>In order for you to create the most complete <span class="island-type"></span>, you will bring people over in {{ len(config['categories']) }} different group{{ 's' if len(config['categories'])>1 else '' }}:</p>
                         <div class="span5 offset2">
                             <ol>
                                 %for cat in config['categories']:
@@ -162,7 +162,7 @@
                     </div>
                     <div class="row">
                         <p>After you have moved everyone to <span class='island-name'></span>, you will then decide how much space they get based on how close you are to them.</p>
-                        <p>Finally, you will decide where each person will be located based upon who knows who.</p>
+                       <!-- <p>Finally, you will decide where each person will be located based upon who knows who.</p>-->
                     </div>
                 </section>
                 
@@ -188,7 +188,7 @@
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ section['title'] }}
-                                %if section['id'] != 'facebook':
+                                %if not section['id'] == 'facebook':
                                  - <input class="friend-input" name="{{ section['id'] }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
                                 %end
                             </h2>
@@ -318,7 +318,7 @@
             <h2 id="modal-label">Instructions</h2>
         </div>
         <div class="modal-body">
-            <p class="lead">Woo! You found the help!</p>
+            <p class="lead">Help and reminder of instructions can be found here as you complete the task.</p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-info btn-large" data-dismiss="modal" aria-hidden="true">OK</button>
@@ -377,6 +377,10 @@
 
 	    $(".auth-no").css('visibility', Friendly.config.allowManualFB ? 'visible' : 'hidden')
             
+	    Friendly.timeFrameNum = Friendly.config.timeFrameNum;
+	    Friendly.timeFrameType = Friendly.config.timeFrameType;
+
+
             //Check for app in local storage
             if( getApp() ){
                 Friendly = getApp();

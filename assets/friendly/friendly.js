@@ -473,6 +473,10 @@ $("#next-merge").click(function( event ){
                 var name = value;
                 var li = $("<li></li>");
                 var span = $("<span data-category='{cat}'></span>".supplant({'cat':cat})).text(name);
+
+		// don't allow removing friends in FB category
+		if (cat !='facebook') {
+		
                 $(span).on("click", function(){
                     $(this).parent().remove();
                 }).css({
@@ -481,6 +485,9 @@ $("#next-merge").click(function( event ){
                     "background": "#ff7c7c",
                     "color": "#ffffff"
                 });
+
+		}
+
                 $(li).append(span);
                 $(friendList).append(li);
                 $('.friend-list li').tsort();
@@ -519,8 +526,9 @@ $("#next-merge").click(function( event ){
                     $.post('get_interactions',
                            {
                             access_token:access_token,
+			    pID:pID,
                             timeFrameType: Friendly.timeFrameType,
-                            timeFrameNum: Frienly.timeFrameNum
+                            timeFrameNum: Friendly.timeFrameNum
                             },
                            function(response){
                                 var data = JSON.parse(response);
@@ -557,10 +565,10 @@ function noSNS(msg){
     var span = $(currentSlide).find('.auth-btns')[0];
     $(span).html(msg);
     var slide = $('#facebook');
-    var input = $('<input class="friend-input" name="{category}-friend-input" type="text" placeholder="Type a name and press Enter"/>'.supplant({'category': $(slide).data('category')}));
-    $(input).keypress(friendInputHandler);
+    //var input = $('<input class="friend-input" name="{category}-friend-input" type="text" placeholder="Type a name and press Enter"/>'.supplant({'category': $(slide).data('category')}));
+    //$(input).keypress(friendInputHandler);
     var header = $(slide).find('.slide-header h2');
-    $(header).append(" - ").append(input);
+    //$(header).append(" - ").append(input);
     $(".arrow-type").text(Friendly.config.arrowType);
     Friendly.sns = false;
 }
@@ -581,7 +589,7 @@ function fillFBList(friends){
         }).text(name);
 
         $(span).on("click", function(){
-            $(this).parent().remove();
+            // $(this).parent().remove();
 
             Friendly.fbFriends.friends = jQuery.grep(Friendly.fbFriends.friends, function (n) {
                 return n[0] != id;
@@ -777,9 +785,11 @@ $('#next-arrow').click(function( event ){
                     while(d < number){
                         var li = $("<li></li>");
                         var span = $("<span data-category='{cat}'></span>".supplant({'cat':cat})).text(names[c]);
-                        $(span).on("click", function(){
+            		if (cat!='facebook') {
+		           $(span).on("click", function(){
                             $(this).parent().remove();
                         });
+			}
                         $(li).prepend(span);
                         $(this).append(li);
                         c++;

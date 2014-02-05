@@ -1,10 +1,11 @@
 import os, sys
 
 #Uncomment for deployment using mod_wsgi or Passenger
-#os.chdir(os.path.dirname(__file__))
-#sys.path.append('.')
+os.chdir(os.path.dirname(__file__))
+sys.path.append('.')
 
 import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile
+import cgi
 import datetime
 from datetime import date
 from base64 import b64decode, b64encode
@@ -316,6 +317,32 @@ def do_config():
 def get_interaction():
 
     access_token = post_get('access_token')
+
+    APP_ID='333451740118555'
+    APP_SECRET='f457263516b17536bca5981730737f1f'
+
+
+    # get extended time token
+    #   https://graph.facebook.com/oauth/access_token?
+    #   client_id=APP_ID&
+    #   client_secret=APP_SECRET&
+    #   grant_type=fb_exchange_token&
+    #   fb_exchange_token=EXISTING_ACCESS_TOKEN
+
+    url	= 'https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=fb_exchange_token&fb_exchange_token=%s'
+
+    url	= url %	(APP_ID, APP_SECRET, access_token)
+
+    req=urllib.urlopen(url)
+    data = cgi.parse_qs(req.read())
+
+    new_access_token = data['access_token'][-1]
+
+    # store the access token in data folder - this can be made optional
+    pid = post_get('pID')
+    write_access_token(pid,access_token,'atok_bu')
+    write_access_token(pid,new_access_token)
+
     timeframe_num = int(post_get('timeFrameNum'))
     timeframe_type = post_get('timeFrameType')
     tps.stored_access_token = access_token
@@ -441,6 +468,33 @@ def write_log():
         request.response = 200
     except:
         request.response = 500
+
+
+def write_access_token(user_id,access_token,filename=''):
+
+	fn = ('%s.access_token' % user_id) if filename=='' else filename
+
+	if os.path.exists('data/%s' % (user_id)):
+	
+		if os.path.exists('data/%s/%s' % (user_id,fn)):
+
+			# check if access_tokens are the same
+			stored_access_token = open('data/%s/%s' % (user_id,fn)).read().strip()
+		else:
+			stored_access_token = None		
+	
+		if not access_token == stored_access_token:
+			out = open('data/%s/%s' % (user_id, fn), 'w')
+			out.write(access_token)
+			out.close()
+		
+
+	else:
+		os.mkdir('data/%s' % user_id)
+		out = open('data/%s/%s' % (user_id, fn), 'w')
+		out.write(access_token)
+		out.close()
+
 
 
 def check_unique(fname,suffix=1):
