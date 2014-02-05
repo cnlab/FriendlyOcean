@@ -681,16 +681,23 @@ $('#next-arrow').click(function( event ){
             }
             break;
         case 'closeness':
+	case 'similarity':
             if ( !strength.validate() ) { 
                 error('STRENGTH');
                 return;
             }
             else {
+		var opt = currentSlide.dataset.category;
                 var vals = strength.values();
                 var friends = Friendly.friends;
                 $(vals).each(function(i, obj){
-                    friends[i].strength = obj[0];
-                    friends[i].strengthLength = obj[1];
+	            if (opt=='closeness') {
+	                    friends[i].strength = obj[0];
+	                    friends[i].strengthLength = obj[1];
+		    } else {
+	                    friends[i].similar = obj[0];
+	                    friends[i].similarLength = obj[1];
+		    }
                 });
                 Friendly.friends = friends;
             }
@@ -1117,8 +1124,18 @@ Reveal.addEventListener( 'strengthInit', function( event ) {
     $(Friendly.friends).each(function(i, obj) {
         names.push({name:obj.name, fnum: obj.friendNumber});
     });
-    strength.init(names);
+    strength.init(names,'closeness');
 });
+
+Reveal.addEventListener( 'similarityInit', function( event ) {
+    var names = [];
+    $(Friendly.friends).each(function(i, obj) {
+        names.push({name:obj.name, fnum: obj.friendNumber});
+    });
+    strength.init(names,'similarity');
+});
+
+
 
 Reveal.addEventListener( 'slidechanged', function( event ) {
 

@@ -236,6 +236,19 @@
                     </div>
                 </section>
 
+                %elif section['id'] == 'similarity':
+                <section id="similarity" data-category="similarity" data-progress="Spacing" data-show="help" data-state="similarityInit" data-background="assets/img/ocean/backgrounds/closeness.png">
+                    <div class="container">
+                        <div class="row slide-header">
+                            <h2>Similarity</h2>
+                        </div>
+                        <div class="row chart" id="similarityChart">
+                            <!--Leave this space empty. It is where the svg canvas is inserted when strength.js is initiated-->
+                        </div>
+                    </div>
+                </section>
+
+
                 %elif section['id'] == 'survey':
                 %for i, obj in enumerate( section['surveys'] ):
                 <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Spacing" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
