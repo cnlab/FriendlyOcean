@@ -1,1 +1,5 @@
-{"jp": {"username": "jp", "first_name": "JP", "last_name": "Obley", "hash": "cNZal02qAukXRQNSjM2wctu7J8Pn7DfY2Htt5X8L7DvSLZqNMo3FXElTBRWPEp6CXxgSOPKsLRgwA0RP1yH1gbA=", "email_addr": "jpobley@gmail.com", "apps": "is this working", "creation_date": "2013-10-21 19:14:17.599120", "role": "user", "organization": "University of Michigan"}}
+{"jp": {"username": "jp", "first_name": "JP", "last_name": "Obley", "hash": "cNZal02qAukXRQNSjM2wctu7J8Pn7DfY2Htt5X8L7DvSLZqNMo3FXElTBRWPEp6CXxgSOPKsLRgwA0RP1yH1gbA=", "email_addr": "jpobley@gmail.com", "apps": "is this working", "creation_date": "2013-10-21 19:14:17.599120", "role": "user", "organization": "University of Michigan"},
+
+"admin": { "username" : "admin", "first_name" : "CNL", "last_name" : "Admin", "hash" : "cMJzuc9828PKHGkrsWYmnvOAxRY98rbex6qm+BAVirfO6B76KwFKFddAkHNpaztZx8AJ5emAo1NUzYpQ1gtQtaY=", "email_addr" : "communication.neuroscience@gmail.com", "apps" : "cnl,pa2", "creation_date" : "2013-10-14 17:01:06.581745", "role" : "admin", "organization" : "CNL@ASC" } 
+
+}

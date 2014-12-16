@@ -294,7 +294,8 @@ def get_connections_by_date(access_token,type,start_date,friends=[],source="me",
 			elif data.has_key('created_time'):
 				item_time=datetime.strptime(data['created_time'],date_format)
 
-			if item_time < start_date or len(set(interactions))>last:
+			#if item_time < start_date or len(set(interactions))>last:
+			if item_time < start_date:
 				first_item_date = start_date - timedelta(weeks=1000)
 				break
 			else:
