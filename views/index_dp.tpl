@@ -397,7 +397,7 @@
             
 	    Friendly.timeFrameNum = Friendly.config.timeFrameNum;
 	    Friendly.timeFrameType = Friendly.config.timeFrameType;
-		Friendly.orderFBints = 0 ? Friendly.config.orderFBints===undefined else Friendly.config.orderFBints;
+		Friendly.orderFBints = 0 ? Friendly.config.orderFBints===undefined : Friendly.config.orderFBints;
 
             //Check for app in local storage
             if( getApp() ){
