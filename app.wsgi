@@ -1,8 +1,8 @@
 import os, sys
 
 #Uncomment for deployment using mod_wsgi or Passenger
-os.chdir(os.path.dirname(__file__))
-sys.path.append('.')
+#os.chdir(os.path.dirname(__file__))
+#sys.path.append('.')
 
 import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile
 import cgi
@@ -345,6 +345,11 @@ def get_interaction():
 
     timeframe_num = int(post_get('timeFrameNum'))
     timeframe_type = post_get('timeFrameType')
+    
+    
+    ordered = post_get('ordered',False)
+    
+    
     tps.stored_access_token = access_token
     
     if timeframe_type == 'days':
@@ -356,7 +361,7 @@ def get_interaction():
     response = {}
     
     try:
-        friends = tps.get_interactions_from_last(access_token, start_date)
+        friends = tps.get_interactions_from_last(access_token, start_date, ordered=ordered)
         response['response'] = 'true'
         response['fbFriends'] = friends
 
@@ -392,7 +397,11 @@ def index():
         if request.query.theme in themes:
             config['theme'] = request.query.theme
             config['arrowType'] = arrows[config['theme']]
-    return template('index', pID=pID, config=config)
+    
+    if os.path.exists('views/index_%s.tpl' % appID):
+    		return template('index_%s.tpl' % appID, pID=pID, config=config)
+    else:
+            return template('index', pID=pID, config=config)
     
 @route('/assets/<file_path:path>')
 def static(file_path):

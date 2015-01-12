@@ -15,6 +15,7 @@ var Friendly = {
     //Time frame for FB interactions
     timeFrameNum: 1,
     timeFrameType: "weeks",
+    orderFBints: 0,
 
     //Running lists of friends, links, and circles
     friends: [],
@@ -526,12 +527,14 @@ $("#next-merge").click(function( event ){
                     $.post('get_interactions',
                            {
                             access_token:access_token,
-			    pID:pID,
+			    			pID:pID,
                             timeFrameType: Friendly.timeFrameType,
-                            timeFrameNum: Friendly.timeFrameNum
+                            timeFrameNum: Friendly.timeFrameNum, 
+                            ordered: Friendly.orderFBints
                             },
                            function(response){
                                 var data = JSON.parse(response);
+                                console.log(data);
                                 if( data.response === 'false' ) {
                                     noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the <span class="arrow-type"></span> to continue</h4>');
                                 }

@@ -87,9 +87,10 @@
         "theme": "ocean", 
         "timeFrameNum": 1
     }, 
-    "darpa": {
+		"dp": {
         "allowManualFB": false, 
-        "appID": "darpa", 
+        "orderFBints": 40,
+        "appID": "dp", 
         "arrowType": "turtle", 
         "categories": [
             {
@@ -99,6 +100,16 @@
                 ], 
                 "id": "facebook", 
                 "title": "Facebook"
+            }
+            
+            ,
+            {
+            	"help": [
+            		"Please add any other of your Facebook friends who where NOT shown in the previous list but who you know you have interacted with on Facebook in the past month.",
+            		"To search your Facebook friends start typing and the list of friends will be populated."
+            	],
+            	"id": "other",
+            	"title": "Other Facebook Friends"
             }
         ], 
         "components": [
@@ -120,15 +131,15 @@
                         "instructions": "Please answer the following question for each person you know.", 
                         "key": "compare", 
                         "question": "Are you more or less physically active than these people?",
-			"responses": [
+						"responses": [
                             {
                                 "long": "A lot less active", 
-				"value": "lot_less"
+								"value": "lot_less"
                             }, 
                             {
                                 "long": "Somewhat less active", 
                             	"value": "somewhat_less"
-			    }, 
+			    			}, 
                             {
                                 "long": "About the same", 
                                 "value": "same"
@@ -142,13 +153,50 @@
                                 "value": "lot_more"
                             }
                         ]
+                    },
+                    {
+                        "instructions": "Please answer the following question for each person you know.", 
+                        "key": "compare", 
+                        "question": "How likely are you to talk to about information on healthy living with this person?",
+                        
+                        "responses": [
+                            {
+                                "long": "Very unlikely", 
+                                "value": "very_unlikely"
+                            }, 
+                            {
+                                "long": "Unlikely", 
+                                "value": "unlikely"
+                            }, 
+                            {
+                                "long": "Somewhat unlikely", 
+                                "value": "somewhat_unlikely"
+                            }, 
+                            {
+                                "long": "Neutral", 
+                                "value": "neutral"
+                            }, 
+                            {
+                                "long": "Somewhat likely", 
+                                "value": "somewhat_likely"
+                            }, 
+                            {
+                                "long": "Likely", 
+                                "value": "likely"
+                            }, 
+                            {
+                                "long": "Very likely", 
+                                "value": "very_likely"
+                            }
+                        ]
                     }
+                    
                 ], 
                 "title": "Describe"
             }
         ], 
-        "created": "12/11/13", 
-        "description": "darpa = Facebook Only, Closeness, PA Survey \r\n\r\n*** TO DO: change to 3 weeks of retrieval, code for which week(s) each person comes from, code for birthdays ***", 
+        "created": "1/9/15", 
+        "description": "darpa = Facebook Only, Closeness, DARPA Survey ***", 
         "maxFriendsPerCategory": 80, 
         "owner": "FB_study", 
         "theme": "ocean", 
@@ -303,6 +351,9 @@
                             }
                         ]
                     }
+                    
+                    
+                    
                 ], 
                 "title": "Describe"
             }

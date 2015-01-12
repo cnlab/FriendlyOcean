@@ -20,6 +20,8 @@ from FQL import FQL
 from datetime import datetime
 from datetime import timedelta
 
+#from collections import Counter
+
 key = "t!p@s#"
 
 def hash(txt):
@@ -348,7 +350,7 @@ def get_connections_by_date(access_token,type,start_date,friends=[],source="me",
 
 
 
-def get_interactions_from_last(access_code, start_point):
+def get_interactions_from_last(access_code, start_point, ordered=False):
 	
 	stored_access_token = access_code
 
@@ -366,7 +368,21 @@ def get_interactions_from_last(access_code, start_point):
 		interactions.extend(get_connections_by_date(access_code, uobject, start_point, friends=friends))
 
 
-	interaction_list = set(interactions)
+	# order interaction list so that the top N can be selected in terms of frequency of 
+	# interaction
+	if ordered:
+		interactions_cnt = {}
+		for fid in interactions:
+			try:
+				interaction_cnt[fid]+=1
+			except:
+				interaction_cnt[fid]=1
+		ordered_interactions = interaction_cnt.items()
+		ordered_interactions.sort(key=lambda x: x[1], reverse=True)
+		interaction_list = [f[0] for f in ordered_interactions[:ordered]]		
+	else:
+		interaction_list = set(interactions)
+	
 	
 	FB_f = dict(zip(interaction_list,['facebook_f%i' % i for i in range(1,len(interaction_list)+1)]))
 
@@ -379,8 +395,7 @@ def get_interactions_from_last(access_code, start_point):
 	#print new_links
 
 	return {'friends':[(FB_f[n], shorten_name(friend_dict[n]), hash(n)) for n in interaction_list],
-			'fb_fof': new_links
-			}
+			'fb_fof': new_links }
 
 
 def shorten_name(name):
