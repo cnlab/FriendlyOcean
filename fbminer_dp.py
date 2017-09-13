@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import shutil
 import sys
 import json
 import urllib2
@@ -12,11 +13,14 @@ import networkx as nx
 import community as community    # new version of NetworkX changed weighted to weight on graph.size()
 import datetime
 import pymongo
+import requests
 
 import facebook
 from FQL import FQL
 
 key = "t!p@s#"
+
+
 
 def hash(txt):
 	hstr = str(txt)
@@ -234,10 +238,28 @@ def build_friends_network(uid,access_token):
 			UG.add_edge(u1,u2)
 
 	#print UG.nodes()
-
+	logging.info('completed fof network build - writing graphml')
 
 	# write graphml
-	nx.write_graphml(UG, os.path.join(path,'%s_network.graphml' % uid))
+
+	network_filename = os.path.join(path,'%s_network.graphml' % uid)
+
+	logging.info('trying to write %s' % network_filename)
+
+
+	try:
+		# if current network exists and make backup
+		if os.path.exists(network_filename):
+			shutil.move(network_filename, network_filename + '_bu')
+	except:
+		# catch error here
+		logging.warning('Error trying to move exisiting network file %s' % network_file)
+
+	try:
+		#print UG.nodes(), network_filename
+		nx.write_graphml(UG, network_filename)
+	except:
+		logging.warning('Error with nx.write_graphml')
 
 	try:
 		communities  = community.best_partition(UG)
@@ -267,7 +289,7 @@ def build_friends_network(uid,access_token):
 
 
 
-def get_user_objects(uid):
+def get_user_objects(db,uid):
 
 	# get user access_code
 	stored_access_token = open('data/%s/%s.access_token' % (uid,uid)).read().strip()
@@ -369,18 +391,54 @@ def get_user_objects(uid):
 
 		doc = { "user_id": uid, "type": uobject, "data": anon_data, "timestamp": datetime.datetime.now() }
 
-		db[uid].insert(doc)
+		# INSERT DOC INTO DATABASE
+		# NEED TO ADD CHECK ON DB SIZE HERE
+		# - write json object to file 
+		# - split into two docs for mongodb
 
-		logging.info("Inserted %s JSON into database" % uobject)
+		try:
+			db[uid].insert(doc)
+
+			print "### - issue inserting %s JSON" % uobject
+			logging.info("Inserted %s JSON into database" % uobject)
+		except:
+			logging.warning('Error inserting %s JSON into database' % uobject)
+
+			json_filename = os.path.join('data/%s/%s_%s.json' % (uid,uid,uobject))
+			out = open(json_filename,'w')
+			out.write(json.dumps(doc))
+			out.close()
+
+
+
+
+def offline_get_interactions(pID, access_token):
+
+        print "****", pID, access_token
+
+        data = {'access_token': access_token,
+                'timeFrameNum': 12,
+                'timeFrameType': 'weeks',
+                'ordered': 40
+                }
+
+
+        url = 'http://friendlyisland.info/get_interactions'
+
+        req = requests.post(url, data)
+
+        with open('data/%s/%s_interactions.json' % (pID,pID),'w') as out:
+                out.write(req.read())
+
+
 
 	
 
 
 
-if __name__ == "__main__":
 
 
-	uid = sys.argv[1]
+def main(uid):
 
 	print "**** ", uid	
 
@@ -414,5 +472,18 @@ if __name__ == "__main__":
 		sys.exit()
 
 	logging.info('STARTING get_user_objects')
-	get_user_objects(uid)
+	get_user_objects(db,uid)
 	logging.info('FINISHED get_user_objects')
+
+
+if __name__ == '__main__':
+
+	print 'here'
+
+	try:
+		uid = sys.argv[1]
+		main(uid)
+	except:
+		sys.exit('Error trying to mine - %s' % uid)
+
+

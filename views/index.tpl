@@ -149,7 +149,7 @@
                         <div class="span5 offset2">
                             <ol>
                                 %for cat in config['categories']:
-                                <li>{{ cat['id'].title() }}</li>
+                                <li>{{ cat['title'].title() }}</li>
                                 %end
                             </ol>
                         </div>
@@ -184,7 +184,7 @@
                 </section>
                 
                 %for i, section in enumerate(config['categories']):
-                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
+                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-label="{{ section['title'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ section['title'] }}

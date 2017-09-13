@@ -91,6 +91,66 @@ function getSurveyAnswers() {
 
         friend[key] = value;
     });
+
+    if (key=='smoker') {
+      // rebuild survey tables based on smoker status
+
+      var tables = $("section.survey").find("table");
+      $( tables ).each( function( i, table ){
+
+	$(table).find('tbody').html('');
+
+	    var tableID = buildSurveys( table );
+
+	//Run DataTable.js on surveys
+             var lst = $( tableID ).dataTable( {
+                "bInfo":false,
+                "bDestroy":true,
+                "iDisplayLength": 12,
+                "sPaginationType":"scrolling",
+                "bSort":false,
+                'bFilter':false,
+                "bLengthChange":false,
+                "fnDrawCallback": function( oSettings ){
+                    $( tableID + "_paginate button").addClass("btn btn-primary");
+                    if( Friendly.friends.length <= 12 ){
+                        $( tableID + "_paginate").css("display", "none")
+                    }
+                }
+            });
+
+            lst.$("input[type='radio']").click(function(e){
+                e.stopPropagation();
+                $(this).closest("tr").removeClass("error");
+            });
+
+            lst.$("td:not(:first-child)").on({
+                "mouseover": function(e){
+                    var pos = lst.fnGetPosition( this );
+                    var h = $( tableID +" th")[pos[2]];
+                    var c = $(lst.fnGetNodes(pos[0])).children()[0];
+
+                    $(this).css("background", "rgba(255, 144, 3, 0.5)");
+                    $(c).css("background", "rgba(255, 144, 3, 0.5)");
+                    $(h).css("background", "rgba(255, 144, 3, 0.5)");
+                },
+                "mouseout": function(e){
+                    var pos = lst.fnGetPosition( this );
+                    var h = $( tableID + " th")[pos[2]];
+                    var c = $(lst.fnGetNodes(pos[0])).children()[0];
+
+                    $(this).css("background", "");
+                    $(h).css("background", "");
+                    $(c).css("background", "");
+                },
+                "click": function(e){
+                    $(this).children("input").click();
+                }
+            });
+
+
+      });		
+    }
 }
 
 //Validate Survey Table
@@ -142,17 +202,27 @@ function buildSurveys( table ) {
     });
     var id = $(table).attr("id");  
     var responses = surveys[ id.split('-')[0] ].responses;
-    
-    $(friends).each(function( i, obj ) {
-            var tr = $('<tr data-fid="{fnum}"><td>{name}</td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
 
-            $(responses).each( function( x, resp ){
-                var input = $("<input type='radio' value='{value}' name='seen_{fnum}' />".supplant({"value": resp.value, "fnum":obj.friendNumber}));
-                var td = $("<td></td>").append(input);
-                $(tr).append(td);
-            });
+    var constraint = surveys[ id.split('-')[0]].hasOwnProperty('constraint') ? surveys[ id.split('-')[0]]['constraint'] : null;
+
+    // clear tbody
+    $(table).find('tbody').html('');
+
+    $(friends).each(function( i, obj ) {
+
+	// CONSTRAINT FOR SMOKERS
+	   if (constraint && obj[constraint['key']]!=constraint['value']) {
+	   } else {
+            	var tr = $('<tr data-fid="{fnum}"><td>{name}</td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
+
+	        $(responses).each( function( x, resp ){
+                  var input = $("<input type='radio' value='{value}' name='seen_{fnum}' />".supplant({"value": resp.value, "fnum":obj.friendNumber}));
+                  var td = $("<td></td>").append(input);
+                  $(tr).append(td);
+                });
 
             $(table).append(tr);
+	   }
      });
 
  return "#" + id;
@@ -669,12 +739,11 @@ $('#next-arrow').click(function( event ){
             }
             break;
         case 'family':
-	case 'friendsfamily':
         case 'friends':
+	case 'colleagues':
         case 'calling':
         case 'texting':
         case 'facebook':
-	case 'Face2Face':
             var li = $( currentSlide ).find('.friend-list li');
             if( li.length < 1 ){
                 if( !confirm("Are you sure you don't want to add any names?") ){
@@ -1046,9 +1115,14 @@ Reveal.addEventListener('survey', function( event ) {
     var tables = $("section.survey").find("table");
     $( tables ).each( function( i, table ){
 
-        if( ! $.fn.DataTable.fnIsDataTable( table ) ){
-            
-            var tableID = buildSurveys( table );
+
+    	var id = $(table).attr("id");
+	var constraint = surveys[ id.split('-')[0]].hasOwnProperty('constraint') ? surveys[ id.split('-')[0]]['constraint'] : null;
+
+	console.log(id + constraint);
+
+        if(constraint || ! $.fn.DataTable.fnIsDataTable( table ) ){
+	    var tableID = buildSurveys( table );
 
             //Run DataTable.js on surveys
              var lst = $( tableID ).dataTable( {
@@ -1379,9 +1453,8 @@ function createFriendLists( targetElement ) {
     //Create list for each category
     $(cats).each(function(i,obj){
          var cat = $(obj).data('category');
-	 var label = $(obj).data('label');
          var div = $("<div class='merge-div'></div>");
-         var p = $("<p></p>").text(label.capitalize());
+         var p = $("<p></p>").text(cat.capitalize());
          var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
 
         //Get all members of a category

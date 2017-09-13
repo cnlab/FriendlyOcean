@@ -86,7 +86,7 @@
                     <div class="row">
                             <p>
                             
-                            This application would like to access your Facebook account in order to grab the names of friends you've interacted recently. 
+                            This application would like to access your Facebook account in order to grab the names of friends you've interacted with recently. 
                             Once you complete the game, you will be logged out of Facebook automatically and your friends' names will be anonymized. 
                             
                             <span class="auth-no">Alternatively, you can enter them manually... but that's just more work for you.</span>
@@ -191,9 +191,9 @@
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ section['title'] }}
-                                
+				%if not section['id'] == 'facebook':                                
                                  - <input class="friend-input" name="{{ section['id'] }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
-                                
+                                %end
                             </h2>
                         </div>
                         <div class="row">
@@ -204,7 +204,7 @@
                 </section>
                 %end
                 
-                <!-- ADD A SECˇION FOR ENTERING OTHER FB FRIENDS NOT PICKED UP BY INTERACTION ALGORITHM -->
+                <!-- ADD A SECTION FOR ENTERING OTHER FB FRIENDS NOT PICKED UP BY INTERACTION ALGORITHM -->
 
                 %for n, section in enumerate(config['components']):
                 %if section['id'] == 'matching':
@@ -254,9 +254,9 @@
                 </section>
 
 
-                %elif section['id'] == 'survey':
+                %elif section['id'].startswith('survey'):
                 %for i, obj in enumerate( section['surveys'] ):
-                <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Spacing" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
+                <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Describe" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ obj['question'] }}</h2>
@@ -321,6 +321,8 @@
                     <div class="container" id="myNetwork">
                         <div class="row"> 
                             <h2>Welcome to <span class='island-name'></span>!</h2>
+			    <div>COMPLETITION CODE: <span class="completion-code" id="completion-code"></span></div>
+			    <div>Copy this code and paste it into the initial survey and continue to answer questions.</div>
                         </div>
                     </div>
                 </section>
@@ -354,7 +356,7 @@
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/reveal.js"></script>
     <script src="assets/js/d3.v3.min.js"></script>
-    <script src="assets/friendly/friendly.js"></script>
+    <script src="assets/friendly/friendly_dp.js"></script>
     <script src="assets/friendly/strength.js"></script>
     <script src="assets/js/jquery.dataTables.min.js"></script>
     <script src="assets/friendly/fof.js"></script>
