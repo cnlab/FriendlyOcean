@@ -149,7 +149,7 @@
                         <div class="span5 offset2">
                             <ol>
                                 %for cat in config['categories']:
-                                <li>{{ cat['title'].title() }}</li>
+                                <li>{{ cat['id'].title() }}</li>
                                 %end
                             </ol>
                         </div>
@@ -184,7 +184,7 @@
                 </section>
                 
                 %for i, section in enumerate(config['categories']):
-                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-label="{{ section['title'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
+                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ section['title'] }}
@@ -349,7 +349,7 @@
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/reveal.js"></script>
     <script src="assets/js/d3.v3.min.js"></script>
-    <script src="assets/friendly/friendly.js"></script>
+    <script src="assets/friendly/friendly_geo.js"></script>
     <script src="assets/friendly/strength.js"></script>
     <script src="assets/js/jquery.dataTables.min.js"></script>
     <script src="assets/friendly/fof.js"></script>
@@ -414,7 +414,8 @@
                             surveys[surv.key] = {
                                 questions: surv.questions,
                                 key: surv.key,
-                                responses: surv.responses
+                                responses: surv.responses,
+				constraint: surv.constraint
                             };
                         });
                     }

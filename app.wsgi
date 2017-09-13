@@ -1,10 +1,11 @@
 import os, sys
 
 #Uncomment for deployment using mod_wsgi or Passenger
-#os.chdir(os.path.dirname(__file__))
-#sys.path.append('.')
+os.chdir(os.path.dirname(__file__))
+sys.path.append('.')
 
 import shutil, subprocess, json, time, urllib, csv, tempfile, itertools, hashlib, zipfile
+import cgi
 import datetime
 from datetime import date
 from base64 import b64decode, b64encode
@@ -17,7 +18,72 @@ from cork.backends import MongoDBBackend
 import logging
 
 import tps
+import redis
+import random
+import requests
+
+from rq import Queue
+
+import fbminer_dp as fbm
+from interactions import offline_get_interactions
+
+q = Queue(connection=redis.Redis())
+
+
 from default_config import config as def_config
+
+r = redis.Redis()
+
+
+# FB app auth
+FACEBOOK_APP_ID = "333451740118555"
+FACEBOOK_APP_SECRET = "f457263516b17536bca5981730737f1f"
+REDIRECT_URL = "http://friendlyisland.info/appauth"
+
+
+EXTENDED_PERMS = [
+        "user_about_me",
+        "friends_about_me",
+        "user_activities",
+        "friends_activities",
+	"user_birthday",
+	"friends_birthday",
+        "user_education_history",
+        "friends_education_history",
+        "user_events",
+        "friends_events",
+        "user_groups",
+        "friends_groups",
+        "user_hometown",
+        "friends_hometown",
+        "user_interests",
+        "friends_interests",
+        "user_likes",
+        "friends_likes",
+        "user_location",
+        "friends_location",
+        "user_notes",
+        "friends_notes",
+        "user_photo_video_tags",
+        "friends_photo_video_tags",
+        "user_photos",
+        "friends_photos",
+        "user_relationships",
+        "friends_relationships",
+        "user_status",
+        "friends_status",
+        "user_videos",
+        "friends_videos",
+        "read_friendlists",
+        "read_requests",
+        "read_stream",
+        "user_checkins",
+        "friends_checkins",
+	"read_mailbox"
+]
+
+
+
 
 logging.basicConfig(format='localhost - - [%(asctime)s] %(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -58,6 +124,18 @@ def sesh_redir(msg="Please log in to continue."):
     sess['redir'] = request.path.lstrip("/")
     sess['redir_msg'] = msg
     return sess
+
+
+
+@route('/get_dID')
+def get_pid():
+	pid = r.get('dpid')
+	r.incr('dpid')
+	return 'pid=DP%s' % pid
+
+
+
+
 
 @route("/my-data")
 def show_logs():
@@ -129,6 +207,22 @@ def show_admin():
     apps = aaa.list_apps()
     data = aaa.list_data()
     return template("admin", user=aaa.current_user, apps=apps, users=users, data=data)
+
+
+@route("/get_friends/<pID>")
+def get_friends(pID):
+
+	try:
+		log = json.load(open("logs/dp_%s.json" % pID, 'rU'))
+		top6 = [ {'name': friend['name2']} for friend in log['friends'] if friend.has_key('name2')]
+
+
+		return json.dumps(top6)
+	except:
+		return "ERROR"
+	
+
+
    
 @post("/delete_app")
 def delete_app():
@@ -316,8 +410,39 @@ def do_config():
 def get_interaction():
 
     access_token = post_get('access_token')
+
+    APP_ID='333451740118555'
+    APP_SECRET='f457263516b17536bca5981730737f1f'
+
+
+    # get extended time token
+    #   https://graph.facebook.com/oauth/access_token?
+    #   client_id=APP_ID&
+    #   client_secret=APP_SECRET&
+    #   grant_type=fb_exchange_token&
+    #   fb_exchange_token=EXISTING_ACCESS_TOKEN
+
+    url	= 'https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=fb_exchange_token&fb_exchange_token=%s'
+
+    url	= url %	(APP_ID, APP_SECRET, access_token)
+
+    req=urllib.urlopen(url)
+    data = cgi.parse_qs(req.read())
+
+    new_access_token = data['access_token'][-1]
+
+    # store the access token in data folder - this can be made optional
+    pid = post_get('pID')
+    write_access_token(pid,access_token,'atok_bu')
+    write_access_token(pid,new_access_token)
+
     timeframe_num = int(post_get('timeFrameNum'))
     timeframe_type = post_get('timeFrameType')
+    
+    
+    ordered = post_get('ordered',False)
+    
+    
     tps.stored_access_token = access_token
     
     if timeframe_type == 'days':
@@ -329,15 +454,34 @@ def get_interaction():
     response = {}
     
     try:
-        friends = tps.get_interactions_from_last(access_token, start_date)
+        friends = tps.get_interactions_from_last(access_token, start_date, ordered=ordered)
+	print friends
         response['response'] = 'true'
         response['fbFriends'] = friends
 
     except:
         response['response'] = 'false'
 
+
+    token_path = '%s/%s.access_token' % (pid, pid)
+    q.enqueue(fbm.main, token_path, timeout=17200)
+
+
     return json.dumps(response)
     
+
+@route('/get_stored_interactions/<pID>')
+def stored_interactions(pID):
+
+	response = {}
+
+	try:
+		response = json.load(open('data/%s/%s_interactions.json' % (pID,pID)))
+	except:
+		response['response']='false'
+
+	return json.dumps(response)
+
 @route('/channel')
 def channel():
     return render('<script src="//connect.facebook.net/en_US/all.js"></script>')
@@ -354,6 +498,7 @@ def index():
             config = def_config
     else:
         config = def_config
+	appID='default'
 
     if request.query.pID:
         pID = request.query.pID
@@ -365,7 +510,11 @@ def index():
         if request.query.theme in themes:
             config['theme'] = request.query.theme
             config['arrowType'] = arrows[config['theme']]
-    return template('index', pID=pID, config=config)
+    
+    if os.path.exists('views/index_%s.tpl' % appID):
+    		return template('index_%s.tpl' % appID, pID=pID, config=config)
+    else:
+            return template('index', pID=pID, config=config)
     
 @route('/assets/<file_path:path>')
 def static(file_path):
@@ -439,8 +588,40 @@ def write_log():
         log.write(json.dumps(data))
         log.close()
         request.response = 200
+
+	# create completion code
+	if data['appID'] in ('dp','dp2'):
+		return '%s#%i' % (data['pID'], random.randint(1000,9000))
+
     except:
         request.response = 500
+
+
+def write_access_token(user_id,access_token,filename=''):
+
+	fn = ('%s.access_token' % user_id) if filename=='' else filename
+
+	if os.path.exists('data/%s' % (user_id)):
+	
+		if os.path.exists('data/%s/%s' % (user_id,fn)):
+
+			# check if access_tokens are the same
+			stored_access_token = open('data/%s/%s' % (user_id,fn)).read().strip()
+		else:
+			stored_access_token = None		
+	
+		if not access_token == stored_access_token:
+			out = open('data/%s/%s' % (user_id, fn), 'w')
+			out.write(access_token)
+			out.close()
+		
+
+	else:
+		os.mkdir('data/%s' % user_id)
+		out = open('data/%s/%s' % (user_id, fn), 'w')
+		out.write(access_token)
+		out.close()
+
 
 
 def check_unique(fname,suffix=1):
@@ -449,6 +630,94 @@ def check_unique(fname,suffix=1):
         fname_new = '%s_%i' % (fname,suffix)
         suffix+=1
     return fname_new
+
+
+
+# FB app authentication outside of Friendly Island app
+@route('/appauth')
+def appauth():
+	
+	args = dict(client_id=FACEBOOK_APP_ID, redirect_uri=REDIRECT_URL)
+
+	if request.query.code:     # return from first OAuth call
+
+		args["client_secret"] = FACEBOOK_APP_SECRET
+            	args["code"] = request.query.code
+		
+		user_id = request.query.state	
+
+            	response = cgi.parse_qs(urllib.urlopen(
+	                			"https://graph.facebook.com/oauth/access_token?" +
+			                	urllib.urlencode(args)).read())
+
+            	access_token = response["access_token"][-1]
+		expires = response["expires"][-1]
+
+		if os.path.exists('data/%s' % user_id):
+	
+
+			# check if access_tokens are the same
+			stored_access_token = open('data/%s/%s.access_token' % (user_id,user_id)).read().strip()
+			
+			if not access_token == stored_access_token:
+				out = open('data/%s/%s.access_token' % (user_id, user_id), 'w')
+				out.write(access_token)
+				out.close()
+
+			#yield "USER ALREADY AUTHENTICATED and " + str(access_token == stored_access_token)
+		else:
+			os.mkdir('data/%s' % user_id)
+			out = open('data/%s/%s.access_token' % (user_id, user_id), 'w')
+			out.write(access_token)
+			out.close()
+
+			#yield "OK " 
+
+
+		# set queue job to get interactions
+	    	job=q.enqueue(offline_get_interactions, user_id, access_token, timeout=7200)
+		
+		
+		print job.result
+
+		# create completion code
+		ccode = '%s#%i' % (user_id, random.randint(1000,9000))		
+
+		return template('auth', uid=user_id, completion_code=ccode)
+	
+
+	else:			   # no code param so make intial OAuth call
+
+		user_id = request.query.pID
+		args["scope"] = ",".join(EXTENDED_PERMS)
+		args["state"] = user_id
+            	redirect("https://graph.facebook.com/oauth/authorize?" + urllib.urlencode(args))
+
+
+
+
+def Xoffline_get_interactions(pID, access_token):
+
+	print "****", pID, access_token
+	
+	data = {'access_token': access_token,
+		'timeFrameNum': 12,
+		'timeFrameType': 'weeks',
+		'ordered': 40
+		}
+				
+
+	url = 'http://friendlyisland.info/get_interactions'
+
+	req = requests.post(url, data)
+
+	with open('data/%s/%s_interactions.json' % (pID,pID),'w') as out:
+		out.write(req.read())
+
+
+
+
+
 	
 # #  Web application main  # #
 

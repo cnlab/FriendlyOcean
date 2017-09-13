@@ -82,6 +82,8 @@ function getSurveyAnswers() {
     var tab = $(slide).find("table").dataTable();
     var inputs = tab ? tab.$('input:checked') : $('input:checked');
     var key = $(slide).attr("id");
+
+
     $(inputs).each(function( i, obj ) {
         var value = $(obj).val();
         var fnum = obj.name.split("_")[1];
@@ -91,6 +93,21 @@ function getSurveyAnswers() {
 
         friend[key] = value;
     });
+
+    if (key=='share') {
+	Friendly.top6 = calculateTop6();
+	
+	$('section.survey').find('table').each(function(i,obj) {
+		if (obj.id.substr(0,3)==='T6_') {
+			$(obj).find('tbody tr').each(function(j,obj2) {
+				$(obj2).find('td:first').text(Friendly.top6[j].name);
+				$(obj2).find('td:first').attr('data-id', Friendly.top6[j].friendNumber);
+			});
+		}
+	});
+
+    }
+
 }
 
 //Validate Survey Table
@@ -143,6 +160,12 @@ function buildSurveys( table ) {
     var id = $(table).attr("id");  
     var responses = surveys[ id.split('-')[0] ].responses;
     
+
+    if (id.substr(0,3)=='T6_') {
+
+	friends = friends.slice(0,6);
+    } 
+
     $(friends).each(function( i, obj ) {
             var tr = $('<tr data-fid="{fnum}"><td>{name}</td></tr>'.supplant({'name': obj.name, 'fnum': obj.friendNumber}));
 
@@ -157,6 +180,19 @@ function buildSurveys( table ) {
 
  return "#" + id;
 
+}
+
+// calculate the top 6 friends from the sharing values
+function calculateTop6() {
+
+	var friends = Friendly.friends;
+	friends.sort(function(a,b) {
+		var aVal = parseInt(a.share.substr(0,1));
+		var bVal = parseInt(b.share.substr(0,1));
+		return ( (aVal > bVal) ? -1: ( (aVal < bVal) ) ? 1 : 0);
+	});
+
+	return friends.slice(0,6);
 }
 
 //Add names from friend-list to application object
@@ -505,7 +541,40 @@ $("#next-merge").click(function( event ){
         
     }
 
-    function yesSNS(){
+   function getFBFriends() {
+
+                    $.get('get_stored_interactions/'+pID,
+
+                           function(response){
+                                var data = JSON.parse(response);
+                                console.log(data);
+                                if( data.response === 'false' ) {
+                                    noSNS('<h4>Oops! Looks like something went wrong. You must authorize this Facebook app to be able to take part in this study. Please REFRESH this page and try again.</h4>');
+                                }
+                                else if( data.fbFriends.friends.length < 1 ){
+                                    noSNS('<h4>Unfortunately you are not eligible to take part in this study because you do not appear to have any Facebook friends. <br/><br/>If this is not actually the case please refresh this browser window and try again. <br/><br/>Thank you for your time! </h4>');
+                                }
+				else if ( data.fbFriends.friends50 == 0) {
+                                    noSNS('<h4>Unfortunately you are not eligible to take part in this study because you do not appear to have at least 50 Facebook friends. <br/><br/>If this is not actually the case please refresh this browser window and try again. <br/><br/>Thank you for your time! </h4>');
+				}
+                                else {
+                                    Friendly.fbFriends = data.fbFriends;
+                                    fillFBList(Friendly.fbFriends.friends);
+                		    //$(span).html('<h4>Thanks! We\'re all set here. Click the <span class="arrow-type"></span> to continue.</h4>');
+				    //$('#next-arrow').show();	
+				    //Reveal.next();
+                                }
+                        });
+
+
+
+   }
+
+
+    function yesSNS_old(){
+
+        $('#next-arrow').hide();
+
 
         //Grab current slide
         var currentSlide = Reveal.getCurrentSlide();
@@ -517,7 +586,10 @@ $("#next-merge").click(function( event ){
             //Callback for FB.login()
             function(response){
 
-                $(span).html('<h4>Thanks! We\'re all set here. Click the <span class="arrow-type"></span> to continue.</h4>');
+		$(span).html('<h4>Please wait...</h4>');		
+
+
+		$('#next-arrow').hide();
 
                 //Check that we're connected
                 if(response.status === 'connected'){
@@ -536,21 +608,26 @@ $("#next-merge").click(function( event ){
                                 var data = JSON.parse(response);
                                 console.log(data);
                                 if( data.response === 'false' ) {
-                                    noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the <span class="arrow-type"></span> to continue</h4>');
+                                    noSNS('<h4>Oops! Looks like something went wrong. You must authorize this Facebook app to be able to take part in this study. Please REFRESH this page and try again.</h4>');
                                 }
                                 else if( data.fbFriends.friends.length < 1 ){
-                                    noSNS('<h4>Thanks! We\'re all set here. Click the <span class="arrow-type"></span> to continue.</h4>');
+                                    noSNS('<h4>Unfortunately you are not eligible to take part in this study because you do not appear to have any Facebook friends. <br/><br/>If this is not actually the case please refresh this browser window and try again. <br/><br/>Thank you for your time! </h4>');
                                 }
+				else if ( data.fbFriends.friends50 == 0) {
+                                    noSNS('<h4>Unfortunately you are not eligible to take part in this study because you do not appear to have at least 50 Facebook friends. <br/><br/>If this is not actually the case please refresh this browser window and try again. <br/><br/>Thank you for your time! </h4>');
+				}
                                 else {
                                     Friendly.fbFriends = data.fbFriends;
                                     fillFBList(Friendly.fbFriends.friends);
+                		    $(span).html('<h4>Thanks! We\'re all set here. Click the <span class="arrow-type"></span> to continue.</h4>');
+				    $('#next-arrow').show();
                                 }
                         });
                 }
 
                 //We're not connected for some reason. Gotta bootstrap it!
                 else{
-                    noSNS('<h4>Oops! Looks like something went wrong. You\'ll have to enter the names manually. Click the <span class="arrow-type"></span> to continue</h4>');
+                    noSNS('<h4>Oops! Looks like something went wrong. Please refreseh the browser and try again.');
                 }
                 $(".arrow-type").text(Friendly.config.arrowType);
             },
@@ -563,6 +640,7 @@ $("#next-merge").click(function( event ){
 }
 
 function noSNS(msg){
+    $('#next-arrow').hide();
     var msg = msg || '<h4>No problem! Please click the <span class="arrow-type"></span> to continue.</h4>';
     var currentSlide = Reveal.getCurrentSlide();
     var span = $(currentSlide).find('.auth-btns')[0];
@@ -669,12 +747,11 @@ $('#next-arrow').click(function( event ){
             }
             break;
         case 'family':
-	case 'friendsfamily':
         case 'friends':
         case 'calling':
         case 'texting':
         case 'facebook':
-	case 'Face2Face':
+	case 'other':
             var li = $( currentSlide ).find('.friend-list li');
             if( li.length < 1 ){
                 if( !confirm("Are you sure you don't want to add any names?") ){
@@ -818,7 +895,7 @@ $('#next-arrow').click(function( event ){
             Reveal.addEventListener('end', function( event ){
                 $("#help-img").remove();
                 $("#next-arrow").remove();
-                FB.getLoginStatus( function( response ){
+          /*      FB.getLoginStatus( function( response ){
                     switch (response.status){
                         case "connected":
                         case "not_authorized":
@@ -826,8 +903,8 @@ $('#next-arrow').click(function( event ){
                             break;
                         default:
                             break;
-                    }
-                });
+                    } 
+                }); */
 
                 //If app is not using FOF, we still need to get  links from FB
                 //Also need to populate network
@@ -849,6 +926,10 @@ $('#next-arrow').click(function( event ){
                 myNetwork.start();
                 var log = {
                     "friends": jQuery.map( Friendly.friends, function( obj, i ){
+
+			if (obj.T6_healthy !== undefined) {
+				obj.name2 = obj.name;
+			}
                         obj.name = "Friend " + (obj.friendNumber);
                         return obj;
                     }),
@@ -859,7 +940,7 @@ $('#next-arrow').click(function( event ){
                     "sns": Friendly.sns,
                     "timer": Friendly.timer
                 }
-                $.post("log", JSON.stringify(log));
+                $.post("log", JSON.stringify(log), function(data) { $('#completion-code').text(data); $('#completion-code').css('user-select','text'); } );
                 deleteApp();
             });
 
@@ -1379,9 +1460,8 @@ function createFriendLists( targetElement ) {
     //Create list for each category
     $(cats).each(function(i,obj){
          var cat = $(obj).data('category');
-	 var label = $(obj).data('label');
          var div = $("<div class='merge-div'></div>");
-         var p = $("<p></p>").text(label.capitalize());
+         var p = $("<p></p>").text(cat.capitalize());
          var ul = $("<ul id='{cat}-list' class='merge-list'></ul>".supplant({'cat':cat}));
 
         //Get all members of a category

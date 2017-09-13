@@ -5,6 +5,9 @@ config = {
     "arrowType": "turtle",
     "appID": "cnl",
     "maxFriendsPerCategory": 20,
+    "timeFrameNum": 1.0, 
+    "timeFrameType": "weeks", 
+    "allowManualFB": True, 
     "categories": [
         {
             "id": "family",

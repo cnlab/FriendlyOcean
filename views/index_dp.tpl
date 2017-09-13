@@ -19,6 +19,7 @@
         <script src="assets/js/html5shiv.js"></script>
     <![endif]-->
 
+
     <script type="text/javascript">
         //Participant ID. Pulled from pID URL parameter. Otherwise defaults to "anon"
         var pID = "{{ pID }}";
@@ -83,7 +84,14 @@
                         <h2>Facebook Authorization</h2>
                     </div>
                     <div class="row">
-                            <p>This application would like to access your Facebook account in order to grab the names of friends you've interacted with in the past 3 weeks. Once you complete the game, you will be logged out of Facebook and your friends' names will be anonymized. <span class="auth-no">Alternatively, you can enter them manually... but that's just more work for you.</span></p> 
+                            <p>
+                            
+                            This application would like to access your Facebook account in order to grab the names of friends you've interacted with recently. 
+                            Once you complete the game, you will be logged out of Facebook automatically and your friends' names will be anonymized. 
+                            
+                            <span class="auth-no">Alternatively, you can enter them manually... but that's just more work for you.</span>
+                            
+                            </p> 
                     </div>
                     <div class="row auth-btns">
                         <div class="btn-group" data-toggle="buttons-radio">
@@ -130,6 +138,7 @@
                     </div>                
                 </section>
                 
+                <!--
                 <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr4.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
@@ -138,21 +147,15 @@
                         <p>During the game, you will be asked to enter the names of your family, friends, and acquaintances who you interact with on a normal basis and know personally.</p>
                     </div>
                 </section>
+                --> 
                 
                 <section class="instructions" data-progress="Intro" data-transition="none" data-background="assets/img/ocean/backgrounds/instr5.png">
                     <div class="row slide-header">
                         <h2>Instructions</h2>
                     </div>
                     <div class="row">
-                        <p>Each of your personal relationships will get its own piece of your <span class="island-type"></span>.</p>
-                        <p>In order for you to create the most complete <span class="island-type"></span>, you will bring people over in {{ len(config['categories']) }} different group{{ 's' if len(config['categories'])>1 else '' }}:</p>
-                        <div class="span5 offset2">
-                            <ol>
-                                %for cat in config['categories']:
-                                <li>{{ cat['title'].title() }}</li>
-                                %end
-                            </ol>
-                        </div>
+                        <p>To start the game a list of your friends who you have interacted with on Facebook recently will populate your <span class="island-type"></span>.</p>
+    					<p>You'll then be able to add any missing friends you would like to be included in your  <span class="island-type"></span>.</p>                     
                     </div>
                 </section>
                 
@@ -184,13 +187,13 @@
                 </section>
                 
                 %for i, section in enumerate(config['categories']):
-                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-label="{{ section['title'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
+                <section id="{{ section['id'] }}" data-category="{{ section['id'] }}" data-progress="Adding" data-show="help" class="category add-names" data-background="assets/img/ocean/backgrounds/{{ section['id'] }}.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ section['title'] }}
-                                
+				%if not section['id'] == 'facebook':                                
                                  - <input class="friend-input" name="{{ section['id'] }}-friend-input" type="text" placeholder="Type a name and press Enter"/>
-                                
+                                %end
                             </h2>
                         </div>
                         <div class="row">
@@ -200,6 +203,8 @@
                     </div>
                 </section>
                 %end
+                
+                <!-- ADD A SECTION FOR ENTERING OTHER FB FRIENDS NOT PICKED UP BY INTERACTION ALGORITHM -->
 
                 %for n, section in enumerate(config['components']):
                 %if section['id'] == 'matching':
@@ -249,9 +254,9 @@
                 </section>
 
 
-                %elif section['id'] == 'survey':
+                %elif section['id'].startswith('survey'):
                 %for i, obj in enumerate( section['surveys'] ):
-                <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Spacing" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
+                <section id="{{ obj['key'] }}" class="survey" data-state="survey" data-surveyindex="{{ i }}" data-progress="Describe" data-category="survey" data-show="help" data-background="assets/img/ocean/backgrounds/survey.png">
                     <div class="container">
                         <div class="row slide-header">
                             <h2>{{ obj['question'] }}</h2>
@@ -316,6 +321,8 @@
                     <div class="container" id="myNetwork">
                         <div class="row"> 
                             <h2>Welcome to <span class='island-name'></span>!</h2>
+			    <div>COMPLETITION CODE: <span class="completion-code" id="completion-code"></span></div>
+			    <div>Copy this code and paste it into the initial survey and continue to answer questions.</div>
                         </div>
                     </div>
                 </section>
@@ -349,7 +356,7 @@
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/reveal.js"></script>
     <script src="assets/js/d3.v3.min.js"></script>
-    <script src="assets/friendly/friendly.js"></script>
+    <script src="assets/friendly/friendly_dp.js"></script>
     <script src="assets/friendly/strength.js"></script>
     <script src="assets/js/jquery.dataTables.min.js"></script>
     <script src="assets/friendly/fof.js"></script>
@@ -392,7 +399,7 @@
             
 	    Friendly.timeFrameNum = Friendly.config.timeFrameNum;
 	    Friendly.timeFrameType = Friendly.config.timeFrameType;
-
+		Friendly.orderFBints = 0 ? Friendly.config.orderFBints===undefined : Friendly.config.orderFBints;
 
             //Check for app in local storage
             if( getApp() ){

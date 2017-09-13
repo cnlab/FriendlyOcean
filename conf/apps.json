@@ -1,1 +1,570 @@
-{"is this working": {"description": "Test app using family only.", "created": "10/21/13", "arrowType": "turtle", "theme": "ocean", "maxFriendsPerCategory": 3, "components": [{"help": ["Please rate how emotionally close you are with each person by dragging their name into the circle.", "You can rate them from not at all close (perimeter) to extremely close (center)."], "id": "closeness", "title": "Closeness"}], "appID": "is this working", "owner": "jp", "categories": [{"help": ["Please enter the names of your family members who you know personally.", "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", "Click on a name if you need to remove it from the list."], "id": "family", "title": "Family"}]}}
+{
+    "cnl": {
+        "allowManualFB": true, 
+        "appID": "cnl", 
+        "arrowType": "turtle", 
+        "categories": [
+            {
+                "help": [
+                    "Please enter the names of your family members who you know personally and would like to continue to have a personal relationship with.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "family", 
+                "title": "Family"
+            }, 
+            {
+                "help": [
+                    "Please take out your phone and look at the voice call log.", 
+                    "Enter the names of everyone you know personally who you have called or received a call from in the last week.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "calling", 
+                "title": "Calling"
+            }, 
+            {
+                "help": [
+                    "Please take out your phone and look at the texting (SMS) log.", 
+                    "Enter the names of everyone you know personally who you have sent a text or have received a text from in the last week.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "texting", 
+                "title": "Texting"
+            }, 
+            {
+                "help": [
+                    "If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you've interacted with in the last week.", 
+                    "Otherwise, please enter the names of everyone you have interacted with in the last week.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "facebook", 
+                "title": "Facebook"
+            }
+        ], 
+        "components": [
+            {
+                "help": [
+                    "Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count. We know that sometimes you communicate with the same person via multiple channels. For example, maybe you text your mother and talk to her on the phone.", 
+                    "Please carefully go over this list and find any matches. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you've highlighted some duplicates, click the 'Next Friend' button at the top of the screen. Your merged friend will appear bolded below.", 
+                    "If you make a mistake, simply double-click the merged friend to remove the names under it. Or if you forget who you have merged, hover over a bolded name to see everyone inside it."
+                ], 
+                "id": "matching", 
+                "title": "Matching"
+            }, 
+            {
+                "help": [
+                    "Please rate how emotionally close you are with each person by dragging their name into the circle.", 
+                    "You can rate them from not at all close (perimeter) to extremely close (center)."
+                ], 
+                "id": "closeness", 
+                "title": "Closeness"
+            }, 
+            {
+                "help": [
+                    "Now it's time to find groups of friends who all know each other, such as friends from work, school, or a soccer team. Be sure that all group members know each other.", 
+                    "To create a circle, click on at least 2 names, then type a name for the it into the input field and press enter. To remove a circle, click the 'x' in its title bar.", 
+                    "To add or remove a person from a circle, first activate the circle by clicking on it, then click on any names in the list above that you wish to add or remove.", 
+                    "The more groups you can come up with, the more time you'll save"
+                ], 
+                "id": "circles", 
+                "title": "Groups"
+            }, 
+            {
+                "help": [
+                    "Finally, put your friends who know each other together in the same place. For each friend select all of the people they know by clicking on their names on the left side. If you make a mistake, you can click the bubble to return them to the other side."
+                ], 
+                "id": "friendOfFriend", 
+                "title": "Friends of Friends"
+            }
+        ], 
+        "created": "10/12/13", 
+        "description": "", 
+        "maxFriendsPerCategory": 20, 
+        "owner": "admin", 
+        "theme": "ocean", 
+        "timeFrameNum": 1
+    }, 
+		"dp": {
+        "allowManualFB": false, 
+        "orderFBints": 40,
+        "appID": "dp", 
+        "arrowType": "turtle", 
+        "categories": [
+            {
+                "help": [
+                    "Here are the names of the people you've interacted most recently.", 
+                    "Please look over them and then you can move on to the next screen."
+                ], 
+                "id": "facebook", 
+                "title": "Facebook"
+            }
+            
+            ,
+            {
+            	"help": [
+            		"Please add any other of your Facebook friends who where NOT shown in the previous list but who you know you have interacted with on Facebook in the past month.",
+            		"To search your Facebook friends start typing and the list of friends will be populated."
+            	],
+            	"id": "other",
+            	"title": "Other Facebook Friends"
+            }
+        ], 
+        "components": [
+            {
+                "help": [
+                    "Please rate how emotionally close you are with each person by dragging their name into the circle.", 
+                    "You can rate them from not at all close (perimeter) to extremely close (center)."
+                ], 
+                "id": "closeness", 
+                "title": "Closeness"
+            }, 
+            {
+                "help": [
+                    "Please respond to the following question for each person."
+                ], 
+                "id": "survey", 
+                "surveys": [
+                    {
+                        "instructions": "Please answer the following question for each person you know.", 
+                        "key": "compare", 
+                        "question": "Are you more or less physically active than these people?",
+						"responses": [
+                            {
+                                "long": "A lot less active", 
+								"value": "lot_less"
+                            }, 
+                            {
+                                "long": "Somewhat less active", 
+                            	"value": "somewhat_less"
+			    			}, 
+                            {
+                                "long": "About the same", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "Somewhat more active", 
+                                "value": "somewhat_more"
+                            }, 
+                            {
+                                "long": "A lot more active", 
+                                "value": "lot_more"
+                            }
+                        ]
+                    },
+                    {
+                        "instructions": "Please answer the following question for each person you know.", 
+                        "key": "compare", 
+                        "question": "How likely are you to talk to about information on healthy living with this person?",
+                        
+                        "responses": [
+                            {
+                                "long": "Very unlikely", 
+                                "value": "very_unlikely"
+                            }, 
+                            {
+                                "long": "Unlikely", 
+                                "value": "unlikely"
+                            }, 
+                            {
+                                "long": "Somewhat unlikely", 
+                                "value": "somewhat_unlikely"
+                            }, 
+                            {
+                                "long": "Neutral", 
+                                "value": "neutral"
+                            }, 
+                            {
+                                "long": "Somewhat likely", 
+                                "value": "somewhat_likely"
+                            }, 
+                            {
+                                "long": "Likely", 
+                                "value": "likely"
+                            }, 
+                            {
+                                "long": "Very likely", 
+                                "value": "very_likely"
+                            }
+                        ]
+                    }
+                    
+                ], 
+                "title": "Describe"
+            }
+        ], 
+        "created": "1/9/15", 
+        "description": "darpa = Facebook Only, Closeness, DARPA Survey ***", 
+        "maxFriendsPerCategory": 80, 
+        "owner": "FB_study", 
+        "theme": "ocean", 
+        "timeFrameNum": 12, 
+        "timeFrameType": "weeks"
+    }, 
+    "ethan": {
+        "allowManualFB": false, 
+        "appID": "ethan", 
+        "arrowType": "turtle", 
+        "categories": [
+            {
+                "help": [
+                    "Here are the names of the most recent people you've interacted with in the last three weeks.", 
+                    "Please look over them and then you can move on to the next screen."
+                ], 
+                "id": "facebook", 
+                "title": "Facebook"
+            }
+        ], 
+        "components": [
+            {
+                "help": [
+                    "Please rate how emotionally close you are with each person by dragging their name into the circle.", 
+                    "You can rate them from not at all close (perimeter) to extremely close (center)."
+                ], 
+                "id": "closeness", 
+                "title": "Closeness"
+            }, 
+            {
+                "help": [
+                    "Please respond to the following question for each person."
+                ], 
+                "id": "survey", 
+                "surveys": [
+                    {
+                        "instructions": "Please answer the following question for each person you know.", 
+                        "key": "compare", 
+                        "question": "How much better or worse does YOUR LIFE seem compared to the lives of the following people you know? My life is... ", 
+                        "responses": [
+                            {
+                                "long": "A low worse", 
+                                "value": "worse"
+                            }, 
+                            {
+                                "long": "Somewhat worse", 
+                                "value": "worse"
+                            }, 
+                            {
+                                "long": "A little worse", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "Same", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "A little better", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "Somewhat better", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "A lot better", 
+                                "value": "better"
+                            }
+                        ]
+                    }
+                ], 
+                "title": "Describe"
+            }
+        ], 
+        "created": "11/13/13", 
+        "description": "ethan = Facebook Only, Closeness, Comparison Survey \r\n\r\n*** TO DO: change to 3 weeks of retrieval, code for which week(s) each person comes from, code for birthdays ***", 
+        "maxFriendsPerCategory": 40, 
+        "owner": "FB_study", 
+        "theme": "ocean", 
+        "timeFrameNum": 3, 
+        "timeFrameType": "weeks"
+    }, 
+    "ethan2": {
+        "allowManualFB": false, 
+        "appID": "ethan2", 
+        "arrowType": "turtle", 
+        "categories": [
+            {
+                "help": [
+                    "Here are the names of the most recent people you've interacted with in the last three weeks.", 
+                    "Please look over them and then you can move on to the next screen."
+                ], 
+                "id": "facebook", 
+                "title": "Facebook"
+            }
+        ], 
+        "components": [
+            {
+                "help": [
+                    "Please rate how emotionally close you are with each person by dragging their name into the circle.", 
+                    "You can rate them from not at all close (perimeter) to extremely close (center)."
+                ], 
+                "id": "closeness", 
+                "title": "Closeness"
+            }, 
+            {
+                "help": [
+                    "Please rate how similar you are to each person by dragging their name into the circle.", 
+                    "You can rate them from not at all similar (perimeter) to extremely similar (center)."
+                ], 
+                "id": "similarity", 
+                "title": "Similarity"
+            }, 
+            {
+                "help": [
+                    "Please respond to the following question for each person."
+                ], 
+                "id": "survey", 
+                "surveys": [
+                    {
+                        "instructions": "Please answer the following question for each person you know.", 
+                        "key": "compare", 
+                        "question": "How much better or worse does YOUR LIFE seem compared to the lives of the following people you know? My life is... ", 
+                        "responses": [
+                            {
+                                "long": "A low worse", 
+                                "value": "worse"
+                            }, 
+                            {
+                                "long": "Somewhat worse", 
+                                "value": "worse"
+                            }, 
+                            {
+                                "long": "A little worse", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "Same", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "A little better", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "Somewhat better", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "A lot better", 
+                                "value": "better"
+                            }
+                        ]
+                    }
+                    
+                    
+                    
+                ], 
+                "title": "Describe"
+            }
+        ], 
+        "created": "11/13/13", 
+        "description": "ethan = Facebook Only, Closeness, Comparison Survey \r\n\r\n*** TO DO: change to 3 weeks of retrieval, code for which week(s) each person comes from, code for birthdays ***", 
+        "maxFriendsPerCategory": 40, 
+        "owner": "FB_study", 
+        "theme": "ocean", 
+        "timeFrameNum": 3, 
+        "timeFrameType": "weeks"
+    }, 
+    "is this working": {
+        "appID": "is this working", 
+        "arrowType": "turtle", 
+        "categories": [
+            {
+                "help": [
+                    "Please enter the names of your family members who you know personally.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "family", 
+                "title": "Family"
+            }
+        ], 
+        "components": [
+            {
+                "help": [
+                    "Please rate how emotionally close you are with each person by dragging their name into the circle.", 
+                    "You can rate them from not at all close (perimeter) to extremely close (center)."
+                ], 
+                "id": "closeness", 
+                "title": "Closeness"
+            }
+        ], 
+        "created": "10/21/13", 
+        "description": "Test app using family only.", 
+        "maxFriendsPerCategory": 3, 
+        "owner": "jp", 
+        "theme": "ocean"
+    }, 
+    "pa2": {
+        "allowManualFB": true, 
+        "appID": "pa2", 
+        "arrowType": "turtle", 
+        "categories": [
+            {
+                "help": [
+                    "Please enter the names of your family members who you know personally.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "family", 
+                "title": "Family"
+            }, 
+            {
+                "help": [
+                    "Please enter the names of your best friends.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "friends", 
+                "title": "Friends"
+            }, 
+            {
+                "help": [
+                    "Please take out your phone and look at the voice call log. Starting with the most recent call and going backwards, enter the names of everyone you know personally who you have called or received a call from in the last week.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "calling", 
+                "title": "Calling"
+            }, 
+            {
+                "help": [
+                    "Please take out your phone and look at the texting (SMS) log. Starting with the most recent text and going backwards, enter the names of everyone you know personally who you have texted or received a text from in the last week.If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "texting", 
+                "title": "Texting"
+            }, 
+            {
+                "help": [
+                    "If you opted to authorize Friendly Island to access your Facebook account, here are the names of the most recent people you've interacted with in the last week.", 
+                    "Otherwise, please enter the names of everyone you have interacted with in the last week.", 
+                    "If two or more people in your life have the same name, be sure to add a last initial so you don't get them mixed up.", 
+                    "Click on a name if you need to remove it from the list."
+                ], 
+                "id": "facebook", 
+                "title": "Facebook"
+            }
+        ], 
+        "components": [
+            {
+                "help": [
+                    "Ok, time to disembark. However, before getting off the ship, we need to get an accurate head count. We know that sometimes you communicate with the same person via multiple channels. For example, maybe you text your mother and talk to her on the phone.", 
+                    "Please carefully go over this list and find any matches. To do so, highlight each name that you want to merge into a single friend by clicking on it. When you've highlighted some duplicates, click the 'Next Friend' button at the top of the screen. Your merged friend will appear bolded below.", 
+                    "If you make a mistake, simply double-click the merged friend to remove the names under it. Or if you forget who you have merged, hover over a bolded name to see everyone inside it."
+                ], 
+                "id": "matching", 
+                "title": "Matching"
+            }, 
+            {
+                "help": [
+                    "Please rate how emotionally close you are with each person by dragging their name into the circle.", 
+                    "You can rate them from not at all close (perimeter) to extremely close (center)."
+                ], 
+                "id": "closeness", 
+                "title": "Closeness"
+            }, 
+            {
+                "help": [
+                    "Please respond to the following question for each person."
+                ], 
+                "id": "survey", 
+                "surveys": [
+                    {
+                        "instructions": "Please answer the following question for each person.", 
+                        "key": "lastSeen", 
+                        "question": "When was the last time you saw each person?", 
+                        "responses": [
+                            {
+                                "long": "Within the last week", 
+                                "value": "week"
+                            }, 
+                            {
+                                "long": "More than a week ago but within the last month", 
+                                "value": "month"
+                            }, 
+                            {
+                                "long": "More than a month ago but within the last year", 
+                                "value": "year"
+                            }, 
+                            {
+                                "long": "More than a year ago", 
+                                "value": "overayear"
+                            }
+                        ]
+                    }, 
+                    {
+                        "instructions": "Please answer the following question for each person.", 
+                        "key": "friendActive", 
+                        "question": "How physically active is this person?", 
+                        "responses": [
+                            {
+                                "long": "Very sedentary", 
+                                "value": "verysedentary"
+                            }, 
+                            {
+                                "long": "Somewhat sedentary", 
+                                "value": "somewhatsedentary"
+                            }, 
+                            {
+                                "long": "Neither sedentary or active", 
+                                "value": "neither"
+                            }, 
+                            {
+                                "long": "Somewhat active", 
+                                "value": "somewhatactive"
+                            }, 
+                            {
+                                "long": "Very active", 
+                                "value": "veryactive"
+                            }
+                        ]
+                    }, 
+                    {
+                        "instructions": "Please answer the following question for each person.", 
+                        "key": "friendActiveCompare", 
+                        "question": "For each person think about how their activity level compares to yours. Are they about the same, more or less activity than you?", 
+                        "responses": [
+                            {
+                                "long": "Much less active", 
+                                "value": "muchless"
+                            }, 
+                            {
+                                "long": "A bit less active", 
+                                "value": "abitless"
+                            }, 
+                            {
+                                "long": "The same as me", 
+                                "value": "same"
+                            }, 
+                            {
+                                "long": "A bit more active", 
+                                "value": "abitmore"
+                            }, 
+                            {
+                                "long": "Much more active", 
+                                "value": "muchmore"
+                            }
+                        ]
+                    }
+                ], 
+                "title": "Describe"
+            }, 
+            {
+                "help": [
+                    "Finally, put your friends who know each other together in the same place. For each friend select all of the people they know by clicking on their names on the left side. If you make a mistake, you can click the bubble to return them to the other side."
+                ], 
+                "id": "friendOfFriend", 
+                "title": "Friends of Friends"
+            }
+        ], 
+        "created": "09/11/14", 
+        "description": "Survey for Physical Activity 2 project. Administered at T3.", 
+        "maxFriendsPerCategory": 20, 
+        "owner": "admin", 
+        "theme": "ocean", 
+        "timeFrameNum": 1, 
+        "timeFrameType": "weeks"
+    }
+}

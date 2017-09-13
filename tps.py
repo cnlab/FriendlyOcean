@@ -20,6 +20,8 @@ from FQL import FQL
 from datetime import datetime
 from datetime import timedelta
 
+#from collections import Counter
+
 key = "t!p@s#"
 
 def hash(txt):
@@ -80,6 +82,40 @@ def walk(data):
 def get_likes_comments(source,type):
 	return get_connections(stored_access_token,type,source)
 
+
+
+def get_friend_cnt(access_token, max=50):
+	graph = facebook.GraphAPI(access_token)
+	
+	friends = []
+
+	query = graph.get_connections('me','friends')
+
+	while (len(query['data'])>0 and query.has_key('paging') ) or len(friends)<max:
+	
+		for data in query['data']:
+			friends.append(data)
+
+		cnt=0
+		rep=None
+		while rep==None:
+			try:
+				url = query['paging']['next']
+				req = urllib2.Request(url)
+				rep = urllib2.urlopen(req).read()
+				query = json.loads(rep)
+			except (urllib2.HTTPError, urllib2.URLError) as e:
+				cnt+=1
+				logging.warn('HTTPError reading %s - %s' % (url, e))
+				if cnt>5:
+					query={'data': []}
+					rep=True
+				pass
+		
+		if len(friends)>=max:
+			return max
+		else:
+			return 0
 
 
 def get_connections(access_token,type,source="me"):
@@ -259,7 +295,7 @@ def friend_walk(data,cnt=0, ids=set()):
 
 
 
-def get_connections_by_date(access_token,type,start_date,friends=[],source="me", last=4):
+def get_connections_by_date(access_token,type,start_date,friends=[],source="me", last=4, ordered=False):
 
 	graph = facebook.GraphAPI(access_token)
 
@@ -294,7 +330,8 @@ def get_connections_by_date(access_token,type,start_date,friends=[],source="me",
 			elif data.has_key('created_time'):
 				item_time=datetime.strptime(data['created_time'],date_format)
 
-			if item_time < start_date or len(set(interactions))>last:
+			#if item_time < start_date or len(set(interactions))>last:
+			if item_time < start_date:
 				first_item_date = start_date - timedelta(weeks=1000)
 				break
 			else:
@@ -336,6 +373,11 @@ def get_connections_by_date(access_token,type,start_date,friends=[],source="me",
 	for ppt in interactions:
 		pids[ppt]=pids.setdefault(ppt,0)+1
 
+	if ordered:
+		plist = pids.items()
+		plist.sort(key=lambda x:x[1], reverse=True)
+		return plist
+
 	plist = []
 	for ppt in pids:
 		if pids[ppt]>=interaction_min:
@@ -347,7 +389,7 @@ def get_connections_by_date(access_token,type,start_date,friends=[],source="me",
 
 
 
-def get_interactions_from_last(access_code, start_point):
+def get_interactions_from_last(access_code, start_point, ordered=False):
 	
 	stored_access_token = access_code
 
@@ -362,10 +404,27 @@ def get_interactions_from_last(access_code, start_point):
 	interactions = []
 
 	for uobject in (['feed','inbox']):
-		interactions.extend(get_connections_by_date(access_code, uobject, start_point, friends=friends))
+		interactions.extend(get_connections_by_date(access_code, uobject, start_point, friends=friends, ordered=ordered))
 
 
-	interaction_list = set(interactions)
+
+	# order interaction list so that the top N can be selected in terms of frequency of 
+	# interaction
+	#print interactions
+	if ordered:
+		# merge matching keys
+		interactions2 = {}
+		for i in interactions:
+			try:
+				interactions2[i[0]]+=i[1]
+			except:
+				interactions2[i[0]]=i[1]
+
+		interactions = interactions2.items()
+		interaction_list = [f[0] for f in interactions[:min(int(ordered),len(interactions))]]		
+	else:
+		interaction_list = set(interactions)
+	
 	
 	FB_f = dict(zip(interaction_list,['facebook_f%i' % i for i in range(1,len(interaction_list)+1)]))
 
@@ -375,11 +434,10 @@ def get_interactions_from_last(access_code, start_point):
 	for link in fof_links:
 		new_links.append((FB_f[link[0]],FB_f[link[1]]))
 
-	print new_links
+	#print new_links
 
 	return {'friends':[(FB_f[n], shorten_name(friend_dict[n]), hash(n)) for n in interaction_list],
-			'fb_fof': new_links
-			}
+			'fb_fof': new_links, 'friends50': get_friend_cnt(access_code,max=50) }
 
 
 def shorten_name(name):

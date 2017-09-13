@@ -76,26 +76,6 @@
                     </div>
                 </section>
                 
-                %for i, section in enumerate(config['categories']):
-                %if section['id'] == 'facebook':
-                <section id="authorize" data-category="authorize" data-background="assets/img/ocean/backgrounds/auth.png" data-progress="Intro">
-                    <div class="row slide-header">
-                        <h2>Facebook Authorization</h2>
-                    </div>
-                    <div class="row">
-                            <p>This application would like to access your Facebook account in order to grab the names of friends you've interacted with in the past 3 weeks. Once you complete the game, you will be logged out of Facebook and your friends' names will be anonymized. <span class="auth-no">Alternatively, you can enter them manually... but that's just more work for you.</span></p> 
-                    </div>
-                    <div class="row auth-btns">
-                        <div class="btn-group" data-toggle="buttons-radio">
-                            <ul class="inline">
-                                <li><button id="auth-yes" type="button" class="btn btn-large btn-success" onclick="yesSNS();">Log in</button></li>
-                                <li><button id="auth-no" type="button" class="btn auth-no" onclick="noSNS();">No thanks</button></li>
-                            </ul>
-                        </div>
-                    </div>       
-                </section>
-                %end
-                %end
                 
                 <section id="congratulations" class="instructions" data-progress="Intro" data-background="assets/img/ocean/backgrounds/instr1.png">
                     <div class="row slide-header">

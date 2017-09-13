@@ -12,7 +12,7 @@ var strength = (function() {
     var nodes  = [{name: 'YOU', fixed: true, x: w/2, y:h/2}];
     var links = [];
     
-    function init(names) {
+    function init(names,type) {
         
         var arc = d3.svg.arc()
                              .innerRadius( function(d){ return d == rings[0] ? 0 : d-40; })
@@ -20,6 +20,7 @@ var strength = (function() {
                              .startAngle(0)
                              .endAngle(pi);
 
+	var container = '#closenessChart';
         var scale_text = [ "Not at all close",
                            "Not close",
                            "Not very close",
@@ -29,7 +30,15 @@ var strength = (function() {
                            "Extremely close",          
                           ];
 
-        var vis = d3.select("#closenessChart").append("svg:svg")
+	if (type=='similarity') {
+
+		for (i in scale_text) {
+			scale_text[i] = scale_text[i].replace('close','similar'); 
+		}
+		container = '#similarityChart';
+	}
+
+        var vis = d3.select(container).append("svg:svg")
             .attr("width", w)
             .attr("height", h);
 
